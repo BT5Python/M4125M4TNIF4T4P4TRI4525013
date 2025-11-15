@@ -586,7 +586,7 @@ if (mergedLink) {
                         alert("❌ File belum tersedia untuk personel ini.");
                         return;
                   }
-                    window.open(d.url, "_blank");
+                    window.location.href = url;   // ⬅ pindah halaman tanpa tab baru
                 };
                 docContainer.appendChild(btn);
             });
