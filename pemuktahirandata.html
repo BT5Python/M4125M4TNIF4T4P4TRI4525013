@@ -468,7 +468,7 @@ function hitungMasaDinas(tmt) {
 // ======== TAMPILKAN BIODATA DETAIL ========
 function displayAgent(agent) {
     // Ambil dan atur foto
-    let photoURL = agent.photo || "";
+    let photoURL = agent.photoid || "";
     if (photoURL.includes("drive.google.com")) {
         const match = photoURL.match(/\/d\/([a-zA-Z0-9_-]+)/);
         if (match && match[1]) {
