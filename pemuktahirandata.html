@@ -599,14 +599,6 @@ searchInput.addEventListener("keydown", e=>{
         if(query) showMemberButtons(query);
     }
 });
-
-    function fixDriveLink(url) {
-         if (!url) return "";
-         const id = url.match(/[-\w]{25,}/);
-         if (!id) return "";
-         return "https://drive.google.com/uc?export=view&id=" + id[0];
-}
-       
 </script>
 </body>
 </html>
