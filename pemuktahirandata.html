@@ -185,7 +185,7 @@ Biodata will appear after clicking the member button
         </div>
     </div>
 </div>
-
+<img id="foto" style="width:180px; border:1px solid #00ff00;">
 <script>
 function goTo(url) { window.location.href = url; }
 
@@ -601,12 +601,12 @@ searchInput.addEventListener("keydown", e=>{
 });
 
     function fixDriveLink(url) {
-  if (!url) return "";
-  const id = url.match(/[-\w]{25,}/);
-  if (!id) return "";
-  return "https://drive.google.com/uc?export=view&id=" + id[0];
+         if (!url) return "";
+         const id = url.match(/[-\w]{25,}/);
+         if (!id) return "";
+         return "https://drive.google.com/uc?export=view&id=" + id[0];
 }
-    
+       
 </script>
 </body>
 </html>
