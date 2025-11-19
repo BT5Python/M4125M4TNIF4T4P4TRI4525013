@@ -271,14 +271,38 @@ async function startTyping() {
     const data = await fetchData();
 
     data.forEach(row => {
-      const masa = hitungMasa(row.tmt);
 
-let masaFix = masa;
+  const masa = hitungMasa(row.tmt);
+  let masaFix = masa;
 
-// Jika kurang dari 1 bulan → kedip merah
-if (masa.includes("0 th 0 bln")) {
-  masaFix = `<span class="blink-red">${masa}</span>`;
-}
+  // Konversi masa ke hari total
+  const angka = masa.match(/\d+/g);
+  let totalHari = 0;
+
+  if (angka && angka.length >= 3) {
+    const tahun = parseInt(angka[0]);
+    const bulan = parseInt(angka[1]);
+    const hari = parseInt(angka[2]);
+    totalHari = (tahun * 365) + (bulan * 30) + hari;
+  }
+
+  // ======= ATURAN WARNA BARU =======
+  if (totalHari < 31) {
+    masaFix = `<span class="blink-yellow">${masa}</span>`;
+  } else if (totalHari > 730) { 
+    masaFix = `<span class="blink-red">${masa}</span>`;
+  }
+
+  const line =
+`${row.no.toString().padEnd(5)}${row.nama.padEnd(30)}${row.pangkat.padEnd(25)}${row.jabatan.padEnd(25)}${row.tmt.padEnd(20)}${row.keterangan.padEnd(20)}${masaFix}\n`;
+
+  if (String(row.pangkat).toUpperCase().includes("PNS")) {
+    terminal.innerHTML += `<span class="yellow">${line}</span>`;
+  } else {
+    terminal.innerHTML += line;
+  }
+});
+
 
 const line =
 `${row.no.toString().padEnd(5)}${row.nama.padEnd(30)}${row.pangkat.padEnd(25)}${row.jabatan.padEnd(25)}${row.tmt.padEnd(20)}${row.keterangan.padEnd(20)}${masaFix}\n`;
