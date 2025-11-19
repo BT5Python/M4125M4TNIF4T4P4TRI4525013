@@ -363,9 +363,26 @@ NO    NAMA                          PANGKAT                 JABATAN             
     const masa = hitungMasa(row.tmt);
     let masaFix = masa;
 
-    if (masa.includes("0 th 0 bln")) {
-      masaFix = `<span class="blink-red">${masa}</span>`;
-    }
+    // Konversi masa jadi hari
+const angka2 = masa.match(/\d+/g);
+let totalHari2 = 0;
+
+if (angka2 && angka2.length >= 3) {
+  const t = parseInt(angka2[0]);
+  const b = parseInt(angka2[1]);
+  const h = parseInt(angka2[2]);
+  totalHari2 = (t * 365) + (b * 30) + h;
+}
+
+// Kurang dari 31 hari → kuning
+if (totalHari2 < 31) {
+  masaFix = `<span class="blink-yellow">${masa}</span>`;
+}
+// Lebih dari 2 tahun → merah
+else if (totalHari2 > 730) {
+  masaFix = `<span class="blink-red">${masa}</span>`;
+}
+
 
     const line =
 `${row.no.toString().padEnd(5)}${row.nama.padEnd(30)}${row.pangkat.padEnd(25)}${row.jabatan.padEnd(25)}${row.tmt.padEnd(15)}${masaFix}\n`;
