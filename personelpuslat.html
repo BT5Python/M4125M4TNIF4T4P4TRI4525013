@@ -145,59 +145,49 @@ function parseTanggal(tanggal) {
 /* ================== HITUNG MASA DINAS ================== */
 function hitungMasaDinas() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const sheet = ss.getSheetByName("DATA");   // <== GANTI kalau sheet kamu beda
+  const sheet = ss.getSheetByName("DATA"); // ganti sesuai nama sheet
 
-  const START_ROW = 2;      // mulai dari baris kedua
-  const COL_NO = 1;         // kolom A = NO
-  const COL_TMT = 6;        // kolom F = TMT (DD/MM/YYYY)
-  const COL_KET = 11;       // kolom K = KETERANGAN
-
+  const startRow = 2; // mulai dari baris data
   const lastRow = sheet.getLastRow();
-  const rows = sheet.getRange(START_ROW, 1, lastRow - 1, COL_KET).getValues();
+
+  const noCol = 1;            // kolom A = NO
+  const tmtCol = 6;           // kolom F = TMT (contoh)
+  const ketCol = 11;          // kolom K = KETERANGAN (output)
+
+  const data = sheet.getRange(startRow, 1, lastRow - 1, 11).getValues();
 
   const today = new Date();
 
-  rows.forEach((row, i) => {
-    const no = row[COL_NO - 1];
-    const tmtStr = row[COL_TMT - 1];
+  data.forEach((row, i) => {
+    const no = row[noCol - 1];
+    const tmtStr = row[tmtCol - 1];
 
-    // Lewati baris jika tidak ada nomor
+    // Lewati baris tanpa nomor
     if (!no || typeof no !== "number") return;
 
-    // Jika TMT kosong
     if (!tmtStr) {
-      sheet.getRange(START_ROW + i, COL_KET).setValue("TMT kosong");
+      sheet.getRange(startRow + i, ketCol).setValue("TMT kosong");
       return;
     }
 
-    // Pecah TMT DD/MM/YYYY
-    const parts = String(tmtStr).split("/");
-    if (parts.length !== 3) {
-      sheet.getRange(START_ROW + i, COL_KET).setValue("Format salah");
-      return;
-    }
+    // Konversi string DD/MM/YYYY → Date
+    const parts = tmtStr.split("/");
+    const tmt = new Date(parts[2], parts[1] - 1, parts[0]);
 
-    const day = parseInt(parts[0]);
-    const month = parseInt(parts[1]) - 1;
-    const year = parseInt(parts[2]);
-
-    const tmt = new Date(year, month, day);
-
-    // Cek validitas tanggal
     if (isNaN(tmt.getTime())) {
-      sheet.getRange(START_ROW + i, COL_KET).setValue("Tanggal tidak valid");
+      sheet.getRange(startRow + i, ketCol).setValue("Format TMT salah");
       return;
     }
 
-    // Hitung selisih tahun - bulan - hari
+    // Hitung tahun-bulan-hari
     let years = today.getFullYear() - tmt.getFullYear();
     let months = today.getMonth() - tmt.getMonth();
     let days = today.getDate() - tmt.getDate();
 
     if (days < 0) {
       months--;
-      const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
-      days += prevMonth.getDate();
+      const lastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+      days += lastMonth.getDate();
     }
 
     if (months < 0) {
@@ -205,11 +195,13 @@ function hitungMasaDinas() {
       months += 12;
     }
 
-    const hasil = `${years} th ${months} bln ${days} hr`;
+    const hasil =
+      years + " th " + months + " bln " + days + " hr";
 
-    sheet.getRange(START_ROW + i, COL_KET).setValue(hasil);
+    sheet.getRange(startRow + i, ketCol).setValue(hasil);
   });
 }
+
 
 
 /* ================== BAGIAN UTAMA: TYPING ================== */
