@@ -143,25 +143,7 @@ async function startTyping() {
   const textAfterTop = `
 ====================================
 `;
-  function hitungMasaDinas(tmt) {
-  // Format tanggal harus YYYY-MM-DD
-  const start = new Date(tmt);
-  const today = new Date();
-
-  let tahun = today.getFullYear() - start.getFullYear();
-  let bulan = today.getMonth() - start.getMonth();
-  let hari = today.getDate() - start.getDate();
-
-  if (hari < 0) {
-    bulan--;
-    hari += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
-  }
-
-  if (bulan < 0) {
-    tahun--;
-    bulan += 12;
-  }
-
+  
   return `${tahun} th ${bulan} bln ${hari} hr`;
 }
   const titleLine = `<span class="yellow"></span>\n\n`;
@@ -250,6 +232,24 @@ function downloadFile() {
   const fileUrl = "https://drive.google.com/uc?export=download&id=1GAPWqs98GSMypnKYeow_oWzSYtAgzK6h";
   window.open(fileUrl, "_blank");
 }
+  function hitungMasaDinas(tmt) {
+  // Format tanggal harus YYYY-MM-DD
+  const start = new Date(tmt);
+  const today = new Date();
+
+  let tahun = today.getFullYear() - start.getFullYear();
+  let bulan = today.getMonth() - start.getMonth();
+  let hari = today.getDate() - start.getDate();
+
+  if (hari < 0) {
+    bulan--;
+    hari += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+  }
+
+  if (bulan < 0) {
+    tahun--;
+    bulan += 12;
+  }
 </script>
 </body>
 </html>
