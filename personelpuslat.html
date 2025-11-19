@@ -25,14 +25,15 @@ pre {
 }
 @keyframes blinkCursor { 50% { border-color: transparent; } }
 
+/* Efek berkedip hijau khusus main menu */
 .blink-green {
-  color: #00ff00;
-  animation: blinkGreen 0.45s infinite;
+  animation: blink 1s infinite;
 }
 
-@keyframes blinkGreen {
-  0%, 100% { color: #00ff00; }
-  50% { color: #003300; }
+@keyframes blink {
+  0% { color: #00ff00; }
+  50% { color: black; }
+  100% { color: #00ff00; }
 }
 
 .yellow { color: #ffff00; font-weight: bold; }
