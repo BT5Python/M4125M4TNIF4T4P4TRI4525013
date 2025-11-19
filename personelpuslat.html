@@ -25,14 +25,30 @@ pre {
 }
 @keyframes blinkCursor { 50% { border-color: transparent; } }
 
+/* Kurang dari 31 hari → kuning */
+.blink-yellow {
+  color: yellow;
+  animation: blinkYellow 1s infinite;
+}
+
+@keyframes blinkYellow {
+  0% { color: yellow; }
+  50% { color: black; }
+  100% { color: yellow; }
+}
+
+/* Lebih dari 2 tahun → merah */
 .blink-red {
-  color: #ff0000;
-  animation: blinkRed 0.45s infinite;
+  color: red;
+  animation: blinkRed 1s infinite;
 }
+
 @keyframes blinkRed {
-  0%, 100% { color: #ff0000; }
-  50% { color: #330000; }
+  0% { color: red; }
+  50% { color: black; }
+  100% { color: red; }
 }
+
 .yellow { color: #ffff00; font-weight: bold; }
 .hidden { display: none; }
 
