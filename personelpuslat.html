@@ -138,28 +138,57 @@ lines.forEach((line, index) => {
 /* =========================================================
    FUNGSI HITUNG MASA DINAS (JAVASCRIPT)
    ========================================================= */
-function hitungMasa(tmt) {
-  if (!tmt || !tmt.includes("/")) return "-";
+function hitungMasaDinasSemua() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sh = ss.getSheetByName("DATA"); // Ganti jika nama sheet beda
+  const data = sh.getDataRange().getValues();
 
-  const p = tmt.split("/");
-  const start = new Date(p[2], p[1] - 1, p[0]);
-  const today = new Date();
+  for (let i = 1; i < data.length; i++) {
 
-  let y = today.getFullYear() - start.getFullYear();
-  let m = today.getMonth() - start.getMonth();
-  let d = today.getDate() - start.getDate();
+    let no = data[i][0];   // Kolom A
+    let tmt = data[i][4];  // Kolom E (Tanggal TMT)
+    
+    // Lewati baris tanpa nomor
+    if (no === "" || no === null) continue;
 
-  if (d < 0) {
-    m--;
-    d += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+    // Jika TMT tidak valid, kosongkan keterangan
+    if (!(tmt instanceof Date)) {
+      sh.getRange(i + 1, 6).setValue(""); // Kolom F
+      continue;
+    }
+
+    // Hitung masa dinas
+    let masaDinas = hitungMasaDinas(tmt);
+
+    // Tembakkan hasil ke kolom KETERANGAN (kolom F)
+    sh.getRange(i + 1, 6).setValue(masaDinas);
   }
-  if (m < 0) {
-    y--;
-    m += 12;
-  }
-
-  return `${y} th ${m} bln ${d} hr`;
 }
+
+// ===============================
+//       RUMUS MASA DINAS
+// ===============================
+function hitungMasaDinas(tmt) {
+  let now = new Date();
+
+  let tahun = now.getFullYear() - tmt.getFullYear();
+  let bulan = now.getMonth() - tmt.getMonth();
+  let hari = now.getDate() - tmt.getDate();
+
+  if (hari < 0) {
+    bulan--;
+    let daysInMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+    hari += daysInMonth;
+  }
+
+  if (bulan < 0) {
+    tahun--;
+    bulan += 12;
+  }
+
+  return `${tahun} Tahun ${bulan} Bulan ${hari} Hari`;
+}
+
 
 
 /* =========================================================
