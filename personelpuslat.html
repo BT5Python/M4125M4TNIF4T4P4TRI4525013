@@ -134,7 +134,16 @@ lines.forEach((line, index) => {
 });
 
 /* ================== BAGIAN UTAMA: DATA JABATAN ================== */
-function hitungMasaDinas(tmt) {
+async function startTyping() {
+  const textBefore = `
+====================================
+| FILE: PERSONEL PUSLAT KODIKLATAU |
+| CLASSIFICATION: `;
+  const rahasiaWord = "RAHASIA";
+  const textAfterTop = `
+====================================
+`;
+  function hitungMasaDinas(tmt) {
   // Format tanggal harus YYYY-MM-DD
   const start = new Date(tmt);
   const today = new Date();
@@ -155,16 +164,6 @@ function hitungMasaDinas(tmt) {
 
   return `${tahun} th ${bulan} bln ${hari} hr`;
 }
-
-async function startTyping() {
-  const textBefore = `
-====================================
-| FILE: PERSONEL PUSLAT KODIKLATAU |
-| CLASSIFICATION: `;
-  const rahasiaWord = "RAHASIA";
-  const textAfterTop = `
-====================================
-`;
   const titleLine = `<span class="yellow"></span>\n\n`;
   const tableHeader = `
 --------------------------------------------------------------------------------------------------------------------  
