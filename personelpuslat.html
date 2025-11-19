@@ -256,7 +256,10 @@ async function startTyping() {
       const masa = hitungMasa(row.tmt);
 
       const line =
-`${row.no.toString().padEnd(5)}${row.nama.padEnd(30)}${row.pangkat.padEnd(25)}${row.jabatan.padEnd(25)}${row.tmt.padEnd(20)}${masa}\n`;
+const keterangan = masa; // hasil masa dinas masuk ke kolom keterangan
+
+const line =
+`${row.no.toString().padEnd(5)}${row.nama.padEnd(30)}${row.pangkat.padEnd(25)}${row.jabatan.padEnd(25)}${row.tmt.padEnd(20)}${keterangan}\n`;
 
       if (String(row.pangkat).toUpperCase().includes("PNS")) {
         terminal.innerHTML += `<span class="yellow">${line}</span>`;
