@@ -255,8 +255,16 @@ async function startTyping() {
     data.forEach(row => {
       const masa = hitungMasa(row.tmt);
 
-      const line =
-`${row.no.toString().padEnd(5)}${row.nama.padEnd(30)}${row.pangkat.padEnd(25)}${row.jabatan.padEnd(25)}${row.tmt.padEnd(20)}${ketMasa}\n`;
+let masaFix = masa;
+
+// Jika kurang dari 1 bulan → kedip merah
+if (masa.includes("0 th 0 bln")) {
+  masaFix = `<span class="blink-red">${masa}</span>`;
+}
+
+const line =
+`${row.no.toString().padEnd(5)}${row.nama.padEnd(30)}${row.pangkat.padEnd(25)}${row.jabatan.padEnd(25)}${row.tmt.padEnd(20)}${masaFix}\n`;
+
 
       if (String(row.pangkat).toUpperCase().includes("PNS")) {
         terminal.innerHTML += `<span class="yellow">${line}</span>`;
