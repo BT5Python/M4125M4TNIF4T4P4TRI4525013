@@ -254,9 +254,9 @@ async function startTyping() {
 
     data.forEach(row => {
       const masa = hitungMasa(row.tmt);
-      
-    const line =
-      `${row.no.toString().padEnd(5)}${row.nama.padEnd(30)}${row.pangkat.padEnd(25)}${row.jabatan.padEnd(25)}${row.tmt.padEnd(20)}${keterangan}\n`;
+
+      const line =
+`${row.no.toString().padEnd(5)}${row.nama.padEnd(30)}${row.pangkat.padEnd(25)}${row.jabatan.padEnd(25)}${row.tmt.padEnd(20)}${masa}\n`;
 
       if (String(row.pangkat).toUpperCase().includes("PNS")) {
         terminal.innerHTML += `<span class="yellow">${line}</span>`;
