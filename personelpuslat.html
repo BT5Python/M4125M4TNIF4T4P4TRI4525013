@@ -143,29 +143,74 @@ function parseTanggal(tanggal) {
 }
 
 /* ================== HITUNG MASA DINAS ================== */
-function hitungMasaDinas(tmt) {
-  const dateFormatted = parseTanggal(tmt);
-  const start = new Date(dateFormatted);
+function hitungMasaDinas() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName("DATA");   // <== GANTI kalau sheet kamu beda
+
+  const START_ROW = 2;      // mulai dari baris kedua
+  const COL_NO = 1;         // kolom A = NO
+  const COL_TMT = 6;        // kolom F = TMT (DD/MM/YYYY)
+  const COL_KET = 11;       // kolom K = KETERANGAN
+
+  const lastRow = sheet.getLastRow();
+  const rows = sheet.getRange(START_ROW, 1, lastRow - 1, COL_KET).getValues();
+
   const today = new Date();
 
-  if (isNaN(start)) return "-";
+  rows.forEach((row, i) => {
+    const no = row[COL_NO - 1];
+    const tmtStr = row[COL_TMT - 1];
 
-  let tahun = today.getFullYear() - start.getFullYear();
-  let bulan = today.getMonth() - start.getMonth();
-  let hari = today.getDate() - start.getDate();
+    // Lewati baris jika tidak ada nomor
+    if (!no || typeof no !== "number") return;
 
-  if (hari < 0) {
-    bulan--;
-    hari += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
-  }
+    // Jika TMT kosong
+    if (!tmtStr) {
+      sheet.getRange(START_ROW + i, COL_KET).setValue("TMT kosong");
+      return;
+    }
 
-  if (bulan < 0) {
-    tahun--;
-    bulan += 12;
-  }
+    // Pecah TMT DD/MM/YYYY
+    const parts = String(tmtStr).split("/");
+    if (parts.length !== 3) {
+      sheet.getRange(START_ROW + i, COL_KET).setValue("Format salah");
+      return;
+    }
 
-  return `${tahun} th ${bulan} bln ${hari} hr`;
+    const day = parseInt(parts[0]);
+    const month = parseInt(parts[1]) - 1;
+    const year = parseInt(parts[2]);
+
+    const tmt = new Date(year, month, day);
+
+    // Cek validitas tanggal
+    if (isNaN(tmt.getTime())) {
+      sheet.getRange(START_ROW + i, COL_KET).setValue("Tanggal tidak valid");
+      return;
+    }
+
+    // Hitung selisih tahun - bulan - hari
+    let years = today.getFullYear() - tmt.getFullYear();
+    let months = today.getMonth() - tmt.getMonth();
+    let days = today.getDate() - tmt.getDate();
+
+    if (days < 0) {
+      months--;
+      const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+      days += prevMonth.getDate();
+    }
+
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    const hasil = `${years} th ${months} bln ${days} hr`;
+
+    sheet.getRange(START_ROW + i, COL_KET).setValue(hasil);
+  });
 }
+
 
 /* ================== BAGIAN UTAMA: TYPING ================== */
 async function startTyping() {
