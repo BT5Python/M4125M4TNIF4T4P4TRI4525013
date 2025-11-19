@@ -3,405 +3,193 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>evolution is my revolution</title>
+<title>Database Personel - PUSLAT KODIKLATAU</title>
+
 <style>
 body {
   background-color: black;
   color: #00ff00;
   font-family: "Courier New", monospace;
   padding: 20px;
-  font-size: 12px;
-  text-align: left;
-}
-pre { 
-  white-space: pre-wrap; 
-  word-wrap: break-word; 
-  letter-spacing: 1px; 
-  line-height: 1.5; 
-}
-.typing {
-  border-right: 2px solid #00ff00;
-  animation: blinkCursor 0.7s infinite;
-}
-@keyframes blinkCursor { 50% { border-color: transparent; } }
-
-/* Kurang dari 31 hari → kuning */
-.blink-yellow {
-  color: yellow;
-  animation: blinkYellow 1s infinite;
+  font-size: 14px;
 }
 
-@keyframes blinkYellow {
-  0% { color: yellow; }
-  50% { color: black; }
-  100% { color: yellow; }
+#terminal-container {
+  background-color: black;
+  border: 2px solid #00ff00;
+  padding: 20px;
+  height: 480px;
+  overflow-y: auto;
+  white-space: pre;
 }
 
-/* Lebih dari 2 tahun → merah */
-.blink-red {
-  color: red;
-  animation: blinkRed 1s infinite;
-}
-
-@keyframes blinkRed {
-  0% { color: red; }
-  50% { color: black; }
-  100% { color: red; }
-}
-
-.yellow { color: #ffff00; font-weight: bold; }
-.hidden { display: none; }
-
-/* Tombol */
-.button-container {
-  text-align: center;
-  margin-top: 25px;
-}
 button {
   background-color: black;
   color: #00ff00;
-  border: 1px solid #00ff00;
-  font-family: "Courier New", monospace;
-  padding: 8px 20px;
-  font-size: 12px;
-  margin: 0 10px;
-  border-radius: 8px;
+  border: 2px solid #00ff00;
+  padding: 10px 20px;
+  margin-right: 10px;
   cursor: pointer;
-  transition: 0.3s;
+  font-weight: bold;
 }
+
 button:hover {
   background-color: #00ff00;
   color: black;
+}
+
+/* ======= KEDIP SYSTEM ======= */
+@keyframes blinkYellow {
+  50% { color: yellow; }
+}
+@keyframes blinkRed {
+  50% { color: red; }
+}
+
+/* <31 hari */
+.blink-yellow {
+  animation: blinkYellow 1s infinite;
   font-weight: bold;
 }
 
-/* Tombol DOWNLOAD Berkedip Merah */
-button.download-btn {
-  color: #ff0000;
-  border-color: #ff0000;
-  animation: blinkRed 0.5s infinite;
-}
-button.download-btn:hover {
-  background-color: #ff0000;
-  color: black;
-  animation: none;
+/* >2 tahun */
+.blink-red {
+  animation: blinkRed 1s infinite;
+  font-weight: bold;
 }
 
-/* Running text di atas daftar jabatan */
-#runningText {
-  color: #00ff00;
-  white-space: nowrap;
-  overflow: hidden;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-#runningText span {
-  display: inline-block;
-  padding-left: 100%;
-  animation: runText 15s linear infinite;
-}
-@keyframes runText {
-  from { transform: translateX(0); }
-  to { transform: translateX(-100%); }
+.yellow {
+  color: yellow;
 }
 </style>
 </head>
 <body>
 
-<!-- Bagian Loading Terminal -->
-<div id="loading">
-  <p>>> initializing connection...</p>
-  <p class="hidden">>>> accessing database node...</p>
-  <p class="hidden">>>> verifying security clearance...</p>
-  <p class="hidden">>>> clearance level verified ✓</p>
-  <p class="hidden">>>> retrieving personel puslat...</p>
-</div>
+<h2>PUSLAT KODIKLATAU - DATABASE PERSONEL</h2>
 
-<!-- Bagian Utama -->
-<div id="main" class="hidden">
-  <!-- Running text muncul di atas daftar jabatan -->
-  <div id="runningText">
-    <span>⚠ THIS DATA IS CONFIDENTIAL - FOR THE KODIKLATAU CENTER ENVIRONMENT ONLY ⚠ </span>
-  </div>
-  <pre id="terminal" class="typing"></pre>
-</div>
+<button onclick="tampilkanSemua()">Tampilkan Semua</button>
+<button onclick="tampilkanAnggotaMasuk()">Anggota Masuk</button>
 
-<!-- Tombol di bawah -->
-<div class="button-container hidden" id="buttons">
-  <button onclick="tampilAnggotaMasuk()">anggota masuk</button>
-  <button onclick="window.location.href='mutasi/keluar'">angota keluar</button>
-  <button onclick="window.location.href='database.html'">back to DATABASE</button>
-  <button class="download-btn" onclick="downloadFile()">⬇ DOWNLOAD</button>
-</div>
+<div id="terminal-container"><div id="terminal"></div></div>
 
 <script>
-/* ================== EFEK LOADING ================== */
-const lines = document.querySelectorAll("#loading p");
-let delay = 800;
+// ======================================
+// Ambil data dari Google Apps Script WebApp
+// ======================================
+function fetchData() {
+  return fetch("https://script.google.com/macros/s/AKfycbw71HKzmt8ZPWAU7tZyNxDC_pk0OHSUlO7L3Wp_zIQQS3EW4rZ9ek-0K2Cts6pMasIV/exec")
+    .then(response => response.json());
+}
 
-lines.forEach((line, index) => {
-  setTimeout(() => {
-    line.classList.remove("hidden");
-    if (index === lines.length - 1) {
-      setTimeout(() => {
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("main").classList.remove("hidden");
-        startTyping();
-      }, 1000);
-    }
-  }, delay * (index + 1));
-});
-
-
-/* =========================================================
-   FUNGSI HITUNG MASA DINAS (JAVASCRIPT)
-   ========================================================= */
+// ======================================
+// Hitung Masa Dinas dari TMT
+// ======================================
 function hitungMasa(tmt) {
-  if (!tmt || !tmt.includes("/")) return "-";
+  if (!tmt) return "-";
 
-  const p = tmt.split("/");
-  const start = new Date(p[2], p[1] - 1, p[0]);
-  const today = new Date();
+  const parts = tmt.split("/");
+  if (parts.length !== 3) return "-";
 
-  let y = today.getFullYear() - start.getFullYear();
-  let m = today.getMonth() - start.getMonth();
-  let d = today.getDate() - start.getDate();
+  const dd = parseInt(parts[0]);
+  const mm = parseInt(parts[1]) - 1;
+  const yyyy = parseInt(parts[2]);
 
-  if (d < 0) {
-    m--;
-    d += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
-  }
-  if (m < 0) {
-    y--;
-    m += 12;
-  }
+  const tmtDate = new Date(yyyy, mm, dd);
+  const now = new Date();
 
-  return `${y} th ${m} bln ${d} hr`;
+  let selisih = now - tmtDate;
+  let hari = Math.floor(selisih / (1000 * 60 * 60 * 24));
+
+  const tahun = Math.floor(hari / 365);
+  hari %= 365;
+  const bulan = Math.floor(hari / 30);
+  hari %= 30;
+
+  return `${tahun} th ${bulan} bln ${hari} hr`;
 }
 
+// ======================================
+// Konversi Masa → Hitung Total Hari
+// ======================================
+function masaKeHari(masa) {
+  const angka = masa.match(/\d+/g);
+  if (!angka || angka.length < 3) return 0;
 
-/* =========================================================
-   FETCH DATA DARI APPS SCRIPT
-   ========================================================= */
-async function fetchData() {
-  const url =
-    "https://script.google.com/macros/s/AKfycbyKpkLev2RX4TXzXdXEJ8Urb9V-av4CB3oTaloT2ta11uzyG9YaDw-cn999GywGd9To/exec";
+  const th = parseInt(angka[0]);
+  const bl = parseInt(angka[1]);
+  const hr = parseInt(angka[2]);
 
-  const res = await fetch(url);
-  return res.json();
+  return th * 365 + bl * 30 + hr;
 }
 
-
-/* =========================================================
-   EFEK KETIK TERMINAL
-   ========================================================= */
-async function startTyping() {
-
+// ======================================
+// Tampilkan Semua Personel
+// ======================================
+function tampilkanSemua() {
   const terminal = document.getElementById("terminal");
+  terminal.innerHTML = "Memuat data...\n";
 
-  const textBefore = `
-====================================
-| FILE: PERSONEL PUSLAT KODIKLATAU |
-| CLASSIFICATION: `;
-
-  const textAfterTop = `
-====================================
-`;
-
-  const rahasia = "RAHASIA";
-
-  const tableHeader = `
---------------------------------------------------------------------------------------------------------------------  
-`;
-
-  const footer = `
----------------------------------------------------------------------------------------------------------------------
-* Center personnel data is automatically updated from Spreadsheet
-* Information is only for the PUSLAT KODIKLATAU environment.
----------------------------------------------------------------------------------------------------------------------
-`;
-
-  let i = 0, step = 0;
-  let spanRahasia;
-
-  function type() {
-
-    /* STEP 0 – Teks Atas sebelum RAHASIA */
-    if (step === 0) {
-      if (i < textBefore.length) {
-        terminal.textContent += textBefore.charAt(i++);
-        return setTimeout(type, 1);
-      }
-      step = 1;
-      i = 0;
-      spanRahasia = document.createElement("span");
-      spanRahasia.classList.add("blink-red");
-      terminal.appendChild(spanRahasia);
-      return type();
-    }
-
-    /* STEP 1 – Ketik kata RAHASIA huruf per huruf */
-    if (step === 1) {
-      if (i < rahasia.length) {
-        spanRahasia.textContent += rahasia.charAt(i++);
-        return setTimeout(type, 30);
-      }
-      step = 2;
-      i = 0;
-      return type();
-    }
-
-    /* STEP 2 – Garis setelah CLASSIFICATION */
-    if (step === 2) {
-      if (i < textAfterTop.length) {
-        terminal.innerHTML += textAfterTop.charAt(i++);
-        return setTimeout(type, 1);
-      }
-      step = 3;
-      terminal.innerHTML += tableHeader;
-      return type();
-    }
-  }
-
-  type();
-
-
-  /* Setelah judul selesai → tampilkan data */
-  setTimeout(async () => {
-    const data = await fetchData();
+  fetchData().then(data => {
+    terminal.innerHTML =
+`NO   NAMA                         PANGKAT                  JABATAN                 TMT          KETERANGAN          MASA DINAS
+------------------------------------------------------------------------------------------------------------------------------\n`;
 
     data.forEach(row => {
+      const masa = hitungMasa(row.tmt);
+      const totalHari = masaKeHari(masa);
 
-  data.forEach(row => {
+      let masaFix = masa;
 
-  const masa = hitungMasa(row.tmt);
-  let masaFix = masa;
+      // <31 hari = kuning
+      if (totalHari < 31) {
+        masaFix = `<span class="blink-yellow">${masa}</span>`;
+      }
+      // > 2 tahun = merah
+      else if (totalHari > 730) {
+        masaFix = `<span class="blink-red">${masa}</span>`;
+      }
 
-  // Konversi masa ke hari total
-  const angka = masa.match(/\d+/g);
-  let totalHari = 0;
+      const line =
+`${row.no.toString().padEnd(4)} ${row.nama.padEnd(28)} ${row.pangkat.padEnd(22)} ${row.jabatan.padEnd(23)} ${row.tmt.padEnd(12)} ${row.keterangan.padEnd(18)} ${masaFix}\n`;
 
-  if (angka && angka.length >= 3) {
-    const tahun = parseInt(angka[0]);
-    const bulan = parseInt(angka[1]);
-    const hari = parseInt(angka[2]);
-    totalHari = (tahun * 365) + (bulan * 30) + hari;
-  }
-
-  // ======= ATURAN WARNA BARU =======
-  if (totalHari < 31) {
-    masaFix = `<span class="blink-yellow">${masa}</span>`;
-  } else if (totalHari > 730) { 
-    masaFix = `<span class="blink-red">${masa}</span>`;
-  }
-
-  const line =
-`${row.no.toString().padEnd(5)}${row.nama.padEnd(30)}${row.pangkat.padEnd(25)}${row.jabatan.padEnd(25)}${row.tmt.padEnd(20)}${row.keterangan.padEnd(20)}${masaFix}\n`;
-
-  if (String(row.pangkat).toUpperCase().includes("PNS")) {
-    terminal.innerHTML += `<span class="yellow">${line}</span>`;
-  } else {
-    terminal.innerHTML += line;
-  }
-});
-
-    terminal.innerHTML += footer;
-    terminal.classList.remove("typing");
-
-    document.getElementById("buttons").classList.remove("hidden");
-
-  }, 2500);
+      // PNS warna kuning statis
+      if (String(row.pangkat).toUpperCase().includes("PNS")) {
+        terminal.innerHTML += `<span class="yellow">${line}</span>`;
+      } else {
+        terminal.innerHTML += line;
+      }
+    });
+  });
 }
 
-
-/* =========================================================
-   DOWNLOAD FILE
-   ========================================================= */
-function downloadFile() {
-  window.open(
-    "https://drive.google.com/uc?export=download&id=1GAPWqs98GSMypnKYeow_oWzSYtAgzK6h",
-    "_blank"
-  );
-}
-
-/* =========================================================
-   TAMPILKAN ANGGOTA MASUK DI TERMINAL (masa < 31 hari)
-   ========================================================= */
-async function tampilAnggotaMasuk() {
-
+// ======================================
+// Tampilkan Anggota Masuk (<31 Hari)
+// ======================================
+function tampilkanAnggotaMasuk() {
   const terminal = document.getElementById("terminal");
-  terminal.innerHTML = "";
+  terminal.innerHTML = "Memuat data Anggota Masuk...\n";
 
-  const data = await fetchData();
+  fetchData().then(data => {
+    terminal.innerHTML =
+`NO   NAMA                         PANGKAT                  JABATAN                 TMT          MASA DINAS
+----------------------------------------------------------------------------------------------------------\n`;
 
-  const hasil = data.filter(row => {
+    data.forEach(row => {
+      const masa = hitungMasa(row.tmt);
+      const totalHari = masaKeHari(masa);
 
-    const masa = hitungMasa(row.tmt);
-    // contoh: "0 th 0 bln 12 hr"
+      if (totalHari < 31) {
+        const masaFix = `<span class="blink-yellow">${masa}</span>`;
 
-    const angka = masa.match(/\d+/g);  // ambil semua angka
-    if (!angka || angka.length < 3) return false;
+        const line =
+`${row.no.toString().padEnd(4)} ${row.nama.padEnd(28)} ${row.pangkat.padEnd(22)} ${row.jabatan.padEnd(23)} ${row.tmt.padEnd(12)} ${masaFix}\n`;
 
-    const tahun = parseInt(angka[0]);
-    const bulan = parseInt(angka[1]);
-    const hari = parseInt(angka[2]);
-
-    // masuk < 1 bulan = 0 thn 0 bln & hari < 31
-    return tahun === 0 && bulan === 0 && hari < 31;
+        terminal.innerHTML += line;
+      }
+    });
   });
-
-  terminal.innerHTML += `
-==========================================
-| LIST ANGGOTA MASUK (Masa < 31 Hari)    |
-==========================================
-
-NO    NAMA                          PANGKAT                 JABATAN                 TMT           MASA DINAS
----------------------------------------------------------------------------------------------------------------
-`;
-
-  hasil.forEach(row => {
-    const masa = hitungMasa(row.tmt);
-    let masaFix = masa;
-
-    // Konversi masa jadi hari
-const angka2 = masa.match(/\d+/g);
-let totalHari2 = 0;
-
-if (angka2 && angka2.length >= 3) {
-  const t = parseInt(angka2[0]);
-  const b = parseInt(angka2[1]);
-  const h = parseInt(angka2[2]);
-  totalHari2 = (t * 365) + (b * 30) + h;
-}
-
-// Kurang dari 31 hari → kuning
-if (totalHari2 < 31) {
-  masaFix = `<span class="blink-yellow">${masa}</span>`;
-}
-// Lebih dari 2 tahun → merah
-else if (totalHari2 > 730) {
-  masaFix = `<span class="blink-red">${masa}</span>`;
-}
-
-
-    const line =
-`${row.no.toString().padEnd(5)}${row.nama.padEnd(30)}${row.pangkat.padEnd(25)}${row.jabatan.padEnd(25)}${row.tmt.padEnd(15)}${masaFix}\n`;
-
-    if (String(row.pangkat).toUpperCase().includes("PNS")) {
-      terminal.innerHTML += `<span class="yellow">${line}</span>`;
-    } else {
-      terminal.innerHTML += line;
-    }
-  });
-
-  terminal.innerHTML += `
----------------------------------------------------------------------------------------------------------------
-TOTAL ANGGOTA MASUK: ${hasil.length}
----------------------------------------------------------------------------------------------------------------
-`;
 }
 
 </script>
-
 </body>
 </html>
