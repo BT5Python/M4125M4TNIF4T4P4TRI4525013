@@ -134,10 +134,21 @@ lines.forEach((line, index) => {
   }, delay * (index + 1));
 });
 
-/* ================== FUNGSI HITUNG MASA DINAS ================== */
+/* ================== KONVERSI FORMAT TANGGAL ================== */
+/* Google Sheet kirim format: DD/MM/YYYY → browser butuh YYYY-MM-DD */
+function parseTanggal(tanggal) {
+  if (!tanggal || !tanggal.includes("/")) return tanggal;
+  const parts = tanggal.split("/");
+  return `${parts[2]}-${parts[1]}-${parts[0]}`;
+}
+
+/* ================== HITUNG MASA DINAS ================== */
 function hitungMasaDinas(tmt) {
-  const start = new Date(tmt);
+  const dateFormatted = parseTanggal(tmt);
+  const start = new Date(dateFormatted);
   const today = new Date();
+
+  if (isNaN(start)) return "-";
 
   let tahun = today.getFullYear() - start.getFullYear();
   let bulan = today.getMonth() - start.getMonth();
@@ -186,12 +197,14 @@ async function startTyping() {
   const terminal = document.getElementById("terminal");
   let i = 0, step = 0, rahasiaSpan;
 
+  /* ===== FETCH DATA GOOGLE SCRIPT ===== */
   async function fetchData() {
     const url = "https://script.google.com/macros/s/AKfycbyKpkLev2RX4TXzXdXEJ8Urb9V-av4CB3oTaloT2ta11uzyG9YaDw-cn999GywGd9To/exec";
     const res = await fetch(url);
     return res.json();
   }
 
+  /* ===== EFEK MENGETIK ===== */
   async function type() {
 
     if (step === 0) {
@@ -240,6 +253,7 @@ async function startTyping() {
 
       data.forEach(row => {
         const masa = hitungMasaDinas(row.tmt);
+
         const line =
 `${row.no.toString().padEnd(5)}${row.nama.padEnd(30)}${row.pangkat.padEnd(25)}${row.jabatan.padEnd(25)}${row.tmt.padEnd(20)}${masa}\n`;
 
@@ -266,6 +280,7 @@ function downloadFile() {
   window.open(fileUrl, "_blank");
 }
 </script>
+
 
 </body>
 </html>
