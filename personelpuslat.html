@@ -25,14 +25,16 @@ pre {
 }
 @keyframes blinkCursor { 50% { border-color: transparent; } }
 
-.blink-red {
-  color: #ff0000;
-  animation: blinkRed 0.45s infinite;
+.blink-green {
+  color: #00ff00;
+  animation: blinkGreen 0.45s infinite;
 }
-@keyframes blinkRed {
-  0%, 100% { color: #ff0000; }
-  50% { color: #330000; }
+
+@keyframes blinkGreen {
+  0%, 100% { color: #00ff00; }
+  50% { color: #003300; }
 }
+
 .yellow { color: #ffff00; font-weight: bold; }
 .hidden { display: none; }
 
@@ -334,7 +336,7 @@ NO    NAMA                          PANGKAT                 JABATAN             
     let masaFix = masa;
 
     if (masa.includes("0 th 0 bln")) {
-      masaFix = `<span class="blink-red">${masa}</span>`;
+      masaFix = `<span class="blink-green">${masa}</span>`;
     }
 
     const line =
