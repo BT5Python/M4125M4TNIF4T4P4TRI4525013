@@ -25,17 +25,14 @@ pre {
 }
 @keyframes blinkCursor { 50% { border-color: transparent; } }
 
-/* Efek berkedip hijau khusus main menu */
-.blink-green {
-  animation: blink 1s infinite;
+.blink-red {
+  color: #ff0000;
+  animation: blinkRed 0.45s infinite;
 }
-
-@keyframes blink {
-  0% { color: #00ff00; }
-  50% { color: black; }
-  100% { color: #00ff00; }
+@keyframes blinkRed {
+  0%, 100% { color: #ff0000; }
+  50% { color: #330000; }
 }
-
 .yellow { color: #ffff00; font-weight: bold; }
 .hidden { display: none; }
 
@@ -111,10 +108,6 @@ button.download-btn:hover {
     <span>⚠ THIS DATA IS CONFIDENTIAL - FOR THE KODIKLATAU CENTER ENVIRONMENT ONLY ⚠ </span>
   </div>
   <pre id="terminal" class="typing"></pre>
-</div>
-  
-<div id="anggotaMasukTerminal" style="display:none;">
-  <!-- Isi terminal anggota masuk -->
 </div>
 
 <!-- Tombol di bawah -->
@@ -358,10 +351,7 @@ TOTAL ANGGOTA MASUK: ${hasil.length}
 ---------------------------------------------------------------------------------------------------------------
 `;
 }
-
-
 </script>
 
 </body>
 </html>
-
