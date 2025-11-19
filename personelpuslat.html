@@ -309,8 +309,9 @@ async function tampilAnggotaMasuk() {
     const masa = hitungMasa(row.tmt);
 
     const bagian = masa.split(" ");  
-    const bulan = parseInt(bagian[3]); 
-    const hari  = parseInt(bagian[5]); 
+
+    const bulan = parseInt(bagian[2]); // posisi Y (bulan)
+    const hari  = parseInt(bagian[4]); // posisi Z (hari)
 
     return bulan === 0 && hari < 31;
   });
@@ -331,7 +332,7 @@ NO    NAMA                          PANGKAT                 JABATAN             
     let masaFix = masa;
 
     // Kedip merah kalau < 31 hari
-    if (masa.includes("0 bln")) {
+    if (masa.includes("0 th 0 bln")) {
       masaFix = `<span class="blink-red">${masa}</span>`;
     }
 
@@ -351,6 +352,7 @@ TOTAL ANGGOTA MASUK: ${hasil.length}
 ---------------------------------------------------------------------------------------------------------------
 `;
 }
+
 </script>
 
 </body>
