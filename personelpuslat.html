@@ -300,23 +300,26 @@ function downloadFile() {
 async function tampilAnggotaMasuk() {
 
   const terminal = document.getElementById("terminal");
-  terminal.innerHTML = "";  // hapus tampilan lama
+  terminal.innerHTML = "";
 
   const data = await fetchData();
 
-  // Filter masa dinas < 31 hari
   const hasil = data.filter(row => {
+
     const masa = hitungMasa(row.tmt);
+    // contoh: "0 th 0 bln 12 hr"
 
-    const bagian = masa.split(" ");  
+    const angka = masa.match(/\d+/g);  // ambil semua angka
+    if (!angka || angka.length < 3) return false;
 
-    const bulan = parseInt(bagian[2]); // posisi Y (bulan)
-    const hari  = parseInt(bagian[4]); // posisi Z (hari)
+    const tahun = parseInt(angka[0]);
+    const bulan = parseInt(angka[1]);
+    const hari = parseInt(angka[2]);
 
-    return bulan === 0 && hari < 31;
+    // masuk < 1 bulan = 0 thn 0 bln & hari < 31
+    return tahun === 0 && bulan === 0 && hari < 31;
   });
 
-  // Header
   terminal.innerHTML += `
 ==========================================
 | LIST ANGGOTA MASUK (Masa < 31 Hari)    |
@@ -326,12 +329,10 @@ NO    NAMA                          PANGKAT                 JABATAN             
 ---------------------------------------------------------------------------------------------------------------
 `;
 
-  // Tampilkan satu per satu
   hasil.forEach(row => {
     const masa = hitungMasa(row.tmt);
     let masaFix = masa;
 
-    // Kedip merah kalau < 31 hari
     if (masa.includes("0 th 0 bln")) {
       masaFix = `<span class="blink-red">${masa}</span>`;
     }
