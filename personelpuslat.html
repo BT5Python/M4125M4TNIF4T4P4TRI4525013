@@ -23,18 +23,6 @@ pre {
   border-right: 2px solid #00ff00;
   animation: blinkCursor 0.7s infinite;
 }
-@keyframes blinkCursor { 50% { border-color: transparent; } }
-
-.blink-red {
-  color: #ff0000;
-  animation: blinkRed 0.45s infinite;
-}
-@keyframes blinkRed {
-  0%, 100% { color: #ff0000; }
-  50% { color: #330000; }
-}
-.yellow { color: #ffff00; font-weight: bold; }
-.hidden { display: none; }
 
 /* Tombol */
 .button-container {
@@ -88,16 +76,28 @@ button.download-btn:hover {
   from { transform: translateX(0); }
   to { transform: translateX(-100%); }
 }
-.blink-yellow {
-  color: #ffff00;
+.blink-green {
+  color: #00ff00;
   font-weight: bold;
-  animation: blinkYellow 0.6s infinite;
+  animation: blinkGreen 0.5s infinite;
 }
 
-@keyframes blinkYellow {
-  0%, 100% { color: #ffff00; }
-  50% { color: #555500; }
+@keyframes blinkGreen {
+  0%, 100% { color: #00ff00; }
+  50% { color: #003300; }
 }
+
+.blink-red-strong {
+  color: #ff0000;
+  font-weight: bold;
+  animation: blinkRedStrong 0.5s infinite;
+}
+
+@keyframes blinkRedStrong {
+  0%, 100% { color: #ff0000; }
+  50% { color: #330000; }
+}
+
 
 </style>
 </head>
@@ -344,7 +344,7 @@ NO    NAMA                          PANGKAT                 JABATAN             
     const masa = hitungMasa(row.tmt);
     let masaFix = masa;
 
-    const angka = masa.match(/\d+/g);
+const angka = masa.match(/\d+/g);
 const tahun = parseInt(angka[0]);
 const bulan = parseInt(angka[1]);
 
