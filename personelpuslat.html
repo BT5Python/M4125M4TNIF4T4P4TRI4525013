@@ -316,8 +316,8 @@ async function tampilAnggotaMasuk() {
     const bulan = parseInt(angka[1]);
     const hari = parseInt(angka[2]);
 
-    // masuk < 1 bulan = 0 thn 0 bln & hari < 61
-    return tahun === 0 && bulan === 0 && hari < 61;
+    // masuk < 1 bulan = 0 thn 0 bln & hari < 31
+    return tahun === 0 && bulan === 0 && hari < 31;
   });
 
   terminal.innerHTML += `
