@@ -317,12 +317,12 @@ async function tampilAnggotaMasuk() {
     const hari = parseInt(angka[2]);
 
     // masuk < 1 bulan = 0 thn 0 bln & hari < 31
-    return tahun === 0 && bulan === 0 && hari < 31;
+    return tahun === 0 && bulan < 3;
   });
 
   terminal.innerHTML += `
 ==========================================
-| LIST ANGGOTA MASUK (Masa < 31 Hari)    |
+| LIST ANGGOTA MASUK (Masa < 3 Bulan)    |
 ==========================================
 
 NO    NAMA                          PANGKAT                 JABATAN                 TMT           MASA DINAS
