@@ -23,6 +23,18 @@ pre {
   border-right: 2px solid #00ff00;
   animation: blinkCursor 0.7s infinite;
 }
+@keyframes blinkCursor { 50% { border-color: transparent; } }
+
+.blink-red {
+  color: #ff0000;
+  animation: blinkRed 0.45s infinite;
+}
+@keyframes blinkRed {
+  0%, 100% { color: #ff0000; }
+  50% { color: #330000; }
+}
+.yellow { color: #ffff00; font-weight: bold; }
+.hidden { display: none; }
 
 /* Tombol */
 .button-container {
@@ -76,51 +88,6 @@ button.download-btn:hover {
   from { transform: translateX(0); }
   to { transform: translateX(-100%); }
 }
-.blink-green {
-  color: #00ff00;
-  font-weight: bold;
-  animation: blinkGreen 0.5s infinite;
-}
-
-@keyframes blinkGreen {
-  0%, 100% { color: #00ff00; }
-  50% { color: #003300; }
-}
-
-.blink-red-strong {
-  color: #ff0000;
-  font-weight: bold;
-  animation: blinkRedStrong 0.5s infinite;
-}
-
-@keyframes blinkRedStrong {
-  0%, 100% { color: #ff0000; }
-  50% { color: #330000; }
-}
-/* Kedip merah untuk > 2 tahun */
-.blink-red {
-  color: #ff0000;
-  font-weight: bold;
-  animation: redBlink .5s infinite;
-}
-
-@keyframes redBlink {
-  0%, 100% { color: #ff0000; }
-  50% { color: #330000; }
-}
-
-/* Kedip hijau untuk < 3 bulan */
-.blink-green {
-  color: #00ff00;
-  font-weight: bold;
-  animation: greenBlink .5s infinite;
-}
-
-@keyframes greenBlink {
-  0%, 100% { color: #00ff00; }
-  50% { color: #003300; }
-}
-
 </style>
 </head>
 <body>
@@ -366,18 +333,9 @@ NO    NAMA                          PANGKAT                 JABATAN             
     const masa = hitungMasa(row.tmt);
     let masaFix = masa;
 
-const angka = masa.match(/\d+/g);
-const tahun = parseInt(angka[0]);
-const bulan = parseInt(angka[1]);
-
-// KURANG DARI 3 BULAN → HIJAU
-if (tahun === 0 && bulan === 0) {
-  masaFix = `<span class="blink-red">${masa}</span>`;
-} 
-else if (tahun >= 2) {
-  masaFix = `<span class="blink-yellow">${masa}</span>`;
-}
-
+    if (masa.includes("0 th 0 bln")) {
+      masaFix = `<span class="blink-red">${masa}</span>`;
+    }
 
     const line =
 `${row.no.toString().padEnd(5)}${row.nama.padEnd(30)}${row.pangkat.padEnd(25)}${row.jabatan.padEnd(25)}${row.tmt.padEnd(15)}${masaFix}\n`;
