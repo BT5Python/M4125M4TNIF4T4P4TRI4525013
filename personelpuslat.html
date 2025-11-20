@@ -307,26 +307,26 @@ async function tampilAnggotaMasuk() {
   const hasil = data.filter(row => {
 
     const masa = hitungMasa(row.tmt);
-    // contoh: "0 th 0 bln 12 hr"
+    // contoh: "0 th 2 bln 15 hr"
 
-    const angka = masa.match(/\d+/g);  // ambil semua angka
+    const angka = masa.match(/\d+/g); 
     if (!angka || angka.length < 3) return false;
 
     const tahun = parseInt(angka[0]);
     const bulan = parseInt(angka[1]);
     const hari = parseInt(angka[2]);
 
-    // masuk < 1 bulan = 0 thn 0 bln & hari < 31
+    // MASUK < 3 BULAN
     return tahun === 0 && bulan < 3;
   });
 
   terminal.innerHTML += `
-==========================================
-| LIST ANGGOTA MASUK (Masa < 3 Bulan)    |
-==========================================
+===============================================
+| LIST ANGGOTA MASUK (Masa < 3 Bulan)         |
+===============================================
 
 NO    NAMA                          PANGKAT                 JABATAN                 TMT           MASA DINAS
----------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------
 `;
 
   hasil.forEach(row => {
@@ -348,11 +348,12 @@ NO    NAMA                          PANGKAT                 JABATAN             
   });
 
   terminal.innerHTML += `
----------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------
 TOTAL ANGGOTA MASUK: ${hasil.length}
----------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------
 `;
 }
+
 
 </script>
 
