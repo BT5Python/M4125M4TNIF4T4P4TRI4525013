@@ -88,6 +88,16 @@ button.download-btn:hover {
   from { transform: translateX(0); }
   to { transform: translateX(-100%); }
 }
+@keyframes kedipHijau {
+  0%,100% { color:#00ff00; }
+  50% { color:#003300; }
+}
+
+@keyframes kedipMerah {
+  0%,100% { color:#ff0000; }
+  50% { color:#330000; }
+}
+
 </style>
 </head>
 <body>
@@ -261,7 +271,7 @@ let masaFix = masa;
 
 // Jika kurang dari 1 bulan → kedip merah
 if (masa.includes("0 th 0 bln")) {
-  masaFix = `<span class="blink-red">${masa}</span>`;
+  
 }
 
 const line =
@@ -334,7 +344,7 @@ NO    NAMA                          PANGKAT                 JABATAN             
     let masaFix = masa;
 
     if (masa.includes("0 th 0 bln")) {
-      masaFix = `<span class="blink-red">${masa}</span>`;
+      
     }
 
     const line =
@@ -342,9 +352,9 @@ NO    NAMA                          PANGKAT                 JABATAN             
 
     if (String(row.pangkat).toUpperCase().includes("PNS")) {
       terminal.innerHTML += `<span class="yellow">${line}</span>`;
-    } else {
-      terminal.innerHTML += line;
-    }
+    } else if (tahun >= 2) {
+  masaFix = `<span style="animation:kedipMerah .6s infinite;">${masa}</span>`;
+}
   });
 
   terminal.innerHTML += `
