@@ -371,13 +371,13 @@ const tahun = parseInt(angka[0]);
 const bulan = parseInt(angka[1]);
 
 // KURANG DARI 3 BULAN → HIJAU
-if (tahun === 0 && bulan < 3) {
-  masaFix = `<span class="blink-green">${masa}</span>`;
-}
-// LEBIH DARI 2 TAHUN → MERAH
-else if (tahun >= 2) {
+if (tahun === 0 && bulan === 0) {
   masaFix = `<span class="blink-red">${masa}</span>`;
+} 
+else if (tahun >= 2) {
+  masaFix = `<span class="blink-yellow">${masa}</span>`;
 }
+
 
     const line =
 `${row.no.toString().padEnd(5)}${row.nama.padEnd(30)}${row.pangkat.padEnd(25)}${row.jabatan.padEnd(25)}${row.tmt.padEnd(15)}${masaFix}\n`;
