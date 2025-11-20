@@ -97,7 +97,29 @@ button.download-btn:hover {
   0%, 100% { color: #ff0000; }
   50% { color: #330000; }
 }
+/* Kedip merah untuk > 2 tahun */
+.blink-red {
+  color: #ff0000;
+  font-weight: bold;
+  animation: redBlink .5s infinite;
+}
 
+@keyframes redBlink {
+  0%, 100% { color: #ff0000; }
+  50% { color: #330000; }
+}
+
+/* Kedip hijau untuk < 3 bulan */
+.blink-green {
+  color: #00ff00;
+  font-weight: bold;
+  animation: greenBlink .5s infinite;
+}
+
+@keyframes greenBlink {
+  0%, 100% { color: #00ff00; }
+  50% { color: #003300; }
+}
 
 </style>
 </head>
@@ -348,13 +370,13 @@ const angka = masa.match(/\d+/g);
 const tahun = parseInt(angka[0]);
 const bulan = parseInt(angka[1]);
 
-if (tahun === 0 && bulan === 0) {
-    // kurang dari 1 bulan → merah kedip
-    masaFix = `<span class="blink-red">${masa}</span>`;
-} 
+// KURANG DARI 3 BULAN → HIJAU
+if (tahun === 0 && bulan < 3) {
+  masaFix = `<span class="blink-green">${masa}</span>`;
+}
+// LEBIH DARI 2 TAHUN → MERAH
 else if (tahun >= 2) {
-    // lebih dari 2 tahun → kuning kedip
-    masaFix = `<span class="blink-yellow">${masa}</span>`;
+  masaFix = `<span class="blink-red">${masa}</span>`;
 }
 
     const line =
