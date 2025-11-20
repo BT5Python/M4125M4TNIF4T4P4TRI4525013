@@ -33,17 +33,6 @@ pre {
   0%, 100% { color: #ff0000; }
   50% { color: #330000; }
 }
-.blink-yellow {
-  color: #ffff00;
-  font-weight: bold;
-  animation: blinkYellow 0.6s infinite;
-}
-
-@keyframes blinkYellow {
-  0%, 100% { color: #ffff00; }
-  50% { color: #555500; }
-}
-
 .yellow { color: #ffff00; font-weight: bold; }
 .hidden { display: none; }
 
@@ -99,6 +88,17 @@ button.download-btn:hover {
   from { transform: translateX(0); }
   to { transform: translateX(-100%); }
 }
+.blink-yellow {
+  color: #ffff00;
+  font-weight: bold;
+  animation: blinkYellow 0.6s infinite;
+}
+
+@keyframes blinkYellow {
+  0%, 100% { color: #ffff00; }
+  50% { color: #555500; }
+}
+
 </style>
 </head>
 <body>
@@ -271,17 +271,8 @@ async function startTyping() {
 let masaFix = masa;
 
 // Jika kurang dari 1 bulan → kedip merah
-const angka = masa.match(/\d+/g);
-const tahun = parseInt(angka[0]);
-const bulan = parseInt(angka[1]);
-
-if (tahun === 0 && bulan === 0) {
-    // kurang dari 1 bulan → merah kedip
-    masaFix = `<span class="blink-red">${masa}</span>`;
-} 
-else if (tahun >= 2) {
-    // lebih dari 2 tahun → kuning kedip
-    masaFix = `<span class="blink-yellow">${masa}</span>`;
+if (masa.includes("0 th 0 bln")) {
+  masaFix = `<span class="blink-red">${masa}</span>`;
 }
 
 const line =
@@ -353,9 +344,18 @@ NO    NAMA                          PANGKAT                 JABATAN             
     const masa = hitungMasa(row.tmt);
     let masaFix = masa;
 
-    if (masa.includes("0 th 0 bln")) {
-      masaFix = `<span class="blink-red">${masa}</span>`;
-    }
+    const angka = masa.match(/\d+/g);
+const tahun = parseInt(angka[0]);
+const bulan = parseInt(angka[1]);
+
+if (tahun === 0 && bulan === 0) {
+    // kurang dari 1 bulan → merah kedip
+    masaFix = `<span class="blink-red">${masa}</span>`;
+} 
+else if (tahun >= 2) {
+    // lebih dari 2 tahun → kuning kedip
+    masaFix = `<span class="blink-yellow">${masa}</span>`;
+}
 
     const line =
 `${row.no.toString().padEnd(5)}${row.nama.padEnd(30)}${row.pangkat.padEnd(25)}${row.jabatan.padEnd(25)}${row.tmt.padEnd(15)}${masaFix}\n`;
