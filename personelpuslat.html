@@ -179,6 +179,36 @@ button.download-btn:hover {
     transform-origin: top left;
   }
 }
+/* ==== RESPONSIVE SATU BARIS TANPA GANGGU CSS LAIN ==== */
+
+.row-flex-fix {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 4px;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.row-flex-fix > div {
+    flex: 0 0 auto;
+    font-size: 10px;
+    padding: 2px 4px;
+}
+
+/* Kolom minimal agar muat di tablet */
+.row-flex-fix .col-nama { min-width: 60px; }
+.row-flex-fix .col-pangkat { min-width: 45px; }
+.row-flex-fix .col-jabatan { min-width: 90px; }
+.row-flex-fix .col-tmt { min-width: 70px; }
+.row-flex-fix .col-ket { min-width: 160px; }
+
+  /* FIX: AGAR SEMUA BARIS TETAP 1 LINE DI TABLET / HP */
+pre {
+    white-space: pre !important;
+    overflow-x: auto !important;
+}
 
 
 </style>
