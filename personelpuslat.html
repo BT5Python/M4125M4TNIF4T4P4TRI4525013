@@ -210,6 +210,40 @@ pre {
     overflow-x: auto !important;
 }
 
+/* AGAR PRE SELALU FULL LAYAR & TIDAK PERLU SCROLL */
+pre {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    display: block;
+    letter-spacing: 1px;
+}
+
+/* KECILKAN TEKS DI DALAM PRE SUPAYA MUAT 1 LAYAR */
+#terminal {
+    font-size: 10px !important;
+}
+
+/* KHUSUS TABLET */
+@media (max-width: 1100px) {
+  #terminal {
+    font-size: 8px !important;
+  }
+}
+
+/* HP LEBAR SEDANG */
+@media (max-width: 800px) {
+  #terminal {
+    font-size: 7px !important;
+  }
+}
+
+/* HP KECIL */
+@media (max-width: 600px) {
+  #terminal {
+    font-size: 6px !important;
+  }
+}
 
 </style>
 </head>
