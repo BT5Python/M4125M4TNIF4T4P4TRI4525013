@@ -309,12 +309,16 @@ async function tampilAnggotaMasuk() {
     const masa = hitungMasa(row.tmt);
     // contoh: "0 th 2 bln 15 hr"
 
-    const angka = masa.match(/\d+/g); 
-    if (!angka || angka.length < 3) return false;
-
+    const angka = masa.match(/\d+/g);
+if (angka) {
     const tahun = parseInt(angka[0]);
     const bulan = parseInt(angka[1]);
-    const hari = parseInt(angka[2]);
+
+    if (tahun === 0 && bulan < 3) {
+        masaFix = `<span class="blink-red">${masa}</span>`;
+    }
+}
+
 
     // MASUK < 3 BULAN
     return tahun === 0 && bulan < 3;
