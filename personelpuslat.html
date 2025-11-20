@@ -71,7 +71,7 @@ button.download-btn:hover {
   animation: none;
 }
 
-/* Running text */
+/* Running text di atas daftar jabatan */
 #runningText {
   color: #00ff00;
   white-space: nowrap;
@@ -92,7 +92,7 @@ button.download-btn:hover {
 </head>
 <body>
 
-<!-- Bagian Loading -->
+<!-- Bagian Loading Terminal -->
 <div id="loading">
   <p>>> initializing connection...</p>
   <p class="hidden">>>> accessing database node...</p>
@@ -103,16 +103,17 @@ button.download-btn:hover {
 
 <!-- Bagian Utama -->
 <div id="main" class="hidden">
+  <!-- Running text muncul di atas daftar jabatan -->
   <div id="runningText">
     <span>⚠ THIS DATA IS CONFIDENTIAL - FOR THE KODIKLATAU CENTER ENVIRONMENT ONLY ⚠ </span>
   </div>
   <pre id="terminal" class="typing"></pre>
 </div>
 
-<!-- Tombol -->
+<!-- Tombol di bawah -->
 <div class="button-container hidden" id="buttons">
   <button onclick="tampilAnggotaMasuk()">anggota masuk</button>
-  <button onclick="window.location.href='mutasi/keluar'">anggota keluar</button>
+  <button onclick="window.location.href='mutasi/keluar'">angota keluar</button>
   <button onclick="window.location.href='database.html'">back to DATABASE</button>
   <button class="download-btn" onclick="downloadFile()">⬇ DOWNLOAD</button>
 </div>
@@ -136,7 +137,9 @@ lines.forEach((line, index) => {
 });
 
 
-/* ================== HITUNG MASA DINAS ================== */
+/* =========================================================
+   FUNGSI HITUNG MASA DINAS (JAVASCRIPT)
+   ========================================================= */
 function hitungMasa(tmt) {
   if (!tmt || !tmt.includes("/")) return "-";
 
@@ -161,7 +164,9 @@ function hitungMasa(tmt) {
 }
 
 
-/* ================== FETCH DATA ================== */
+/* =========================================================
+   FETCH DATA DARI APPS SCRIPT
+   ========================================================= */
 async function fetchData() {
   const url =
     "https://script.google.com/macros/s/AKfycbyKpkLev2RX4TXzXdXEJ8Urb9V-av4CB3oTaloT2ta11uzyG9YaDw-cn999GywGd9To/exec";
@@ -171,7 +176,9 @@ async function fetchData() {
 }
 
 
-/* ================== EFEK KETIK ================== */
+/* =========================================================
+   EFEK KETIK TERMINAL
+   ========================================================= */
 async function startTyping() {
 
   const terminal = document.getElementById("terminal");
@@ -188,7 +195,7 @@ async function startTyping() {
   const rahasia = "RAHASIA";
 
   const tableHeader = `
---------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------  
 `;
 
   const footer = `
@@ -203,6 +210,7 @@ async function startTyping() {
 
   function type() {
 
+    /* STEP 0 – Teks Atas sebelum RAHASIA */
     if (step === 0) {
       if (i < textBefore.length) {
         terminal.textContent += textBefore.charAt(i++);
@@ -216,6 +224,7 @@ async function startTyping() {
       return type();
     }
 
+    /* STEP 1 – Ketik kata RAHASIA huruf per huruf */
     if (step === 1) {
       if (i < rahasia.length) {
         spanRahasia.textContent += rahasia.charAt(i++);
@@ -226,6 +235,7 @@ async function startTyping() {
       return type();
     }
 
+    /* STEP 2 – Garis setelah CLASSIFICATION */
     if (step === 2) {
       if (i < textAfterTop.length) {
         terminal.innerHTML += textAfterTop.charAt(i++);
@@ -239,27 +249,24 @@ async function startTyping() {
 
   type();
 
-  /* tampilkan data */
+
+  /* Setelah judul selesai → tampilkan data */
   setTimeout(async () => {
     const data = await fetchData();
 
     data.forEach(row => {
       const masa = hitungMasa(row.tmt);
 
-      let masaFix = masa;
+let masaFix = masa;
 
-      /* KEDIP UNTUK MASA < 3 BULAN */
-      const angka = masa.match(/\d+/g);
-      if (angka) {
-        const tahun = parseInt(angka[0]);
-        const bulan = parseInt(angka[1]);
-        if (tahun === 0 && bulan < 3) {
-          masaFix = `<span class="blink-red">${masa}</span>`;
-        }
-      }
+// Jika kurang dari 1 bulan → kedip merah
+if (masa.includes("0 th 0 bln")) {
+  masaFix = `<span class="blink-red">${masa}</span>`;
+}
 
-      const line =
+const line =
 `${row.no.toString().padEnd(5)}${row.nama.padEnd(35)}${row.pangkat.padEnd(20)}${row.jabatan.padEnd(42)}${row.tmt.padEnd(20)}${row.keterangan.padEnd(15)}${masaFix}\n`;
+
 
       if (String(row.pangkat).toUpperCase().includes("PNS")) {
         terminal.innerHTML += `<span class="yellow">${line}</span>`;
@@ -277,7 +284,9 @@ async function startTyping() {
 }
 
 
-/* ================== DOWNLOAD ================== */
+/* =========================================================
+   DOWNLOAD FILE
+   ========================================================= */
 function downloadFile() {
   window.open(
     "https://drive.google.com/uc?export=download&id=1GAPWqs98GSMypnKYeow_oWzSYtAgzK6h",
@@ -285,8 +294,9 @@ function downloadFile() {
   );
 }
 
-
-/* ================== TAMPILKAN ANGGOTA MASUK < 3 BULAN ================== */
+/* =========================================================
+   TAMPILKAN ANGGOTA MASUK DI TERMINAL (masa < 31 hari)
+   ========================================================= */
 async function tampilAnggotaMasuk() {
 
   const terminal = document.getElementById("terminal");
@@ -297,36 +307,34 @@ async function tampilAnggotaMasuk() {
   const hasil = data.filter(row => {
 
     const masa = hitungMasa(row.tmt);
+    // contoh: "0 th 0 bln 12 hr"
 
-    const angka = masa.match(/\d+/g); 
+    const angka = masa.match(/\d+/g);  // ambil semua angka
     if (!angka || angka.length < 3) return false;
 
     const tahun = parseInt(angka[0]);
     const bulan = parseInt(angka[1]);
+    const hari = parseInt(angka[2]);
 
-    return tahun === 0 && bulan < 3;
+    // masuk < 1 bulan = 0 thn 0 bln & hari < 31
+    return tahun === 0 && bulan === 0 && hari < 31;
   });
 
   terminal.innerHTML += `
-===============================================
-| LIST ANGGOTA MASUK (Masa < 3 Bulan)         |
-===============================================
+==========================================
+| LIST ANGGOTA MASUK (Masa < 31 Hari)    |
+==========================================
 
 NO    NAMA                          PANGKAT                 JABATAN                 TMT           MASA DINAS
-----------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
 `;
 
   hasil.forEach(row => {
     const masa = hitungMasa(row.tmt);
     let masaFix = masa;
 
-    const angka = masa.match(/\d+/g);
-    if (angka) {
-      const tahun = parseInt(angka[0]);
-      const bulan = parseInt(angka[1]);
-      if (tahun === 0 && bulan < 3) {
-        masaFix = `<span class="blink-red">${masa}</span>`;
-      }
+    if (masa.includes("0 th 0 bln")) {
+      masaFix = `<span class="blink-red">${masa}</span>`;
     }
 
     const line =
@@ -340,11 +348,12 @@ NO    NAMA                          PANGKAT                 JABATAN             
   });
 
   terminal.innerHTML += `
-----------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
 TOTAL ANGGOTA MASUK: ${hasil.length}
-----------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
 `;
 }
+
 </script>
 
 </body>
