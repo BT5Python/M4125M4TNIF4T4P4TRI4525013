@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EVOLUTION IS MY REVOLUTION</title>
+<title>JABATAN KOSONG | PUSLAT KODIKLATAU</title>
 
 <style>
 body {
@@ -42,20 +42,21 @@ pre {
   50% { color: #330000; }
 }
 
-.prioritas {
+/* PRIORITAS — teks merah berkedip (menonjol) */
+.blink-prioritas {
   color: #ff0000;
   font-weight: bold;
-  animation: blinkPrioritas 0.5s infinite;
+  animation: blinkPrior 0.6s infinite;
 }
-
-@keyframes blinkPrioritas {
-  0%, 100% { color: #ff0000; }
-  50% { color: #330000; }
+@keyframes blinkPrior {
+  0%   { color: #ffff00; text-shadow: 0 0 6px #ff0000; }
+  50%  { color: #333300; text-shadow: none; }
+  100% { color: #ffff00; text-shadow: 0 0 6px #ff0000; }
 }
 
 /* PNS kuning (tanpa animasi) */
 .yellow {
-  color: #ffff00;
+  color: #00ff00;
   font-weight: bold;
 }
 
