@@ -516,6 +516,32 @@ TOTAL ANGGOTA MASUK: ${hasil.length}
 ---------------------------------------------------------------------------------------------------------------
 `;
 }
+
+function perbaikiTMT() {
+  const sheet = SpreadsheetApp.getActiveSheet();
+  const range = sheet.getRange("E11:E88");
+  const values = range.getValues();
+
+  const output = values.map(r => {
+    let v = r[0];
+
+    if (!v) return [""];
+
+    // Jika format ISO 2023-11-12T08:00:00.000Z
+    if (typeof v === "string" && v.includes("T")) {
+      const tgl = v.substring(0, 10); // ambil yyyy-mm-dd
+      const p = tgl.split("-");
+      return [new Date(p[0], p[1] - 1, p[2])];
+    }
+
+    // Jika sudah tanggal
+    return [new Date(v)];
+  });
+
+  range.setValues(output);
+  range.setNumberFormat("dd/mm/yyyy");
+}
+
 </script>
 
 </body>
