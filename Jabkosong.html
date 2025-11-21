@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>evolution is my revolution</title>
+
 <style>
 body {
   background-color: black;
@@ -13,27 +14,29 @@ body {
   font-size: 12px;
   text-align: left;
 }
+
 pre { 
   white-space: pre-wrap; 
   word-wrap: break-word; 
   letter-spacing: 1px; 
   line-height: 1.5; 
 }
+
 .typing {
   border-right: 2px solid #00ff00;
   animation: blinkCursor 0.7s infinite;
 }
-@keyframes blinkCursor { 50% { border-color: transparent; } }
 
-.blink-red {
-  color: #ff0000;
-  animation: blinkRed 0.45s infinite;
+@keyframes blinkCursor { 
+  50% { border-color: transparent; } 
 }
-@keyframes blinkRed {
-  0%, 100% { color: #ff0000; }
-  50% { color: #330000; }
+
+/* PNS warna kuning */
+.yellow { 
+  color: #ffff00; 
+  font-weight: bold; 
 }
-.yellow { color: #ffff00; font-weight: bold; }
+
 .hidden { display: none; }
 
 /* Tombol */
@@ -41,6 +44,7 @@ pre {
   text-align: center;
   margin-top: 25px;
 }
+
 button {
   background-color: black;
   color: #00ff00;
@@ -53,25 +57,33 @@ button {
   cursor: pointer;
   transition: 0.3s;
 }
+
 button:hover {
   background-color: #00ff00;
   color: black;
   font-weight: bold;
 }
 
-/* Tombol DOWNLOAD Berkedip Merah */
+/* DOWNLOAD MERAH BERKEDIP */
 button.download-btn {
   color: #ff0000;
   border-color: #ff0000;
   animation: blinkRed 0.5s infinite;
 }
+
+@keyframes blinkRed {
+  0% { color: #ff0000; }
+  50% { color: #330000; }
+  100% { color: #ff0000; }
+}
+
 button.download-btn:hover {
   background-color: #ff0000;
   color: black;
   animation: none;
 }
 
-/* Running text di atas daftar jabatan */
+/* Running text */
 #runningText {
   color: #00ff00;
   white-space: nowrap;
@@ -79,20 +91,36 @@ button.download-btn:hover {
   font-weight: bold;
   margin-bottom: 10px;
 }
+
 #runningText span {
   display: inline-block;
   padding-left: 100%;
   animation: runText 15s linear infinite;
 }
+
 @keyframes runText {
   from { transform: translateX(0); }
   to { transform: translateX(-100%); }
 }
+
+/* RESPONSIVE SUPAYA MUAT 1 BARIS */
+pre {
+  white-space: pre !important;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden !important;
+}
+
+#terminal { font-size: 10px !important; }
+
+@media (max-width: 1100px) { #terminal { font-size: 8px !important; } }
+@media (max-width: 800px)  { #terminal { font-size: 7px !important; } }
+@media (max-width: 600px)  { #terminal { font-size: 6px !important; } }
 </style>
 </head>
 <body>
 
-<!-- Bagian Loading Terminal -->
+<!-- LOADING -->
 <div id="loading">
   <p>>> initializing connection...</p>
   <p class="hidden">>>> accessing database node...</p>
@@ -101,132 +129,155 @@ button.download-btn:hover {
   <p class="hidden">>>> retrieving jabatan kosong...</p>
 </div>
 
-<!-- Bagian Utama -->
+<!-- MAIN -->
 <div id="main" class="hidden">
-  <!-- Running text muncul di atas daftar jabatan -->
   <div id="runningText">
     <span>⚠ DATA INI BERSIFAT RAHASIA - HANYA UNTUK LINGKUNGAN PUSLAT KODIKLATAU ⚠ </span>
   </div>
   <pre id="terminal" class="typing"></pre>
 </div>
 
-<!-- Tombol di bawah -->
+<!-- TOMBOL -->
 <div class="button-container hidden" id="buttons">
+  <button onclick="window.location.href='personel.html'">PERSONEL</button>
   <button onclick="window.location.href='database.html'">BACK TO DATABASE</button>
   <button class="download-btn" onclick="downloadFile()">⬇ DOWNLOAD</button>
 </div>
 
 <script>
-/* ================== EFEK LOADING TERMINAL ================== */
+/* ================== LOADING ================== */
 const lines = document.querySelectorAll("#loading p");
 let delay = 800;
-lines.forEach((line, index) => {
+
+lines.forEach((line, idx) => {
   setTimeout(() => {
     line.classList.remove("hidden");
-    if (index === lines.length - 1) {
+    if (idx === lines.length - 1) {
       setTimeout(() => {
         document.getElementById("loading").style.display = "none";
         document.getElementById("main").classList.remove("hidden");
         startTyping();
       }, 1000);
     }
-  }, delay * (index + 1));
+  }, delay * (idx + 1));
 });
 
-/* ================== BAGIAN UTAMA: DATA JABATAN ================== */
+/* ================== FETCH DATA JABATAN KOSONG ================== */
+async function fetchData() {
+  const url =
+    "https://script.google.com/macros/s/AKfycbzgNoaH8hYWUdZbihH257s3bVu4d-d6x5QKgVEheITTD7ft4tBbEEa29D6OpwnNAf0s/exec";
+
+  const res = await fetch(url);
+  return res.json();
+}
+
+/* ================== EFEK KETIK ================== */
 async function startTyping() {
+
+  const terminal = document.getElementById("terminal");
+
   const textBefore = `
 ====================================
-| FILE: PERSONEL PUSLAT KODIKLATAU |
+| FILE: JABATAN KOSONG PUSLAT       |
 | CLASSIFICATION: `;
-  const rahasiaWord = "RAHASIA";
+
+  const rahasia = "RAHASIA";
+
   const textAfterTop = `
 ====================================
 `;
-  const titleLine = `<span class="yellow"></span>\n\n`;
+
   const tableHeader = `
--------------------------------------------------------------------------------------------------------------  
+--------------------------------------------------------------------------------------------------------------
+NO    JABATAN                          GOL       PANGKAT                    KORPS               KETERANGAN
+--------------------------------------------------------------------------------------------------------------
 `;
-  const footerText = `
+
+  const footer = `
 --------------------------------------------------------------------------------------------------------------
 * Data jabatan kosong diperbarui otomatis dari Spreadsheet.
 * Informasi hanya untuk lingkungan PUSLAT KODIKLATAU.
 --------------------------------------------------------------------------------------------------------------
 `;
 
-  const terminal = document.getElementById("terminal");
-  let i = 0, step = 0, rahasiaSpan;
+  let i = 0, step = 0;
+  let spanRahasia;
 
-  async function fetchData() {
-    const url = "https://script.google.com/macros/s/AKfycbzgNoaH8hYWUdZbihH257s3bVu4d-d6x5QKgVEheITTD7ft4tBbEEa29D6OpwnNAf0s/exec"; 
-    const res = await fetch(url);
-    return res.json();
-  }
+  function type() {
 
-  async function type() {
     if (step === 0) {
       if (i < textBefore.length) {
-        terminal.textContent += textBefore.charAt(i);
-        i++;
-        setTimeout(type, 1);
-      } else {
-        step = 1;
-        i = 0;
-        rahasiaSpan = document.createElement("span");
-        rahasiaSpan.id = "rahasia";
-        terminal.appendChild(rahasiaSpan);
-        type();
+        terminal.textContent += textBefore.charAt(i++);
+        return setTimeout(type, 1);
       }
-    } else if (step === 1) {
-      if (i < rahasiaWord.length) {
-        rahasiaSpan.textContent += rahasiaWord.charAt(i);
-        if (i === 0) rahasiaSpan.classList.add("blink-red");
-        i++;
-        setTimeout(type, 1);
-      } else {
-        step = 2;
-        i = 0;
-        type();
-      }
-    } else if (step === 2) {
-      if (i < textAfterTop.length) {
-        terminal.innerHTML += textAfterTop.charAt(i);
-        i++;
-        setTimeout(type, 1);
-      } else {
-        terminal.innerHTML += titleLine;
-        step = 3;
-        i = 0;
-        type();
-      }
-    } else if (step === 3) {
-      terminal.innerHTML += tableHeader;
-      step = 4;
-      const data = await fetchData();
-      data.forEach((row) => {
-        const line = `${row.no.toString().padEnd(5)}${row.jabatan.padEnd(30)}${row.golongan.padEnd(10)}${row.pangkat.padEnd(25)}${row.korps.padEnd(20)}${row.keterangan}\n`;
-        if (line.toUpperCase().includes("PNS")) {
-          terminal.innerHTML += `<span class="yellow">${line}</span>`;
-        } else {
-          terminal.innerHTML += line;
-        }
-      });
-      terminal.innerHTML += footerText;
-      terminal.classList.remove("typing");
+      step = 1;
+      i = 0;
+      spanRahasia = document.createElement("span");
+      spanRahasia.classList.add("blink-merah");
+      terminal.appendChild(spanRahasia);
+      return type();
+    }
 
-      // ✅ Tampilkan tombol setelah selesai
-      document.getElementById("buttons").classList.remove("hidden");
+    if (step === 1) {
+      if (i < rahasia.length) {
+        spanRahasia.textContent += rahasia.charAt(i++);
+        return setTimeout(type, 30);
+      }
+      step = 2;
+      i = 0;
+      return type();
+    }
+
+    if (step === 2) {
+      if (i < textAfterTop.length) {
+        terminal.innerHTML += textAfterTop.charAt(i++);
+        return setTimeout(type, 1);
+      }
+      step = 3;
+      terminal.innerHTML += tableHeader;
+      return tampilkanData();
     }
   }
 
   type();
 }
 
-/* ================== FUNGSI DOWNLOAD ================== */
+/* ================== TAMPILKAN DATA ================== */
+async function tampilkanData() {
+
+  const terminal = document.getElementById("terminal");
+  const data = await fetchData();
+
+  data.forEach(row => {
+
+    let line =
+`${row.no.toString().padEnd(5)}${row.jabatan.padEnd(32)}${row.golongan.padEnd(10)}${row.pangkat.padEnd(26)}${row.korps.padEnd(20)}${row.keterangan}\n`;
+
+    if (String(row.pangkat).toUpperCase().includes("PNS")) {
+      line = `<span class="yellow">${line}</span>`;
+    }
+
+    terminal.innerHTML += line;
+  });
+
+  terminal.innerHTML += `
+--------------------------------------------------------------------------------------------------------------
+* Data jabatan kosong diperbarui otomatis dari Spreadsheet.
+--------------------------------------------------------------------------------------------------------------
+`;
+
+  terminal.classList.remove("typing");
+  document.getElementById("buttons").classList.remove("hidden");
+}
+
+/* ================== DOWNLOAD ================== */
 function downloadFile() {
-  const fileUrl = "https://drive.google.com/uc?export=download&id=1GAPWqs98GSMypnKYeow_oWzSYtAgzK6h";
-  window.open(fileUrl, "_blank");
+  window.open(
+    "https://drive.google.com/uc?export=download&id=1GAPWqs98GSMypnKYeow_oWzSYtAgzK6h",
+    "_blank"
+  );
 }
 </script>
+
 </body>
 </html>
