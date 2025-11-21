@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JABATAN KOSONG | PUSLAT KODIKLATAU</title>
-
+<title>evolution is my revolution</title>
 <style>
 body {
   background-color: black;
@@ -13,26 +12,19 @@ body {
   padding: 20px;
   font-size: 12px;
   text-align: left;
-  overflow-x: hidden;
 }
-
-pre {
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  letter-spacing: 1px;
-  line-height: 1.5;
-  transform: scale(0.9);
-  transform-origin: top left;
+pre { 
+  white-space: pre-wrap; 
+  word-wrap: break-word; 
+  letter-spacing: 1px; 
+  line-height: 1.5; 
 }
-
-/* Cursor blinking */
 .typing {
   border-right: 2px solid #00ff00;
   animation: blinkCursor 0.7s infinite;
 }
 @keyframes blinkCursor { 50% { border-color: transparent; } }
 
-/* Blink merah */
 .blink-red {
   color: #ff0000;
   animation: blinkRed 0.45s infinite;
@@ -41,38 +33,33 @@ pre {
   0%, 100% { color: #ff0000; }
   50% { color: #330000; }
 }
-
-/* PNS kuning */
-.yellow {
-  color: #ffff00;
-  font-weight: bold;
-}
-
+.yellow { color: #ffff00; font-weight: bold; }
 .hidden { display: none; }
 
-/* Tombol bawah */
+/* Tombol */
 .button-container {
   text-align: center;
-  margin-top: 20px;
+  margin-top: 25px;
 }
 button {
   background-color: black;
   color: #00ff00;
   border: 1px solid #00ff00;
+  font-family: "Courier New", monospace;
   padding: 8px 20px;
   font-size: 12px;
-  cursor: pointer;
-  border-radius: 8px;
   margin: 0 10px;
+  border-radius: 8px;
+  cursor: pointer;
   transition: 0.3s;
-  font-family: "Courier New", monospace;
 }
 button:hover {
   background-color: #00ff00;
   color: black;
+  font-weight: bold;
 }
 
-/* Tombol download merah */
+/* Tombol DOWNLOAD Berkedip Merah */
 button.download-btn {
   color: #ff0000;
   border-color: #ff0000;
@@ -84,7 +71,7 @@ button.download-btn:hover {
   animation: none;
 }
 
-/* Running text */
+/* Running text di atas daftar jabatan */
 #runningText {
   color: #00ff00;
   white-space: nowrap;
@@ -103,73 +90,64 @@ button.download-btn:hover {
 }
 </style>
 </head>
-
 <body>
 
-<!-- LOADING -->
+<!-- Bagian Loading Terminal -->
 <div id="loading">
   <p>>> initializing connection...</p>
   <p class="hidden">>>> accessing database node...</p>
   <p class="hidden">>>> verifying security clearance...</p>
   <p class="hidden">>>> clearance level verified ✓</p>
-  <p class="hidden">>>> retrieving vacant positions...</p>
+  <p class="hidden">>>> retrieving jabatan kosong...</p>
 </div>
 
-<!-- MAIN -->
+<!-- Bagian Utama -->
 <div id="main" class="hidden">
-
+  <!-- Running text muncul di atas daftar jabatan -->
   <div id="runningText">
-    <span>⚠ DATA INI BERSIFAT RAHASIA — HANYA UNTUK LINGKUNGAN PUSLAT KODIKLATAU ⚠ </span>
+    <span>⚠ DATA INI BERSIFAT RAHASIA - HANYA UNTUK LINGKUNGAN PUSLAT KODIKLATAU ⚠ </span>
   </div>
-
   <pre id="terminal" class="typing"></pre>
-
 </div>
 
-<div id="buttons" class="button-container hidden">
+<!-- Tombol di bawah -->
+<div class="button-container hidden" id="buttons">
   <button onclick="window.location.href='database.html'">BACK TO DATABASE</button>
   <button class="download-btn" onclick="downloadFile()">⬇ DOWNLOAD</button>
 </div>
 
 <script>
-/* ================= LOADING EFFECT ================= */
-const loadLines = document.querySelectorAll("#loading p");
+/* ================== EFEK LOADING TERMINAL ================== */
+const lines = document.querySelectorAll("#loading p");
 let delay = 800;
-
-loadLines.forEach((line, i) => {
+lines.forEach((line, index) => {
   setTimeout(() => {
     line.classList.remove("hidden");
-    if (i === loadLines.length - 1) {
+    if (index === lines.length - 1) {
       setTimeout(() => {
         document.getElementById("loading").style.display = "none";
         document.getElementById("main").classList.remove("hidden");
         startTyping();
-      }, 800);
+      }, 1000);
     }
-  }, delay * (i + 1));
+  }, delay * (index + 1));
 });
 
-/* ================== MAIN TYPING ================== */
-
+/* ================== BAGIAN UTAMA: DATA JABATAN ================== */
 async function startTyping() {
-
-  const headerTop = `
+  const textBefore = `
 ====================================
-| FILE: JABATAN KOSONG PUSLAT KODIKLATAU |
+| FILE: PERSONEL PUSLAT KODIKLATAU |
 | CLASSIFICATION: `;
-
   const rahasiaWord = "RAHASIA";
-  const headerBottom = `
+  const textAfterTop = `
 ====================================
-
 `;
-
+  const titleLine = `<span class="yellow"></span>\n\n`;
   const tableHeader = `
-NO   JABATAN                       GOLONGAN   PANGKAT               KORPS           KETERANGAN
---------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------  
 `;
-
-  const footer = `
+  const footerText = `
 --------------------------------------------------------------------------------------------------------------
 * Data jabatan kosong diperbarui otomatis dari Spreadsheet.
 * Informasi hanya untuk lingkungan PUSLAT KODIKLATAU.
@@ -179,84 +157,64 @@ NO   JABATAN                       GOLONGAN   PANGKAT               KORPS       
   const terminal = document.getElementById("terminal");
   let i = 0, step = 0, rahasiaSpan;
 
-  async function getData() {
-    const url = "https://script.google.com/macros/s/AKfycbzgNoaH8hYWUdZbihH257s3bVu4d-d6x5QKgVEheITTD7ft4tBbEEa29D6OpwnNAf0s/exec";
+  async function fetchData() {
+    const url = "https://script.google.com/macros/s/AKfycbzgNoaH8hYWUdZbihH257s3bVu4d-d6x5QKgVEheITTD7ft4tBbEEa29D6OpwnNAf0s/exec"; 
     const res = await fetch(url);
     return res.json();
   }
 
   async function type() {
-
-    /* Step 1 — header before RAHASIA */
     if (step === 0) {
-      if (i < headerTop.length) {
-        terminal.textContent += headerTop.charAt(i);
+      if (i < textBefore.length) {
+        terminal.textContent += textBefore.charAt(i);
         i++;
-        return setTimeout(type, 2);
+        setTimeout(type, 1);
       } else {
         step = 1;
         i = 0;
-
         rahasiaSpan = document.createElement("span");
-        rahasiaSpan.classList.add("blink-red");
+        rahasiaSpan.id = "rahasia";
         terminal.appendChild(rahasiaSpan);
-
-        return type();
+        type();
       }
-    }
-
-    /* Step 2 — type RAHASIA blinking */
-    if (step === 1) {
+    } else if (step === 1) {
       if (i < rahasiaWord.length) {
         rahasiaSpan.textContent += rahasiaWord.charAt(i);
+        if (i === 0) rahasiaSpan.classList.add("blink-red");
         i++;
-        return setTimeout(type, 50);
+        setTimeout(type, 1);
       } else {
         step = 2;
         i = 0;
-        return type();
+        type();
       }
-    }
-
-    /* Step 3 — header bottom */
-    if (step === 2) {
-      if (i < headerBottom.length) {
-        terminal.innerHTML += headerBottom.charAt(i);
+    } else if (step === 2) {
+      if (i < textAfterTop.length) {
+        terminal.innerHTML += textAfterTop.charAt(i);
         i++;
-        return setTimeout(type, 2);
+        setTimeout(type, 1);
       } else {
+        terminal.innerHTML += titleLine;
         step = 3;
         i = 0;
-        return type();
+        type();
       }
-    }
-
-    /* Step 4 — table header */
-    if (step === 3) {
+    } else if (step === 3) {
       terminal.innerHTML += tableHeader;
       step = 4;
-
-      const data = await getData();
-
-      data.forEach(row => {
-        const line =
-          row.no.toString().padEnd(5) +
-          row.jabatan.padEnd(30) +
-          row.golongan.padEnd(10) +
-          row.pangkat.padEnd(22) +
-          row.korps.padEnd(14) +
-          row.keterangan + "\n";
-
-        if (line.includes("PNS") || row.golongan === "PNS") {
+      const data = await fetchData();
+      data.forEach((row) => {
+        const line = `${row.no.toString().padEnd(5)}${row.jabatan.padEnd(30)}${row.golongan.padEnd(10)}${row.pangkat.padEnd(25)}${row.korps.padEnd(20)}${row.keterangan}\n`;
+        if (line.toUpperCase().includes("PNS")) {
           terminal.innerHTML += `<span class="yellow">${line}</span>`;
         } else {
           terminal.innerHTML += line;
         }
       });
-
-      terminal.innerHTML += footer;
+      terminal.innerHTML += footerText;
       terminal.classList.remove("typing");
 
+      // ✅ Tampilkan tombol setelah selesai
       document.getElementById("buttons").classList.remove("hidden");
     }
   }
@@ -264,10 +222,11 @@ NO   JABATAN                       GOLONGAN   PANGKAT               KORPS       
   type();
 }
 
+/* ================== FUNGSI DOWNLOAD ================== */
 function downloadFile() {
-  window.open("https://drive.google.com/uc?export=download&id=1GAPWqs98GSMypnKYeow_oWzSYtAgzK6h", "_blank");
+  const fileUrl = "https://drive.google.com/uc?export=download&id=1GAPWqs98GSMypnKYeow_oWzSYtAgzK6h";
+  window.open(fileUrl, "_blank");
 }
 </script>
-
 </body>
 </html>
