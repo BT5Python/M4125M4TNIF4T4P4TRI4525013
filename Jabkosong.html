@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>evolution is my revolution</title>
+<title>JABATAN KOSONG | PUSLAT KODIKLATAU</title>
 
 <style>
 body {
@@ -13,70 +13,83 @@ body {
   padding: 20px;
   font-size: 12px;
   text-align: left;
+  overflow-x: hidden;
 }
 
-pre { 
-  white-space: pre-wrap; 
-  word-wrap: break-word; 
-  letter-spacing: 1px; 
-  line-height: 1.5; 
+pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  letter-spacing: 1px;
+  line-height: 1.5;
+  transform: scale(0.9);
+  transform-origin: top left;
 }
 
+/* Cursor blinking */
 .typing {
   border-right: 2px solid #00ff00;
   animation: blinkCursor 0.7s infinite;
 }
+@keyframes blinkCursor { 50% { border-color: transparent; } }
 
-@keyframes blinkCursor { 
-  50% { border-color: transparent; } 
+/* Blink merah */
+.blink-red {
+  color: #ff0000;
+  animation: blinkRed 0.45s infinite;
+}
+@keyframes blinkRed {
+  0%, 100% { color: #ff0000; }
+  50% { color: #330000; }
 }
 
-/* PNS warna kuning */
-.yellow { 
-  color: #ffff00; 
-  font-weight: bold; 
+/* PRIORITAS — teks kuning berkedip (menonjol) */
+.blink-prioritas {
+  color: #ffff00;
+  font-weight: bold;
+  animation: blinkPrior 0.6s infinite;
+}
+@keyframes blinkPrior {
+  0%   { color: #ffff00; text-shadow: 0 0 6px #ffff00; }
+  50%  { color: #333300; text-shadow: none; }
+  100% { color: #ffff00; text-shadow: 0 0 6px #ffff00; }
+}
+
+/* PNS kuning (tanpa animasi) */
+.yellow {
+  color: #ffff00;
+  font-weight: bold;
 }
 
 .hidden { display: none; }
 
-/* Tombol */
+/* Tombol bawah */
 .button-container {
   text-align: center;
-  margin-top: 25px;
+  margin-top: 20px;
 }
-
 button {
   background-color: black;
   color: #00ff00;
   border: 1px solid #00ff00;
-  font-family: "Courier New", monospace;
   padding: 8px 20px;
   font-size: 12px;
-  margin: 0 10px;
-  border-radius: 8px;
   cursor: pointer;
+  border-radius: 8px;
+  margin: 0 10px;
   transition: 0.3s;
+  font-family: "Courier New", monospace;
 }
-
 button:hover {
   background-color: #00ff00;
   color: black;
-  font-weight: bold;
 }
 
-/* DOWNLOAD MERAH BERKEDIP */
+/* Tombol download merah */
 button.download-btn {
   color: #ff0000;
   border-color: #ff0000;
   animation: blinkRed 0.5s infinite;
 }
-
-@keyframes blinkRed {
-  0% { color: #ff0000; }
-  50% { color: #330000; }
-  100% { color: #ff0000; }
-}
-
 button.download-btn:hover {
   background-color: #ff0000;
   color: black;
@@ -91,13 +104,11 @@ button.download-btn:hover {
   font-weight: bold;
   margin-bottom: 10px;
 }
-
 #runningText span {
   display: inline-block;
   padding-left: 100%;
   animation: runText 15s linear infinite;
 }
-
 @keyframes runText {
   from { transform: translateX(0); }
   to { transform: translateX(-100%); }
@@ -118,6 +129,7 @@ pre {
 @media (max-width: 600px)  { #terminal { font-size: 6px !important; } }
 </style>
 </head>
+
 <body>
 
 <!-- LOADING -->
@@ -213,7 +225,7 @@ NO    JABATAN                          GOL       PANGKAT                    KORP
       step = 1;
       i = 0;
       spanRahasia = document.createElement("span");
-      spanRahasia.classList.add("blink-merah");
+      spanRahasia.classList.add("blink-red");
       terminal.appendChild(spanRahasia);
       return type();
     }
@@ -250,14 +262,24 @@ async function tampilkanData() {
 
   data.forEach(row => {
 
+    // Siapkan line plain
     let line =
 `${row.no.toString().padEnd(5)}${row.jabatan.padEnd(32)}${row.golongan.padEnd(10)}${row.pangkat.padEnd(26)}${row.korps.padEnd(20)}${row.keterangan}\n`;
 
+    // Jika pns, bungkus dgn class .yellow
     if (String(row.pangkat).toUpperCase().includes("PNS")) {
       line = `<span class="yellow">${line}</span>`;
     }
 
-    terminal.innerHTML += line;
+    // Jika keterangan mengandung kata "PRIORITAS" (case-insensitive),
+    // bungkus baris dengan .blink-prioritas sehingga berkedip
+    const keterangan = row.keterangan ? String(row.keterangan).toUpperCase() : "";
+    if (keterangan.includes("PRIORITAS")) {
+      // Jika sudah diberi class PNS, letakkan blink-prioritas di luar
+      terminal.innerHTML += `<span class="blink-prioritas">${line}</span>`;
+    } else {
+      terminal.innerHTML += line;
+    }
   });
 
   terminal.innerHTML += `
