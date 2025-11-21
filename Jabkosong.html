@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>evolution is my revolution</title>
+<title>JABATAN KOSONG | PUSLAT KODIKLATAU</title>
 
 <style>
 body {
@@ -11,238 +11,137 @@ body {
   color: #00ff00;
   font-family: "Courier New", monospace;
   padding: 20px;
-  font-size: 12px;
+  margin: 0;
   overflow-x: hidden;
 }
 
-/* agar teks tidak keluar layar */
-pre { 
-  white-space: pre-wrap; 
-  word-wrap: break-word; 
-  letter-spacing: 1px; 
-  line-height: 1.4;
+.marquee {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  box-sizing: border-box;
+  border-bottom: 1px solid #00ff00;
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+}
+.marquee span {
+  display: inline-block;
+  animation: marquee 20s linear infinite;
+  color: red;
+  font-weight: bold;
+}
+@keyframes marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
 }
 
-.typing {
-  border-right: 2px solid #00ff00;
-  animation: blinkCursor 0.7s infinite;
-}
-@keyframes blinkCursor {
-  50% { border-color: transparent; }
-}
-
-.blink-red {
-  color: #ff0000;
-  animation: blinkRed 0.45s infinite;
-}
-@keyframes blinkRed {
-  0%, 100% { color: #ff0000; }
-  50% { color: #330000; }
-}
-
-.yellow { color: #ffff00; font-weight: bold; }
-.hidden { display: none; }
-
-/* Tombol */
-.button-container {
+h1 {
   text-align: center;
-  margin-top: 25px;
+  color: #00ff00;
+  margin: 0;
+  font-size: 20px;
+}
+.subtitle {
+  text-align: center;
+  margin-top: 5px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: red;
+  animation: blink 1s infinite;
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+#loading {
+  color: yellow;
+  text-align: center;
+  font-size: 14px;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-size: 12px;
+  transform-origin: top left;
+}
+
+.pns {
+  color: yellow;
+  font-weight: bold;
+}
+
+.button-container {
+  margin-top: 20px;
+  text-align: center;
 }
 button {
   background-color: black;
   color: #00ff00;
   border: 1px solid #00ff00;
-  font-family: "Courier New", monospace;
-  padding: 8px 20px;
-  font-size: 12px;
-  margin: 0 10px;
-  border-radius: 8px;
+  padding: 10px 15px;
   cursor: pointer;
-  transition: 0.3s;
+  font-family: "Courier New", monospace;
 }
 button:hover {
-  background-color: #00ff00;
-  color: black;
-  font-weight: bold;
-}
-
-/* DOWNLOAD merah kedip */
-button.download-btn {
-  color: #ff0000;
-  border-color: #ff0000;
-  animation: blinkRed 0.5s infinite;
-}
-button.download-btn:hover {
-  background-color: #ff0000;
-  color: black;
-  animation: none;
-}
-
-/* Running text */
-#runningText {
-  color: #00ff00;
-  white-space: nowrap;
-  overflow: hidden;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-#runningText span {
-  display: inline-block;
-  padding-left: 100%;
-  animation: runText 15s linear infinite;
-}
-@keyframes runText {
-  from { transform: translateX(0); }
-  to { transform: translateX(-100%); }
+  background-color: #003300;
 }
 </style>
+
 </head>
 <body>
 
-<!-- LOADING TERMINAL -->
-<div id="loading">
-  <p>>> initializing connection...</p>
-  <p class="hidden">>>> accessing database node...</p>
-  <p class="hidden">>>> verifying security clearance...</p>
-  <p class="hidden">>>> clearance level verified ✓</p>
-  <p class="hidden">>>> retrieving jabatan kosong...</p>
-</div>
+<div class="marquee"><span>CLASSIFICATION : RAHASIA — DATA JABATAN KOSONG PUSLAT KODIKLATAU</span></div>
 
-<!-- TAMPILAN UTAMA -->
-<div id="main" class="hidden">
-  <div id="runningText">
-    <span>⚠ DATA INI BERSIFAT RAHASIA - HANYA UNTUK LINGKUNGAN PUSLAT KODIKLATAU ⚠ </span>
-  </div>
+<h1>FILE : JABATAN KOSONG</h1>
+<div class="subtitle">CLASSIFICATION : RAHASIA</div>
 
-  <pre id="terminal" class="typing"></pre>
-</div>
+<div id="loading">Mengambil data...</div>
+<pre id="output"></pre>
 
-<!-- TOMBOL -->
-<div class="button-container hidden" id="buttons">
-  <button onclick="window.location.href='database.html'">BACK TO DATABASE</button>
-  <button class="download-btn" onclick="downloadFile()">⬇ DOWNLOAD</button>
+<div class="button-container">
+  <button onclick="window.location.reload()">REFRESH</button>
+  <button onclick="window.location.href='index.html'">KEMBALI</button>
 </div>
 
 <script>
-/* LOADING */
-const lines = document.querySelectorAll("#loading p");
-let delay = 800;
-
-lines.forEach((line, index) => {
-  setTimeout(() => {
-    line.classList.remove("hidden");
-    if (index === lines.length - 1) {
-      setTimeout(() => {
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("main").classList.remove("hidden");
-        startTyping();
-      }, 1000);
-    }
-  }, delay * (index + 1));
-});
-
-/* BAGIAN UTAMA */
-async function startTyping() {
-  const textBefore =
-`====================================
-| FILE: PERSONEL PUSLAT KODIKLATAU |
-| CLASSIFICATION: `;
-
-  const rahasiaWord = "RAHASIA";
-  const textAfterTop =
-`
-====================================
-
-`;
-
-  const tableHeader =
-`-------------------------------------------------------------------------------------------------------------
-NO   JABATAN                       GOLONGAN  PANGKAT                   KORPS               KETERANGAN
--------------------------------------------------------------------------------------------------------------
-`;
-
-  const footerText =
-`-------------------------------------------------------------------------------------------------------------
-* Data jabatan kosong diperbarui otomatis dari Spreadsheet.
-* Informasi hanya untuk lingkungan PUSLAT KODIKLATAU.
--------------------------------------------------------------------------------------------------------------
-`;
-
-  const terminal = document.getElementById("terminal");
-  let i = 0, step = 0, rahasiaSpan;
-
-  async function fetchData() {
-    const url = "https://script.google.com/macros/s/AKfycbzgNoaH8hYWUdZbihH257s3bVu4d-d6x5QKgVEheITTD7ft4tBbEEa29D6OpwnNAf0s/exec";
-    const res = await fetch(url);
-    return res.json();
+// Auto scale PRE agar tidak perlu scroll kanan
+function scalePre() {
+  const pre = document.getElementById("output");
+  const width = pre.scrollWidth;
+  const cw = document.body.clientWidth - 20;
+  const scale = cw / width;
+  if (scale < 1) {
+    pre.style.transform = "scale(" + scale + ")";
   }
-
-  async function type() {
-    if (step === 0) {
-      if (i < textBefore.length) {
-        terminal.textContent += textBefore.charAt(i);
-        i++;
-        setTimeout(type, 2);
-      } else {
-        step = 1;
-        i = 0;
-        rahasiaSpan = document.createElement("span");
-        rahasiaSpan.id = "rahasia";
-        terminal.appendChild(rahasiaSpan);
-        type();
-      }
-    }
-
-    else if (step === 1) {
-      if (i < rahasiaWord.length) {
-        rahasiaSpan.textContent += rahasiaWord.charAt(i);
-        if (i === 0) rahasiaSpan.classList.add("blink-red");
-        i++;
-        setTimeout(type, 80);
-      } else {
-        step = 2;
-        i = 0;
-        type();
-      }
-    }
-
-    else if (step === 2) {
-      if (i < textAfterTop.length) {
-        terminal.innerHTML += textAfterTop.charAt(i);
-        i++;
-        setTimeout(type, 2);
-      } else {
-        terminal.innerHTML += tableHeader;
-        step = 3;
-        const data = await fetchData();
-
-        data.forEach((row) => {
-          const line =
-`${row.no.toString().padEnd(4)}  ${row.jabatan.padEnd(28)} ${row.golongan.padEnd(8)} ${row.pangkat.padEnd(22)} ${row.korps.padEnd(15)} ${row.keterangan}\n`;
-
-          if (line.toUpperCase().includes("PNS")) {
-            terminal.innerHTML += `<span class="yellow">${line}</span>`;
-          } else {
-            terminal.innerHTML += line;
-          }
-        });
-
-        terminal.innerHTML += footerText;
-        terminal.classList.remove("typing");
-
-        document.getElementById("buttons").classList.remove("hidden");
-      }
-    }
-  }
-
-  type();
 }
 
-/* DOWNLOAD */
-function downloadFile() {
-  const fileUrl = "https://drive.google.com/uc?export=download&id=1GAPWqs98GSMypnKYeow_oWzSYtAgzK6h";
-  window.open(fileUrl, "_blank");
-}
+// Ambil data dari SCRIPT GOOGLE
+fetch("https://script.google.com/macros/s/AKfycbzgNoaH8hYWUdZbihH257s3bVu4d-d6x5QKgVEheITTD7ft4tBbEEa29D6OpwnNAf0s/exec")
+  .then(res => res.json())
+  .then(data => {
+    let text = "";
+    data.forEach((row, i) => {
+      text += 
+`NO     : ${i + 1}
+NAMA   : ${row.nama}
+NRP    : ${row.nrp}
+PANGKAT: ${row.pangkat}
+JABATAN: ${row.jabatan}
+STATUS : ${row.status == "PNS" ? "<span class='pns'>PNS</span>" : row.status}
+------------------------------------------------------------
+
+`;
+    });
+
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("output").innerHTML = text;
+
+    setTimeout(scalePre, 200);
+  })
+  .catch(err => {
+    document.getElementById("loading").innerHTML = "GAGAL MENGAMBIL DATA!";
+  });
 </script>
 
 </body>
