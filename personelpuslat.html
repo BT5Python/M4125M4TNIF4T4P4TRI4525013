@@ -458,7 +458,7 @@ async function tampilAnggotaMasuk() {
   const data = await fetchData();
 
   const hasil = data.filter(row => {
-    const masa = hitungMasa(row.tmt);
+    const masa = hitungMasa(row.tmt_masuk);
     const angka = masa.match(/\d+/g);
 
     if (!angka) return false;
@@ -474,12 +474,12 @@ async function tampilAnggotaMasuk() {
 | LIST ANGGOTA MASUK (Masa < 2 Bulan)         |
 ===============================================
 
-NO    NAMA                          PANGKAT                 JABATAN                 TMT           MASA DINAS
+NO    NAMA                          PANGKAT                 JABATAN                 TMT MASUK     MASA DINAS
 ---------------------------------------------------------------------------------------------------------------
 `;
 
   hasil.forEach(row => {
-    const masa = hitungMasa(row.tmt);
+    const masa = hitungMasa(row.tmt_masuk);
 
     let masaFix = masa;
     const angka = masa.match(/\d+/g);
@@ -494,14 +494,9 @@ NO    NAMA                          PANGKAT                 JABATAN             
       wrapEnd = `</span>`;
       masaFix = `<span class="blink-hijau">${masa}</span>`;
     }
-    else if (tahun >= 2) {
-      wrapStart = `<span class="baris-kedip-merah">`;
-      wrapEnd = `</span>`;
-      masaFix = `<span class="blink-merah">${masa}</span>`;
-    }
 
     let line =
-`${row.no.toString().padEnd(5)}${row.nama.padEnd(30)}${row.pangkat.padEnd(25)}${row.jabatan.padEnd(25)}${row.tmt.padEnd(15)}${masaFix}\n`;
+`${row.no.toString().padEnd(5)}${row.nama.padEnd(30)}${row.pangkat.padEnd(25)}${row.jabatan.padEnd(25)}${row.tmt_masuk.padEnd(15)}${masaFix}\n`;
 
     if (String(row.pangkat).toUpperCase().includes("PNS")) {
       line = `<span class="yellow">${line}</span>`;
