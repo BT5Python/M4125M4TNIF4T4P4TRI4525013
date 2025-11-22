@@ -101,7 +101,7 @@ button.download-btn:hover { background-color: #ff0000; color: black; animation: 
 
 <!-- Buttons -->
 <div class="button-container hidden" id="buttons">
-  <button onclick="tampilAnggotaMasuk()">anggota masuk</button>
+  <button onclick="anggotaMasuk()">Anggota Masuk</button>
   <button onclick="tampilKeluar()">anggota keluar</button>
   <button onclick="window.location.href='database.html'">back to DATABASE</button>
   <button class="download-btn" onclick="downloadFile()">⬇ DOWNLOAD</button>
@@ -404,6 +404,16 @@ async function tampilDatabase() {
 
 /* ==================== helper: auto load Personel Keluar ketika link langsung (opsional) ==================== */
 /* jika ingin auto-load tertentu, panggil tampilKeluar() di sini */
+
+function anggotaMasuk() {
+  fetch(URL_MASTER + "?action=masuk")
+    .then(res => res.json())
+    .then(data => {
+      alert("Sinkronisasi anggota masuk selesai.");
+    })
+    .catch(err => console.error(err));
+}
+
 </script>
 </body>
 </html>
