@@ -31,9 +31,7 @@ pre {
   50% { border-color: transparent; } 
 }
 
-/* ============================
-   KEDIP BARIS < 2 BULAN
-   ============================ */
+/* BARIS KEDIP < 2 BULAN */
 .baris-kedip-hijau {
   animation: kedipHijauBaris 0.6s infinite;
 }
@@ -44,9 +42,7 @@ pre {
   100% { background-color: rgba(0,255,0,0.1); }
 }
 
-/* ============================
-   KEDIP BARIS ≥ 2 TAHUN
-   ============================ */
+/* BARIS KEDIP >= 2 TAHUN */
 .baris-kedip-merah {
   animation: kedipMerahBaris 0.6s infinite;
 }
@@ -88,7 +84,6 @@ pre {
 
 .hidden { display: none; }
 
-/* Tombol */
 .button-container {
   text-align: center;
   margin-top: 25px;
@@ -125,12 +120,6 @@ button.download-btn {
   100% { color: #ff0000; }
 }
 
-button.download-btn:hover {
-  background-color: #ff0000;
-  color: black;
-  animation: none;
-}
-
 /* Running text */
 #runningText {
   color: #00ff00;
@@ -151,105 +140,19 @@ button.download-btn:hover {
   to { transform: translateX(-100%); }
 }
 
-/* RESPONSIVE SUPER KECIL — biar semua baris masuk 1 line */
-@media (max-width: 1100px) {
-  pre {
-    transform: scale(0.65);
-    transform-origin: top left;
-  }
-}
+/* RESPONSIVE */
+pre { white-space: pre !important; overflow-x: auto !important; width: 100%; }
 
-@media (max-width: 800px) {
-  pre {
-    transform: scale(0.45);
-    transform-origin: top left;
-  }
-}
+#terminal { font-size: 10px !important; }
 
-@media (max-width: 600px) {
-  pre {
-    transform: scale(0.35);
-    transform-origin: top left;
-  }
-}
-
-@media (max-width: 450px) {
-  pre {
-    transform: scale(0.30);
-    transform-origin: top left;
-  }
-}
-/* ==== RESPONSIVE SATU BARIS TANPA GANGGU CSS LAIN ==== */
-
-.row-flex-fix {
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    gap: 4px;
-    align-items: center;
-    justify-content: flex-start;
-    overflow-x: auto;
-    white-space: nowrap;
-}
-
-.row-flex-fix > div {
-    flex: 0 0 auto;
-    font-size: 10px;
-    padding: 2px 4px;
-}
-
-/* Kolom minimal agar muat di tablet */
-.row-flex-fix .col-nama { min-width: 60px; }
-.row-flex-fix .col-pangkat { min-width: 45px; }
-.row-flex-fix .col-jabatan { min-width: 90px; }
-.row-flex-fix .col-tmt { min-width: 70px; }
-.row-flex-fix .col-ket { min-width: 160px; }
-
-  /* FIX: AGAR SEMUA BARIS TETAP 1 LINE DI TABLET / HP */
-pre {
-    white-space: pre !important;
-    overflow-x: auto !important;
-}
-
-/* AGAR PRE SELALU FULL LAYAR & TIDAK PERLU SCROLL */
-pre {
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow-x: hidden !important;
-    display: block;
-    letter-spacing: 1px;
-}
-
-/* KECILKAN TEKS DI DALAM PRE SUPAYA MUAT 1 LAYAR */
-#terminal {
-    font-size: 10px !important;
-}
-
-/* KHUSUS TABLET */
-@media (max-width: 1100px) {
-  #terminal {
-    font-size: 8px !important;
-  }
-}
-
-/* HP LEBAR SEDANG */
-@media (max-width: 800px) {
-  #terminal {
-    font-size: 7px !important;
-  }
-}
-
-/* HP KECIL */
-@media (max-width: 600px) {
-  #terminal {
-    font-size: 6px !important;
-  }
-}
-
+@media (max-width: 1100px) { #terminal { font-size: 8px !important; } }
+@media (max-width: 800px)  { #terminal { font-size: 7px !important; } }
+@media (max-width: 600px)  { #terminal { font-size: 6px !important; } }
 </style>
 </head>
 <body>
 
-<!-- Bagian Loading -->
+<!-- LOADING -->
 <div id="loading">
   <p>>> initializing connection...</p>
   <p class="hidden">>>> accessing database node...</p>
@@ -258,7 +161,7 @@ pre {
   <p class="hidden">>>> retrieving personel puslat...</p>
 </div>
 
-<!-- Bagian Utama -->
+<!-- MAIN -->
 <div id="main" class="hidden">
   <div id="runningText">
     <span>⚠ THIS DATA IS CONFIDENTIAL - FOR THE KODIKLATAU CENTER ENVIRONMENT ONLY ⚠ </span>
@@ -266,7 +169,7 @@ pre {
   <pre id="terminal" class="typing"></pre>
 </div>
 
-<!-- Tombol -->
+<!-- TOMBOL -->
 <div class="button-container hidden" id="buttons">
   <button onclick="tampilAnggotaMasuk()">anggota masuk</button>
   <button onclick="window.location.href='personelkeluar.html'">anggota keluar</button>
@@ -275,7 +178,7 @@ pre {
 </div>
 
 <script>
-/* ================== LOADING ================== */
+/* LOADING */
 const lines = document.querySelectorAll("#loading p");
 let delay = 800;
 
@@ -292,8 +195,7 @@ lines.forEach((line, index) => {
   }, delay * (index + 1));
 });
 
-
-/* ================== HITUNG MASA DINAS ================== */
+/* HITUNG MASA DINAS */
 function hitungMasa(tmt) {
   if (!tmt || !tmt.includes("/")) return "-";
 
@@ -317,18 +219,14 @@ function hitungMasa(tmt) {
   return `${y} th ${m} bln ${d} hr`;
 }
 
-
-/* ================== FETCH DATA ================== */
+/* FETCH DATA */
 async function fetchData() {
-  const url =
-    "https://script.google.com/macros/s/AKfycbyKpkLev2RX4TXzXdXEJ8Urb9V-av4CB3oTaloT2ta11uzyG9YaDw-cn999GywGd9To/exec";
-
+  const url = "YOUR_WEBAPP_URL_HERE";
   const res = await fetch(url);
   return res.json();
 }
 
-
-/* ================== EFEK KETIK ================== */
+/* EFEK KETIK + TAMPIL DATA */
 async function startTyping() {
 
   const terminal = document.getElementById("terminal");
@@ -343,20 +241,11 @@ async function startTyping() {
 `;
 
   const rahasia = "RAHASIA";
-
-  const tableHeader = `
+  const headerBar = `
 ---------------------------------------------------------------------------------------------------------------
 `;
 
-  const footer = `
----------------------------------------------------------------------------------------------------------------
-* Center personnel data is automatically updated from Spreadsheet
-* Information is only for the PUSLAT KODIKLATAU environment.
----------------------------------------------------------------------------------------------------------------
-`;
-
-  let i = 0, step = 0;
-  let spanRahasia;
+  let i = 0, step = 0, spanRahasia;
 
   function type() {
 
@@ -365,8 +254,7 @@ async function startTyping() {
         terminal.textContent += textBefore.charAt(i++);
         return setTimeout(type, 1);
       }
-      step = 1;
-      i = 0;
+      step = 1; i = 0;
       spanRahasia = document.createElement("span");
       spanRahasia.classList.add("blink-merah");
       terminal.appendChild(spanRahasia);
@@ -378,8 +266,7 @@ async function startTyping() {
         spanRahasia.textContent += rahasia.charAt(i++);
         return setTimeout(type, 30);
       }
-      step = 2;
-      i = 0;
+      step = 2; i = 0;
       return type();
     }
 
@@ -388,28 +275,25 @@ async function startTyping() {
         terminal.innerHTML += textAfterTop.charAt(i++);
         return setTimeout(type, 1);
       }
+      terminal.innerHTML += headerBar;
       step = 3;
-      terminal.innerHTML += tableHeader;
-      return type();
     }
   }
 
   type();
 
-  /* tampilkan data */
+  /* TAMPILKAN DATA */
   setTimeout(async () => {
+
     const data = await fetchData();
 
     data.forEach(row => {
       const masa = hitungMasa(row.tmt_masuk);
+      const angka = masa.match(/\d+/g) || ["0","0"];
+      const tahun = parseInt(angka[0]);
+      const bulan = parseInt(angka[1]);
 
-      let masaFix = masa;
-      const angka = masa.match(/\d+/g);
-      const tahun = angka ? parseInt(angka[0]) : 0;
-      const bulan = angka ? parseInt(angka[1]) : 0;
-
-      let wrapStart = "";
-      let wrapEnd = "";
+      let wrapStart = "", wrapEnd = "", masaFix = masa;
 
       if (tahun === 0 && bulan < 2) {
         wrapStart = `<span class="baris-kedip-hijau">`;
@@ -422,7 +306,7 @@ async function startTyping() {
         masaFix = `<span class="blink-merah">${masa}</span>`;
       }
 
-      let line =
+      let line = 
 `${row.no.toString().padEnd(5)}${row.nama.padEnd(30)}${row.pangkat.padEnd(25)}${row.jabatan.padEnd(25)}${row.tmt_masuk.padEnd(15)}${row.tmt_keluar.padEnd(15)}${row.keterangan.padEnd(15)}${masaFix}\n`;
 
       if (String(row.pangkat).toUpperCase().includes("PNS")) {
@@ -432,15 +316,13 @@ async function startTyping() {
       terminal.innerHTML += wrapStart + line + wrapEnd;
     });
 
-    terminal.innerHTML += footer;
     terminal.classList.remove("typing");
     document.getElementById("buttons").classList.remove("hidden");
 
   }, 2500);
 }
 
-
-/* ================== DOWNLOAD ================== */
+/* DOWNLOAD */
 function downloadFile() {
   window.open(
     "https://drive.google.com/uc?export=download&id=1GAPWqs98GSMypnKYeow_oWzSYtAgzK6h",
@@ -448,8 +330,7 @@ function downloadFile() {
   );
 }
 
-
-/* ================== TAMPILKAN ANGGOTA MASUK < 2 BULAN ================== */
+/* FILTER ANGGOTA MASUK <2 BULAN */
 async function tampilAnggotaMasuk() {
 
   const terminal = document.getElementById("terminal");
@@ -459,14 +340,8 @@ async function tampilAnggotaMasuk() {
 
   const hasil = data.filter(row => {
     const masa = hitungMasa(row.tmt_masuk);
-    const angka = masa.match(/\d+/g);
-
-    if (!angka) return false;
-
-    const tahun = parseInt(angka[0]);
-    const bulan = parseInt(angka[1]);
-
-    return tahun === 0 && bulan < 2;
+    const angka = masa.match(/\d+/g) || [0,0];
+    return parseInt(angka[0]) === 0 && parseInt(angka[1]) < 2;
   });
 
   terminal.innerHTML += `
@@ -480,28 +355,20 @@ NO    NAMA                          PANGKAT                 JABATAN             
 
   hasil.forEach(row => {
     const masa = hitungMasa(row.tmt_masuk);
-
-    let masaFix = masa;
-    const angka = masa.match(/\d+/g);
+    const angka = masa.match(/\d+/g) || [0,0];
     const tahun = parseInt(angka[0]);
     const bulan = parseInt(angka[1]);
 
-    let wrapStart = "";
-    let wrapEnd = "";
+    let wrapStart = "", wrapEnd = "", masaFix = masa;
 
     if (tahun === 0 && bulan < 2) {
       wrapStart = `<span class="baris-kedip-hijau">`;
       wrapEnd = `</span>`;
       masaFix = `<span class="blink-hijau">${masa}</span>`;
     }
-    else if (tahun >= 2) {
-      wrapStart = `<span class="baris-kedip-merah">`;
-      wrapEnd = `</span>`;
-      masaFix = `<span class="blink-merah">${masa}</span>`;
-    }
 
     let line =
-`${row.no.toString().padEnd(5)}${row.nama.padEnd(30)}${row.pangkat.padEnd(25)}${row.jabatan.padEnd(25)}${row.tmt_masuk.padEnd(15)}${row.tmt_keluar.padEnd(15)}${row.keterangan.padEnd(15)}${masaFix}\n`;
+`${row.no.toString().padEnd(5)}${row.nama.padEnd(30)}${row.pangkat.padEnd(25)}${row.jabatan.padEnd(25)}${row.tmt_masuk.padEnd(15)}${masaFix}\n`;
 
     if (String(row.pangkat).toUpperCase().includes("PNS")) {
       line = `<span class="yellow">${line}</span>`;
@@ -516,32 +383,6 @@ TOTAL ANGGOTA MASUK: ${hasil.length}
 ---------------------------------------------------------------------------------------------------------------
 `;
 }
-
-function perbaikiTMT() {
-  const sheet = SpreadsheetApp.getActiveSheet();
-  const range = sheet.getRange("E11:E88");
-  const values = range.getValues();
-
-  const output = values.map(r => {
-    let v = r[0];
-
-    if (!v) return [""];
-
-    // Jika format ISO 2023-11-12T08:00:00.000Z
-    if (typeof v === "string" && v.includes("T")) {
-      const tgl = v.substring(0, 10); // ambil yyyy-mm-dd
-      const p = tgl.split("-");
-      return [new Date(p[0], p[1] - 1, p[2])];
-    }
-
-    // Jika sudah tanggal
-    return [new Date(v)];
-  });
-
-  range.setValues(output);
-  range.setNumberFormat("dd/mm/yyyy");
-}
-
 </script>
 
 </body>
