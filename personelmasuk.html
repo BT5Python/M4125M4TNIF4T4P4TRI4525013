@@ -406,10 +406,11 @@ async function tampilDatabase() {
 /* jika ingin auto-load tertentu, panggil tampilKeluar() di sini */
 
 function anggotaMasuk() {
-  fetch(URL_MASTER + "?action=masuk")
+  fetch(API_URL + "?action=masuk")
     .then(res => res.json())
     .then(data => {
       alert("Sinkronisasi anggota masuk selesai.");
+      tampilAnggotaMasuk(); // optional: langsung refresh tampilan
     })
     .catch(err => console.error(err));
 }
