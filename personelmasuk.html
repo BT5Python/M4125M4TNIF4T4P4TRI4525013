@@ -381,6 +381,54 @@ function anggotaMasuk() {
     .catch(err => console.error(err));
 }
 
+/**************************************************************
+ * DETEKSI DATA HILANG → MASUKKAN KE "Personel Keluar"
+ * + AUTO NOMOR URUT (kolom A = NO)
+ **************************************************************/
+function checkKeluar() {
+  const ss = SpreadsheetApp.getActive();
+  
+  const sheetData = ss.getSheetByName("DATA2");
+  const sheetSnap = ss.getSheetByName("DATA_SNAPSHOT");
+  const sheetKeluar = ss.getSheetByName("Personel Keluar");
+
+  const dataNow = sheetData.getDataRange().getValues();      // DATA2 terbaru
+  const snapOld = sheetSnap.getDataRange().getValues();      // snapshot lama
+
+  const nowNames = dataNow.slice(1).map(r => r[1]);          // kolom nama
+  const oldNames = snapOld.slice(1).map(r => r[1]);
+
+  // Cari siapa yang hilang
+  const hilang = oldNames.filter(n => n && !nowNames.includes(n));
+
+  if (hilang.length > 0) {
+    hilang.forEach(nama => {
+      const row = snapOld.find(r => r[1] === nama); // ambil baris lama
+      if (!row) return;
+
+      // Ambil nomor terakhir di Personel Keluar
+      let lastRow = sheetKeluar.getLastRow();
+      let nextNo = 1;
+
+      if (lastRow > 1) {
+        const lastNo = sheetKeluar.getRange(lastRow, 1).getValue();
+        nextNo = Number(lastNo) + 1;
+      }
+
+      // Buat baris baru → tambahkan NO di kolom A
+      const newRow = [nextNo, ...row.slice(1)];
+
+      sheetKeluar.appendRow(newRow);
+    });
+  }
+
+  // UPDATE SNAPSHOT
+  sheetSnap.clearContents();
+  sheetSnap
+    .getRange(1, 1, dataNow.length, dataNow[0].length)
+    .setValues(dataNow);
+}
+
 </script>
 </body>
 </html>
