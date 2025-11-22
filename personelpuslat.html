@@ -401,7 +401,7 @@ async function startTyping() {
     const data = await fetchData();
 
     data.forEach(row => {
-      const masa = hitungMasa(row.tmt);
+      const masa = hitungMasa(row.tmt_masuk);
 
       let masaFix = masa;
       const angka = masa.match(/\d+/g);
@@ -458,7 +458,7 @@ async function tampilAnggotaMasuk() {
   const data = await fetchData();
 
   const hasil = data.filter(row => {
-    const masa = hitungMasa(row.tmt);
+    const masa = hitungMasa(row.tmt_masuk);
     const angka = masa.match(/\d+/g);
 
     if (!angka) return false;
@@ -479,7 +479,7 @@ NO    NAMA                          PANGKAT                 JABATAN             
 `;
 
   hasil.forEach(row => {
-    const masa = hitungMasa(row.tmt);
+    const masa = hitungMasa(row.tmt_masuk);
 
     let masaFix = masa;
     const angka = masa.match(/\d+/g);
