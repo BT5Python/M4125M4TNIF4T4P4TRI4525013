@@ -496,7 +496,14 @@ NO    NAMA                          PANGKAT                 JABATAN             
     }
 
     let line =
-`${row.no.toString().padEnd(5)}${row.nama.padEnd(30)}${row.pangkat.padEnd(25)}${row.jabatan.padEnd(25)}${row.tmt_masuk.padEnd(15)}${masaFix}\n`;
+`${String(row.no).padEnd(5)}
+${String(row.nama).padEnd(35)}
+${String(row.pangkat).padEnd(20)}
+${String(row.jabatan).padEnd(42)}
+${String(row.tmt_masuk).padEnd(18)}
+${String(row.tmt_keluar).padEnd(18)}
+${String(row.keterangan).padEnd(20)}
+${masaFix}\n`;
 
     if (String(row.pangkat).toUpperCase().includes("PNS")) {
       line = `<span class="yellow">${line}</span>`;
