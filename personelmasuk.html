@@ -397,30 +397,6 @@ TOTAL ANGGOTA MASUK: ${hasil.length}
 `;
 }
 
-/* ==================== TAMPILKAN ANGGOTA KELUAR ==================== */
-async function tampilKeluar() {
-  const terminal = document.getElementById("terminal");
-  terminal.innerHTML = "";
-  terminal.classList.remove("typing");
-
-  const data = await fetchDataFromSheet(SHEET_PERSONEL_KELUAR);
-
-  terminal.innerHTML += `
- ===============================================
- |          DAFTAR PERSONEL KELUAR             |
- ===============================================
- NO    NAMA                          PANGKAT                 JABATAN                        TMT           KETERANGAN       MASA DINAS
- ------------------------------------------------------------------------------------------------------------------------------------
-  `;
-
-  renderTableToTerminal(data, { columns: ["no","nama","pangkat","jabatan","tmt","keterangan"], padWidths: [5,30,25,30,15,15] });
-
-  terminal.innerHTML += `
- ------------------------------------------------------------------------------------------------------------------------------------
- TOTAL PERSONEL KELUAR: ${data.length}
- ------------------------------------------------------------------------------------------------------------------------------------
- `;
-}
 
 /* ==================== TAMPILKAN DATABASE (DATA2) ==================== */
 async function tampilDatabase() {
