@@ -193,23 +193,45 @@ async function startTyping() {
 
 function downloadFile(){ window.open(DOWNLOAD_URL,"_blank"); }
 
-async function tampilAnggotaMasuk(){
-  const terminal=document.getElementById("terminal");
-  terminal.innerHTML="";
-  const data = await fetchDataFromSheet(SHEET_PERSONEL_MASUK);
-  const hasil = data.filter(row=>{
-    const tmt = row && typeof row==="object" && !Array.isArray(row)?row.tmt:(Array.isArray(row)?row[4]:null);
+async function tampilAnggotaMasuk() {
+  const terminal = document.getElementById("terminal");
+  terminal.innerHTML = "";
+  terminal.classList.remove("typing");
+
+  // PASTIKAN MEMANG MEMANGGIL SHEET "Personel Masuk"
+  const data = await fetchDataFromSheet("Personel Masuk");
+
+  // filter anggota <2 bulan
+  const hasil = data.filter(row => {
+    const tmt = row && typeof row === "object" ? row.tmt : null;
     const masa = hitungMasa(tmt);
     const angka = masa.match(/\d+/g);
-    if(!angka) return false;
-    const tahun=parseInt(angka[0]);
-    const bulan = angka&&angka[1]?parseInt(angka[1]):0;
-    return tahun===0 && bulan<2;
+    if (!angka) return false;
+    const tahun = parseInt(angka[0]);
+    const bulan = angka && angka[1] ? parseInt(angka[1]) : 0;
+    return tahun === 0 && bulan < 2;
   });
-  terminal.innerHTML+=`\n===============================================\n| LIST ANGGOTA MASUK (Masa < 2 Bulan)         |\n===============================================\n\nNO    NAMA                          PANGKAT                 JABATAN                 TMT           MASA DINAS\n---------------------------------------------------------------------------------------------------------------\n`;
-  renderTableToTerminal(hasil,{columns:["no","nama","pangkat","jabatan","tmt"],padWidths:[5,30,25,25,15]});
-  terminal.innerHTML+=`\n---------------------------------------------------------------------------------------------------------------\nTOTAL ANGGOTA MASUK: ${hasil.length}\n---------------------------------------------------------------------------------------------------------------\n`;
+
+  // header tabel
+  terminal.innerHTML += `
+===============================================
+|           DAFTAR PERSONEL MASUK            |
+===============================================
+NO    NAMA                          PANGKAT                 JABATAN                 TMT           MASA DINAS
+---------------------------------------------------------------------------------------------------------------
+`;
+
+  // render data
+  renderTableToTerminal(hasil, { columns: ["no","nama","pangkat","jabatan","tmt"], padWidths: [5,30,25,25,15] });
+
+  // footer tabel
+  terminal.innerHTML += `
+---------------------------------------------------------------------------------------------------------------
+TOTAL PERSONEL MASUK (<2 BLN): ${hasil.length}
+---------------------------------------------------------------------------------------------------------------
+`;
 }
+
 
 async function tampilKeluar(){
   const terminal=document.getElementById("terminal");
