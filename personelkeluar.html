@@ -269,7 +269,7 @@ pre {
 <!-- Tombol -->
 <div class="button-container hidden" id="buttons">
   <button onclick="tampilAnggotaMasuk()">anggota masuk</button>
-  <button onclick="window.location.href='mutasi/keluar'">anggota keluar</button>
+  <button onclick="tampilKeluar()">anggota keluar</button>
   <button onclick="window.location.href='database.html'">back to DATABASE</button>
   <button class="download-btn" onclick="downloadFile()">⬇ DOWNLOAD</button>
 </div>
@@ -541,6 +541,79 @@ function perbaikiTMT() {
   range.setValues(output);
   range.setNumberFormat("dd/mm/yyyy");
 }
+
+/* ================== TAMPILKAN ANGGOTA KELUAR ================== */
+async function tampilKeluar() {
+
+  const terminal = document.getElementById("terminal");
+  terminal.innerHTML = "";
+  terminal.classList.remove("typing");
+
+  // Fetch data dari sheet "Personel Keluar"
+  const res = await fetch(url + "?sheet=Personel Keluar");
+  const data = await res.json();
+
+  /* ===== HEADER ===== */
+  terminal.innerHTML += `
+ ===============================================
+ |          DAFTAR PERSONEL KELUAR             |
+ ===============================================
+ NO    NAMA                          PANGKAT                 JABATAN                        TMT           KETERANGAN       MASA DINAS
+ ------------------------------------------------------------------------------------------------------------------------------------
+  `;
+
+  /* ===== LOOP DATA ===== */
+  data.forEach(row => {
+
+    const masa = hitungMasa(row.tmt);
+    let masaFix = masa;
+
+    const angka = masa.match(/\d+/g);
+    const tahun = angka ? parseInt(angka[0]) : 0;
+    const bulan = angka ? parseInt(angka[1]) : 0;
+
+    let wrapStart = "";
+    let wrapEnd = "";
+
+    // Kedip Hijau (< 2 bulan)
+    if (tahun === 0 && bulan < 2) {
+      wrapStart = `<span class="baris-kedip-hijau">`;
+      wrapEnd = `</span>`;
+      masaFix = `<span class="blink-hijau">${masa}</span>`;
+    }
+    // Kedip Merah (>= 2 tahun)
+    else if (tahun >= 2) {
+      wrapStart = `<span class="baris-kedip-merah">`;
+      wrapEnd = `</span>`;
+      masaFix = `<span class="blink-merah">${masa}</span>`;
+    }
+
+    // Format baris
+    let line =
+      `${String(row.no).padEnd(5)}` +
+      `${String(row.nama).padEnd(30)}` +
+      `${String(row.pangkat).padEnd(25)}` +
+      `${String(row.jabatan).padEnd(30)}` +
+      `${String(row.tmt).padEnd(15)}` +
+      `${String(row.keterangan).padEnd(15)}` +
+      `${masaFix}\n`;
+
+    // PNS warna kuning
+    if (String(row.pangkat).toUpperCase().includes("PNS")) {
+      line = `<span class="yellow">${line}</span>`;
+    }
+
+    terminal.innerHTML += wrapStart + line + wrapEnd;
+  });
+
+  /* ===== FOOTER ===== */
+  terminal.innerHTML += `
+ ------------------------------------------------------------------------------------------------------------------------------------
+ TOTAL PERSONEL KELUAR: ${data.length}
+ ------------------------------------------------------------------------------------------------------------------------------------
+ `;
+}
+
 
 </script>
 
