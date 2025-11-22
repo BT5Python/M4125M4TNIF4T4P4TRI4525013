@@ -101,7 +101,7 @@ button.download-btn:hover { background-color: #ff0000; color: black; animation: 
 
 <!-- Buttons -->
 <div class="button-container hidden" id="buttons">
-  <button onclick="anggotaMasuk()">Anggota Masuk</button>
+  <button onclick="anggotaMasuk()">anggota masuk</button>
   <button onclick="tampilKeluar()">anggota keluar</button>
   <button onclick="window.location.href='database.html'">back to DATABASE</button>
   <button class="download-btn" onclick="downloadFile()">⬇ DOWNLOAD</button>
@@ -324,39 +324,6 @@ function downloadFile() {
   window.open(DOWNLOAD_URL, "_blank");
 }
 
-/* ==================== TAMPILKAN ANGGOTA MASUK (<2 BULAN) ==================== */
-async function tampilAnggotaMasuk() {
-  const terminal = document.getElementById("terminal");
-  terminal.innerHTML = "";
-  const data = await fetchDataFromSheet(SHEET_PERSONEL_MASUK);
-
-  const hasil = data.filter(row => {
-    const tmt = (row && typeof row === "object" && !Array.isArray(row)) ? row.tmt : (Array.isArray(row) ? row[4] : null);
-    const masa = hitungMasa(tmt);
-    const angka = masa.match(/\d+/g);
-    if (!angka) return false;
-    const tahun = parseInt(angka[0]);
-    const bulan = parseInt(angka[1]);
-    return tahun === 0 && bulan < 2;
-  });
-
-  terminal.innerHTML += `
-===============================================
-| LIST ANGGOTA MASUK (Masa < 2 Bulan)         |
-===============================================
-
-NO    NAMA                          PANGKAT                 JABATAN                 TMT           MASA DINAS
----------------------------------------------------------------------------------------------------------------
-`;
-
-  renderTableToTerminal(hasil, { columns: ["no","nama","pangkat","jabatan","tmt"], padWidths: [5,30,25,25,15] });
-
-  terminal.innerHTML += `
----------------------------------------------------------------------------------------------------------------
-TOTAL ANGGOTA MASUK: ${hasil.length}
----------------------------------------------------------------------------------------------------------------
-`;
-}
 
 /* ==================== TAMPILKAN ANGGOTA KELUAR ==================== */
 async function tampilKeluar() {
