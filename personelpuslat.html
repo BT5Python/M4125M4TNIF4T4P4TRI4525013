@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PUSLAT KODIKLATAU – DATA PERSONEL</title>
+<title>evolution is my revolution</title>
+
 <style>
 body {
   background-color: black;
@@ -13,189 +14,535 @@ body {
   font-size: 12px;
   text-align: left;
 }
+
+pre { 
+  white-space: pre-wrap; 
+  word-wrap: break-word; 
+  letter-spacing: 1px; 
+  line-height: 1.5; 
+}
+
+.typing {
+  border-right: 2px solid #00ff00;
+  animation: blinkCursor 0.7s infinite;
+}
+
+@keyframes blinkCursor { 
+  50% { border-color: transparent; } 
+}
+
+/* ============================
+   KEDIP BARIS < 2 BULAN
+   ============================ */
+.baris-kedip-hijau {
+  animation: kedipHijauBaris 0.6s infinite;
+}
+
+@keyframes kedipHijauBaris {
+  0%   { background-color: rgba(0,255,0,0.1); }
+  50%  { background-color: rgba(0,80,0,0.3); }
+  100% { background-color: rgba(0,255,0,0.1); }
+}
+
+/* ============================
+   KEDIP BARIS ≥ 2 TAHUN
+   ============================ */
+.baris-kedip-merah {
+  animation: kedipMerahBaris 0.6s infinite;
+}
+
+@keyframes kedipMerahBaris {
+  0%   { background-color: rgba(255,0,0,0.1); }
+  50%  { background-color: rgba(80,0,0,0.3); }
+  100% { background-color: rgba(255,0,0,0.1); }
+}
+
+/* KEDIP TEKS */
+.blink-hijau {
+  color: #00ff00;
+  animation: kedipHijau 0.5s infinite;
+}
+
+@keyframes kedipHijau {
+  0%   { color: #00ff00; }
+  50%  { color: #003300; }
+  100% { color: #00ff00; }
+}
+
+.blink-merah {
+  color: #ff0000;
+  animation: kedipMerah 0.5s infinite;
+}
+
+@keyframes kedipMerah {
+  0%   { color: #ff0000; }
+  50%  { color: #330000; }
+  100% { color: #ff0000; }
+}
+
+/* PNS warna kuning */
+.yellow { 
+  color: #ffff00; 
+  font-weight: bold; 
+}
+
+.hidden { display: none; }
+
+/* Tombol */
+.button-container {
+  text-align: center;
+  margin-top: 25px;
+}
+
+button {
+  background-color: black;
+  color: #00ff00;
+  border: 1px solid #00ff00;
+  font-family: "Courier New", monospace;
+  padding: 8px 20px;
+  font-size: 12px;
+  margin: 0 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background-color: #00ff00;
+  color: black;
+  font-weight: bold;
+}
+
+button.download-btn {
+  color: #ff0000;
+  border-color: #ff0000;
+  animation: blinkRedBtn 0.5s infinite;
+}
+
+@keyframes blinkRedBtn {
+  0% { color: #ff0000; }
+  50% { color: #330000; }
+  100% { color: #ff0000; }
+}
+
+button.download-btn:hover {
+  background-color: #ff0000;
+  color: black;
+  animation: none;
+}
+
+/* Running text */
+#runningText {
+  color: #00ff00;
+  white-space: nowrap;
+  overflow: hidden;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+#runningText span {
+  display: inline-block;
+  padding-left: 100%;
+  animation: runText 15s linear infinite;
+}
+
+@keyframes runText {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+
+/* RESPONSIVE SUPER KECIL — biar semua baris masuk 1 line */
+@media (max-width: 1100px) {
+  pre {
+    transform: scale(0.65);
+    transform-origin: top left;
+  }
+}
+
+@media (max-width: 800px) {
+  pre {
+    transform: scale(0.45);
+    transform-origin: top left;
+  }
+}
+
+@media (max-width: 600px) {
+  pre {
+    transform: scale(0.35);
+    transform-origin: top left;
+  }
+}
+
+@media (max-width: 450px) {
+  pre {
+    transform: scale(0.30);
+    transform-origin: top left;
+  }
+}
+/* ==== RESPONSIVE SATU BARIS TANPA GANGGU CSS LAIN ==== */
+
+.row-flex-fix {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 4px;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.row-flex-fix > div {
+    flex: 0 0 auto;
+    font-size: 10px;
+    padding: 2px 4px;
+}
+
+/* Kolom minimal agar muat di tablet */
+.row-flex-fix .col-nama { min-width: 60px; }
+.row-flex-fix .col-pangkat { min-width: 45px; }
+.row-flex-fix .col-jabatan { min-width: 90px; }
+.row-flex-fix .col-tmt { min-width: 70px; }
+.row-flex-fix .col-ket { min-width: 160px; }
+
+  /* FIX: AGAR SEMUA BARIS TETAP 1 LINE DI TABLET / HP */
 pre {
-  white-space: pre;
-  overflow-x: auto;
+    white-space: pre !important;
+    overflow-x: auto !important;
 }
 
-/* BLINK KUNING UNTUK <2 BULAN */
-.blink-yellow {
-  animation: blinkYellow 1s infinite;
-}
-@keyframes blinkYellow {
-  0% { color: yellow; }
-  50% { color: #00ff00; }
-  100% { color: yellow; }
+/* AGAR PRE SELALU FULL LAYAR & TIDAK PERLU SCROLL */
+pre {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    display: block;
+    letter-spacing: 1px;
 }
 
-/* BLINK MERAH UNTUK >=2 TAHUN */
-.blink-red {
-  animation: blinkRed 0.8s infinite;
+/* KECILKAN TEKS DI DALAM PRE SUPAYA MUAT 1 LAYAR */
+#terminal {
+    font-size: 10px !important;
 }
-@keyframes blinkRed {
-  0% { color: red; }
-  50% { color: #00ff00; }
-  100% { color: red; }
+
+/* KHUSUS TABLET */
+@media (max-width: 1100px) {
+  #terminal {
+    font-size: 8px !important;
+  }
 }
+
+/* HP LEBAR SEDANG */
+@media (max-width: 800px) {
+  #terminal {
+    font-size: 7px !important;
+  }
+}
+
+/* HP KECIL */
+@media (max-width: 600px) {
+  #terminal {
+    font-size: 6px !important;
+  }
+}
+
 </style>
 </head>
 <body>
-<pre id="terminal"></pre>
+
+<!-- Bagian Loading -->
+<div id="loading">
+  <p>>> initializing connection...</p>
+  <p class="hidden">>>> accessing database node...</p>
+  <p class="hidden">>>> verifying security clearance...</p>
+  <p class="hidden">>>> clearance level verified ✓</p>
+  <p class="hidden">>>> retrieving personel puslat...</p>
+</div>
+
+<!-- Bagian Utama -->
+<div id="main" class="hidden">
+  <div id="runningText">
+    <span>⚠ THIS DATA IS CONFIDENTIAL - FOR THE KODIKLATAU CENTER ENVIRONMENT ONLY ⚠ </span>
+  </div>
+  <pre id="terminal" class="typing"></pre>
+</div>
+
+<!-- Tombol -->
+<div class="button-container hidden" id="buttons">
+  <button onclick="tampilAnggotaMasuk()">anggota masuk</button>
+  <button onclick="window.location.href='personelkeluar.html'">anggota keluar</button>
+  <button onclick="window.location.href='database.html'">back to DATABASE</button>
+  <button class="download-btn" onclick="downloadFile()">⬇ DOWNLOAD</button>
+</div>
 
 <script>
-/****************************************************
- * UTIL: parse date string (supports dd/mm/yyyy or ISO)
- ****************************************************/
-function parseDateFlexible(str) {
-  if (!str) return null;
-  // If already a Date object
-  if (Object.prototype.toString.call(str) === '[object Date]') {
-    return str;
-  }
-  // If contains / assume dd/mm/yyyy
-  if (typeof str === 'string' && str.indexOf('/') !== -1) {
-    const parts = str.split('/').map(s => s.trim());
-    if (parts.length >= 3) {
-      const d = parseInt(parts[0], 10);
-      const m = parseInt(parts[1], 10) - 1;
-      const y = parseInt(parts[2], 10);
-      return new Date(y, m, d);
-    }
-  }
-  // Try Date constructor (ISO etc)
-  const dt = new Date(str);
-  if (!isNaN(dt)) return dt;
-  return null;
-}
+/* ================== LOADING ================== */
+const lines = document.querySelectorAll("#loading p");
+let delay = 800;
 
-/****************************************************
- * HITUNG MASA DINAS
- ****************************************************/
+lines.forEach((line, index) => {
+  setTimeout(() => {
+    line.classList.remove("hidden");
+    if (index === lines.length - 1) {
+      setTimeout(() => {
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("main").classList.remove("hidden");
+        startTyping();
+      }, 1000);
+    }
+  }, delay * (index + 1));
+});
+
+
+/* ================== HITUNG MASA DINAS ================== */
 function hitungMasa(tmt) {
-  const parsed = parseDateFlexible(tmt);
-  if (!parsed) return "-";
-  const t = parsed;
+  if (!tmt || !tmt.includes("/")) return "-";
 
-  const now = new Date();
-  let year = now.getFullYear() - t.getFullYear();
-  let month = now.getMonth() - t.getMonth();
-  let day = now.getDate() - t.getDate();
+  const p = tmt.split("/");
+  const start = new Date(p[2], p[1] - 1, p[0]);
+  const today = new Date();
 
-  if (day < 0) {
-    month--;
-    // approximate days in previous month
-    const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
-    day += prevMonth.getDate();
+  let y = today.getFullYear() - start.getFullYear();
+  let m = today.getMonth() - start.getMonth();
+  let d = today.getDate() - start.getDate();
+
+  if (d < 0) {
+    m--;
+    d += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
   }
-  if (month < 0) {
-    year--;
-    month += 12;
+  if (m < 0) {
+    y--;
+    m += 12;
   }
-  return `${year} tahun ${month} bulan`;
+
+  return `${y} th ${m} bln ${d} hr`;
 }
 
-/****************************************************
- * FORMAT BLINK
- ****************************************************/
-function formatMasaBlink(masa) {
-  if (!masa || masa === "-") return masa;
-  const parts = masa.split(" ");
 
-  const tahun = parseInt(parts[0]) || 0;
-  const bulan = parseInt(parts[2]) || 0;
+/* ================== FETCH DATA ================== */
+async function fetchData() {
+  const url =
+    "https://script.google.com/macros/s/AKfycbyKpkLev2RX4TXzXdXEJ8Urb9V-av4CB3oTaloT2ta11uzyG9YaDw-cn999GywGd9To/exec";
 
-  if (tahun === 0 && bulan < 2) {
-    return `<span class='blink-yellow'>${masa}</span>`;
-  }
-  if (tahun >= 2) {
-    return `<span class='blink-red'>${masa}</span>`;
-  }
-  return masa;
+  const res = await fetch(url);
+  return res.json();
 }
 
-/****************************************************
- * DAFTAR ANGGOTA MASUK (<2 BULAN)
- * Build lines array to avoid multiline-string syntax issues
- ****************************************************/
-function tampilAnggotaMasuk(data) {
-  const lines = [];
-  lines.push('');
-  lines.push('DAFTAR ANGGOTA MASUK (< 2 BULAN)');
-  lines.push('===============================================================');
-  lines.push('NO   NAMA                               PANGKAT            JABATAN                              TMT MASUK        MASA DINAS');
-  lines.push('---------------------------------------------------------------------------------------------------------------------------');
 
-  data.forEach(row => {
-    if (!row || !row.tmt_masuk) return;
+/* ================== EFEK KETIK ================== */
+async function startTyping() {
 
-    const masa = hitungMasa(row.tmt_masuk);
-    const tahun = parseInt(masa.split(" ")[0]) || 0;
-    const bulan = parseInt(masa.split(" ")[2]) || 0;
+  const terminal = document.getElementById("terminal");
 
-    if (tahun === 0 && bulan < 2) {
-      const line = `${String(row.no || '').padEnd(5)}${String(row.nama || '').padEnd(35)}${String(row.pangkat || '').padEnd(20)}${String(row.jabatan || '').padEnd(32)}${String(row.tmt_masuk || '').padEnd(16)}${masa}`;
-      lines.push(line);
+  const textBefore = `
+====================================
+| FILE: PERSONEL PUSLAT KODIKLATAU |
+| CLASSIFICATION: `;
+
+  const textAfterTop = `
+====================================
+`;
+
+  const rahasia = "RAHASIA";
+
+  const tableHeader = `
+---------------------------------------------------------------------------------------------------------------
+`;
+
+  const footer = `
+---------------------------------------------------------------------------------------------------------------
+* Center personnel data is automatically updated from Spreadsheet
+* Information is only for the PUSLAT KODIKLATAU environment.
+---------------------------------------------------------------------------------------------------------------
+`;
+
+  let i = 0, step = 0;
+  let spanRahasia;
+
+  function type() {
+
+    if (step === 0) {
+      if (i < textBefore.length) {
+        terminal.textContent += textBefore.charAt(i++);
+        return setTimeout(type, 1);
+      }
+      step = 1;
+      i = 0;
+      spanRahasia = document.createElement("span");
+      spanRahasia.classList.add("blink-merah");
+      terminal.appendChild(spanRahasia);
+      return type();
     }
+
+    if (step === 1) {
+      if (i < rahasia.length) {
+        spanRahasia.textContent += rahasia.charAt(i++);
+        return setTimeout(type, 30);
+      }
+      step = 2;
+      i = 0;
+      return type();
+    }
+
+    if (step === 2) {
+      if (i < textAfterTop.length) {
+        terminal.innerHTML += textAfterTop.charAt(i++);
+        return setTimeout(type, 1);
+      }
+      step = 3;
+      terminal.innerHTML += tableHeader;
+      return type();
+    }
+  }
+
+  type();
+
+  /* tampilkan data */
+  setTimeout(async () => {
+    const data = await fetchData();
+
+    data.forEach(row => {
+      const masa = hitungMasa(row.tmt);
+
+      let masaFix = masa;
+      const angka = masa.match(/\d+/g);
+      const tahun = angka ? parseInt(angka[0]) : 0;
+      const bulan = angka ? parseInt(angka[1]) : 0;
+
+      let wrapStart = "";
+      let wrapEnd = "";
+
+      if (tahun === 0 && bulan < 2) {
+        wrapStart = `<span class="baris-kedip-hijau">`;
+        wrapEnd = `</span>`;
+        masaFix = `<span class="blink-hijau">${masa}</span>`;
+      }
+      else if (tahun >= 2) {
+        wrapStart = `<span class="baris-kedip-merah">`;
+        wrapEnd = `</span>`;
+        masaFix = `<span class="blink-merah">${masa}</span>`;
+      }
+
+      let line =
+`${row.no.toString().padEnd(5)}${row.nama.padEnd(35)}${row.pangkat.padEnd(20)}${row.jabatan.padEnd(42)}${row.tmt_masuk.padEnd(20)}${row.tmt_keluar.padEnd(20)}${row.keterangan.padEnd(15)}${masaFix}\n`;
+
+      if (String(row.pangkat).toUpperCase().includes("PNS")) {
+        line = `<span class="yellow">${line}</span>`;
+      }
+
+      terminal.innerHTML += wrapStart + line + wrapEnd;
+    });
+
+    terminal.innerHTML += footer;
+    terminal.classList.remove("typing");
+    document.getElementById("buttons").classList.remove("hidden");
+
+  }, 2500);
+}
+
+
+/* ================== DOWNLOAD ================== */
+function downloadFile() {
+  window.open(
+    "https://drive.google.com/uc?export=download&id=1GAPWqs98GSMypnKYeow_oWzSYtAgzK6h",
+    "_blank"
+  );
+}
+
+
+/* ================== TAMPILKAN ANGGOTA MASUK < 2 BULAN ================== */
+async function tampilAnggotaMasuk() {
+
+  const terminal = document.getElementById("terminal");
+  terminal.innerHTML = "";
+
+  const data = await fetchData();
+
+  const hasil = data.filter(row => {
+    const masa = hitungMasa(row.tmt);
+    const angka = masa.match(/\d+/g);
+
+    if (!angka) return false;
+
+    const tahun = parseInt(angka[0]);
+    const bulan = parseInt(angka[1]);
+
+    return tahun === 0 && bulan < 2;
   });
 
-  lines.push('');
-  return lines.join('
-');
+  terminal.innerHTML += `
+===============================================
+| LIST ANGGOTA MASUK (Masa < 2 Bulan)         |
+===============================================
+
+NO    NAMA                          PANGKAT                 JABATAN                 TMT           MASA DINAS
+---------------------------------------------------------------------------------------------------------------
+`;
+
+  hasil.forEach(row => {
+    const masa = hitungMasa(row.tmt);
+
+    let masaFix = masa;
+    const angka = masa.match(/\d+/g);
+    const tahun = parseInt(angka[0]);
+    const bulan = parseInt(angka[1]);
+
+    let wrapStart = "";
+    let wrapEnd = "";
+
+    if (tahun === 0 && bulan < 2) {
+      wrapStart = `<span class="baris-kedip-hijau">`;
+      wrapEnd = `</span>`;
+      masaFix = `<span class="blink-hijau">${masa}</span>`;
+    }
+    else if (tahun >= 2) {
+      wrapStart = `<span class="baris-kedip-merah">`;
+      wrapEnd = `</span>`;
+      masaFix = `<span class="blink-merah">${masa}</span>`;
+    }
+
+    let line =
+`${row.no.toString().padEnd(5)}${row.nama.padEnd(30)}${row.pangkat.padEnd(25)}${row.jabatan.padEnd(25)}${row.tmt.padEnd(15)}${masaFix}\n`;
+
+    if (String(row.pangkat).toUpperCase().includes("PNS")) {
+      line = `<span class="yellow">${line}</span>`;
+    }
+
+    terminal.innerHTML += wrapStart + line + wrapEnd;
+  });
+
+  terminal.innerHTML += `
+---------------------------------------------------------------------------------------------------------------
+TOTAL ANGGOTA MASUK: ${hasil.length}
+---------------------------------------------------------------------------------------------------------------
+`;
 }
 
-/****************************************************
- * LOAD DATA DARI APPS SCRIPT
- ****************************************************/
-async function loadData() {
-  try {
-    const res = await fetch("https://script.google.com/macros/s/AKfycbz8BEN43Zo0lL5tkow9Tj0SdI81hFWHhjNsunasfKNP1yu1uKFPMrGm7Z7F48jLRy8/exec");
-    const data = await res.json();
+function perbaikiTMT() {
+  const sheet = SpreadsheetApp.getActiveSheet();
+  const range = sheet.getRange("E11:E88");
+  const values = range.getValues();
 
-    const lines = [];
-    lines.push('DATA PERSONEL PUSLAT KODIKLATAU');
-    lines.push('========================================================================================================================');
-    lines.push('NO   NAMA                               PANGKAT            JABATAN                              TMT MASUK        TMT KELUAR       KET                 MASA DINAS');
-    lines.push('------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------');
+  const output = values.map(r => {
+    let v = r[0];
 
-    data.forEach(row => {
-      const masa = hitungMasa(row.tmt_masuk);
-      const masaHTML = formatMasaBlink(masa);
+    if (!v) return [""];
 
-      // We will keep masaHTML as plain text for pre block; since we want colored spans, use innerHTML later
-      const line = `${String(row.no || '').padEnd(5)}${String(row.nama || '').padEnd(35)}${String(row.pangkat || '').padEnd(20)}${String(row.jabatan || '').padEnd(42)}${String(row.tmt_masuk || '').padEnd(18)}${String(row.tmt_keluar || '').padEnd(18)}${String(row.keterangan || '').padEnd(20)}${masa}`;
-      lines.push(line);
-    });
+    // Jika format ISO 2023-11-12T08:00:00.000Z
+    if (typeof v === "string" && v.includes("T")) {
+      const tgl = v.substring(0, 10); // ambil yyyy-mm-dd
+      const p = tgl.split("-");
+      return [new Date(p[0], p[1] - 1, p[2])];
+    }
 
-    // Add anggota masuk block
-    lines.push(tampilAnggotaMasuk(data));
+    // Jika sudah tanggal
+    return [new Date(v)];
+  });
 
-    // Render to terminal: we want to allow span coloring for masa, so we'll replace masa occurrences with formatted span
-    const rawText = lines.join('
-');
-
-    // Replace masa patterns (e.g., "0 tahun 1 bulan" or "2 tahun 0 bulan") with formatted spans
-    // Build a map of masa -> formatted HTML to avoid accidental replacements
-    const masaSet = new Set();
-    data.forEach(row => {
-      const m = hitungMasa(row.tmt_masuk);
-      if (m && m !== '-') masaSet.add(m);
-    });
-
-    let html = rawText;
-    masaSet.forEach(m => {
-      const escaped = m.replace(/[-/\^$*+?.()|[\]{}]/g, '\$&');
-      const re = new RegExp(escaped, 'g');
-      html = html.replace(re, formatMasaBlink(m));
-    });
-
-    document.getElementById('terminal').innerHTML = html;
-  } catch (e) {
-    console.error(e);
-    document.getElementById('terminal').textContent = 'Gagal memuat data...';
-  }
+  range.setValues(output);
+  range.setNumberFormat("dd/mm/yyyy");
 }
 
-loadData();
 </script>
+
 </body>
 </html>
