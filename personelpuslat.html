@@ -389,6 +389,24 @@ function downloadFile() {
   );
 }
 
+  async function loadPersonelMasuk() {
+  try {
+    const url =
+      "https://script.google.com/macros/s/AKfycbyKpkLev2RX4TXzXdXEJ8Urb9V-av4CB3oTaloT2ta11uzyG9YaDw-cn999GywGd9To/exec?sheet=Personel%20Masuk";
+
+    document.getElementById("output").innerHTML = "Memuat data Personel Masuk...";
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    renderTable(data); // gunakan fungsi renderTable milik kamu sendiri
+  } 
+  catch (err) {
+    document.getElementById("output").innerHTML = "Gagal mengambil data.";
+    console.error(err);
+  }
+}
+
 </script>
 
 </body>
