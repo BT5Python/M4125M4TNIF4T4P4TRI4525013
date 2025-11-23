@@ -392,39 +392,73 @@ function downloadFile() {
 }
 
   async function loadPersonelMasuk() {
+
+  const terminal = document.getElementById("terminal");
+  terminal.innerHTML = "";   // hapus isi terminal
+
+  const header = `
+====================================
+| FILE: PERSONEL MASUK PUSLAT      |
+| CLASSIFICATION: <span class="blink-merah">RAHASIA</span>
+====================================
+
+---------------------------------------------------------------------------------------------------------------
+`;
+
+  terminal.innerHTML = header;
+
   try {
     const url =
       "https://script.google.com/macros/s/AKfycbyKpkLev2RX4TXzXdXEJ8Urb9V-av4CB3oTaloT2ta11uzyG9YaDw-cn999GywGd9To/exec?sheet=Personel%20Masuk";
 
-    document.getElementById("output").innerHTML = "Memuat data Personel Masuk...";
-
     const res = await fetch(url);
     const data = await res.json();
 
-    renderTable(data); // gunakan fungsi renderTable milik kamu sendiri
-  } 
-  catch (err) {
-    document.getElementById("output").innerHTML = "Gagal mengambil data.";
-    console.error(err);
-  }
-}
+    data.forEach(row => {
+      const masa = hitungMasa(row.tmt);
 
-  async function loadPersonelMasuk() {
-  try {
-    const url =
-      "https://script.google.com/macros/s/AKfycbyKpkLev2RX4TXzXdXEJ8Urb9V-av4CB3oTaloT2ta11uzyG9YaDw-cn999GywGd9To/exec?sheet=Personel%20Masuk";
+      let masaFix = masa;
+      const angka = masa.match(/\d+/g);
+      const tahun = angka ? parseInt(angka[0]) : 0;
+      const bulan = angka ? parseInt(angka[1]) : 0;
 
-    document.getElementById("output").innerHTML = "Memuat data Personel Masuk...";
+      let wrapStart = "";
+      let wrapEnd = "";
 
-    const res = await fetch(url);
-    const data = await res.json();
+      if (tahun === 0 && bulan < 2) {
+        wrapStart = `<span class="baris-kedip-hijau">`;
+        wrapEnd = `</span>`;
+        masaFix = `<span class="blink-hijau">${masa}</span>`;
+      }
+      else if (tahun >= 2) {
+        wrapStart = `<span class="baris-kedip-merah">`;
+        wrapEnd = `</span>`;
+        masaFix = `<span class="blink-merah">${masa}</span>`;
+      }
 
-    renderTable(data); // ini fungsi milik kamu
+      let line =
+`${row.no.toString().padEnd(5)}${row.nama.padEnd(35)}${row.pangkat.padEnd(20)}${row.jabatan.padEnd(42)}${row.tmt.padEnd(20)}${row.keterangan.padEnd(15)}${masaFix}\n`;
+
+      if (String(row.pangkat).toUpperCase().includes("PNS")) {
+        line = `<span class="yellow">${line}</span>`;
+      }
+
+      terminal.innerHTML += wrapStart + line + wrapEnd;
+    });
+
+    terminal.innerHTML += `
+---------------------------------------------------------------------------------------------------------------
+* Center staff incoming personnel list - live connected to Spreadsheet
+* For internal PUSLAT KODIKLATAU environment only
+---------------------------------------------------------------------------------------------------------------
+`;
+
   } catch (err) {
     console.error(err);
-    document.getElementById("output").innerHTML = "Gagal mengambil data.";
+    terminal.innerHTML = "Gagal memuat data Personel Masuk.";
   }
 }
+
 
 </script>
 
