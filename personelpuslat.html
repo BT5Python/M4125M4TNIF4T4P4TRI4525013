@@ -392,11 +392,9 @@ function downloadFile() {
 }
 
   async function loadPersonelMasuk() {
-
   const terminal = document.getElementById("terminal");
-  terminal.innerHTML = "";   // hapus isi terminal
-
-  const header = `
+  // Bersihkan isi terminal dan tampilkan header sementara
+  terminal.innerHTML = `
 ====================================
 | FILE: PERSONEL MASUK PUSLAT      |
 | CLASSIFICATION: <span class="blink-merah">RAHASIA</span>
@@ -405,46 +403,95 @@ function downloadFile() {
 ---------------------------------------------------------------------------------------------------------------
 `;
 
-  terminal.innerHTML = header;
-
   try {
+    // Pastikan URL Apps Script benar — ganti dengan URL yang kamu pakai jika beda
     const url =
       "https://script.google.com/macros/s/AKfycbyKpkLev2RX4TXzXdXEJ8Urb9V-av4CB3oTaloT2ta11uzyG9YaDw-cn999GywGd9To/exec?sheet=Personel%20Masuk";
 
     const res = await fetch(url);
-    const data = await res.json();
+    const json = await res.json();
 
-    data.forEach(row => {
-      const masa = hitungMasa(row.tmt);
+    // Jika struktur response berbeda (mis. {data: [...]}) sesuaikan:
+    const data = json.data || json; // fallback ke json langsung
 
-      let masaFix = masa;
-      const angka = masa.match(/\d+/g);
-      const tahun = angka ? parseInt(angka[0]) : 0;
-      const bulan = angka ? parseInt(angka[1]) : 0;
+    if (!Array.isArray(data) || data.length === 0) {
+      terminal.innerHTML += "\nTidak ditemukan data pada sheet Personel Masuk.";
+      return;
+    }
 
-      let wrapStart = "";
-      let wrapEnd = "";
+    // Jika response adalah array of arrays (sheet.getValues()) konversi ke objek sederhana
+    // Cek apakah tiap row adalah array (kolom) atau object (no,nama,...)
+    if (Array.isArray(data[0])) {
+      // anggap baris pertama adalah header → mulai dari index 1
+      for (let r = 1; r < data.length; r++) {
+        const row = data[r];
+        const no = (row[0] ?? "").toString().padEnd(5);
+        const nama = (row[1] ?? "").toString().padEnd(35);
+        const pangkat = (row[2] ?? "").toString().padEnd(20);
+        const jabatan = (row[3] ?? "").toString().padEnd(42);
+        const tmt = (row[4] ?? "").toString().padEnd(20);
+        const ket = (row[5] ?? "").toString().padEnd(15);
+        const masa = hitungMasa(tmt);
+        let masaFix = masa;
+        const angka = masa.match(/\d+/g);
+        const tahun = angka ? parseInt(angka[0]) : 0;
+        const bulan = angka ? parseInt(angka[1]) : 0;
 
-      if (tahun === 0 && bulan < 2) {
-        wrapStart = `<span class="baris-kedip-hijau">`;
-        wrapEnd = `</span>`;
-        masaFix = `<span class="blink-hijau">${masa}</span>`;
+        let wrapStart = "", wrapEnd = "";
+        if (tahun === 0 && bulan < 2) {
+          wrapStart = `<span class="baris-kedip-hijau">`;
+          wrapEnd = `</span>`;
+          masaFix = `<span class="blink-hijau">${masa}</span>`;
+        } else if (tahun >= 2) {
+          wrapStart = `<span class="baris-kedip-merah">`;
+          wrapEnd = `</span>`;
+          masaFix = `<span class="blink-merah">${masa}</span>`;
+        }
+
+        let line = `${no}${nama}${pangkat}${jabatan}${tmt}${ket}${masaFix}\n`;
+
+        if (String(pangkat).toUpperCase().includes("PNS")) {
+          line = `<span class="yellow">${line}</span>`;
+        }
+
+        terminal.innerHTML += wrapStart + line + wrapEnd;
       }
-      else if (tahun >= 2) {
-        wrapStart = `<span class="baris-kedip-merah">`;
-        wrapEnd = `</span>`;
-        masaFix = `<span class="blink-merah">${masa}</span>`;
-      }
+    } else {
+      // data adalah array of objects {no,nama,pangkat,...}
+      data.forEach(row => {
+        const tmt = row.tmt || row.E || row[4] || "";
+        const masa = hitungMasa(tmt);
+        let masaFix = masa;
+        const angka = masa.match(/\d+/g);
+        const tahun = angka ? parseInt(angka[0]) : 0;
+        const bulan = angka ? parseInt(angka[1]) : 0;
 
-      let line =
-`${row.no.toString().padEnd(5)}${row.nama.padEnd(35)}${row.pangkat.padEnd(20)}${row.jabatan.padEnd(42)}${row.tmt.padEnd(20)}${row.keterangan.padEnd(15)}${masaFix}\n`;
+        let wrapStart = "", wrapEnd = "";
+        if (tahun === 0 && bulan < 2) {
+          wrapStart = `<span class="baris-kedip-hijau">`;
+          wrapEnd = `</span>`;
+          masaFix = `<span class="blink-hijau">${masa}</span>`;
+        } else if (tahun >= 2) {
+          wrapStart = `<span class="baris-kedip-merah">`;
+          wrapEnd = `</span>`;
+          masaFix = `<span class="blink-merah">${masa}</span>`;
+        }
 
-      if (String(row.pangkat).toUpperCase().includes("PNS")) {
-        line = `<span class="yellow">${line}</span>`;
-      }
+        const no = (row.no ?? "").toString().padEnd(5);
+        const nama = (row.nama ?? "").toString().padEnd(35);
+        const pangkat = (row.pangkat ?? "").toString().padEnd(20);
+        const jabatan = (row.jabatan ?? "").toString().padEnd(42);
+        const ket = (row.keterangan ?? "").toString().padEnd(15);
 
-      terminal.innerHTML += wrapStart + line + wrapEnd;
-    });
+        let line = `${no}${nama}${pangkat}${jabatan}${tmt.padEnd(20)}${ket}${masaFix}\n`;
+
+        if (String(pangkat).toUpperCase().includes("PNS")) {
+          line = `<span class="yellow">${line}</span>`;
+        }
+
+        terminal.innerHTML += wrapStart + line + wrapEnd;
+      });
+    }
 
     terminal.innerHTML += `
 ---------------------------------------------------------------------------------------------------------------
@@ -455,9 +502,10 @@ function downloadFile() {
 
   } catch (err) {
     console.error(err);
-    terminal.innerHTML = "Gagal memuat data Personel Masuk.";
+    terminal.innerHTML += "\nGagal memuat data Personel Masuk.";
   }
 }
+
 
 
 </script>
