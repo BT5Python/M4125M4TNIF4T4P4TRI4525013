@@ -616,23 +616,7 @@ function openCatatan() {
     window.location.href = "catatanpersonel.html";
 }
 
-    let finalURL = link;
-
-    // Jika link Google Drive → ubah jadi direct preview
-    if (link.includes("drive.google.com")) {
-        const match = link.match(/[-\w]{25,}/);
-        if (match) {
-            finalURL = `https://drive.google.com/uc?export=preview&id=${match[0]}`;
-        }
-    }
-    // Jika hanya ID file
-    else if (/^[A-Za-z0-9_-]{25,}$/.test(link)) {
-        finalURL = `https://drive.google.com/uc?export=preview&id=${link}`;
-    }
-
-    window.location.href = finalURL;
-}
-
+    
 </script>
 </body>
 </html>
