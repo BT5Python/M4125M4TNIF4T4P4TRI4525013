@@ -22,7 +22,7 @@ const urlParams = new URLSearchParams(window.location.search);
 const nama = urlParams.get("nama");
 document.getElementById("title").innerText = "Catatan: " + nama;
 
-const scriptURL = "YOUR-DEPLOYED-WEB-APP-URL";
+const scriptURL = "https://script.google.com/macros/s/AKfycbwpkLPVYmZeUkUZRzsooZxN3_gaXaInyrigJFURjIl1jVixId5adJi-XZc0Kiyz50RV/exec";
 
 // === LOAD CATATAN ===
 fetch(scriptURL + "?nama=" + encodeURIComponent(nama))
