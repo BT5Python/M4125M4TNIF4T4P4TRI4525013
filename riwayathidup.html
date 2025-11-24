@@ -612,10 +612,9 @@ searchInput.addEventListener("keydown", e=>{
     }
 });
 
-function openCatatan() {
-    window.location.href = "catatanpersonel.html";
+function openCatatan(nama) {
+    window.location.href = "catatanpersonel.html?nama=" + encodeURIComponent(nama);
 }
-
     
 </script>
 </body>
