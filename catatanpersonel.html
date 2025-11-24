@@ -49,7 +49,7 @@
 let namaPersonel = "";
 
 // ------------------------------
-// 1. Ambil nama dari parameter URL
+// 1. Ambil nama dari URL
 // ------------------------------
 function getNamaFromURL() {
     const params = new URLSearchParams(window.location.search);
@@ -57,39 +57,47 @@ function getNamaFromURL() {
 }
 
 // ------------------------------
-// 2. Load catatan dari Apps Script
+// 2. Load catatan dari Web App
 // ------------------------------
 function loadCatatan() {
     namaPersonel = getNamaFromURL();
     document.getElementById("judul").innerText = "CATATAN: " + namaPersonel;
 
-    fetch("YOUR_WEB_APP_URL?nama=" + encodeURIComponent(namaPersonel))
+    fetch("https://script.google.com/macros/s/AKfycbxGzc0W3bcNlLZXRrICQvTtnUNR_hI1QUG0-T7Al0w0w8lCCq32EhLs3XczharOoOZf/exec?nama=" + encodeURIComponent(namaPersonel))
         .then(res => res.text())
         .then(text => {
             document.getElementById("catatan").value = text;
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            alert("Gagal mengambil catatan.");
+            console.log(err);
+        });
 }
 
 // ------------------------------
-// 3. Simpan catatan ke Apps Script
+// 3. Simpan catatan ke Web App
 // ------------------------------
 function simpanCatatan() {
     const isi = document.getElementById("catatan").value;
 
-    fetch("YOUR_WEB_APP_URL", {
+    fetch("https://script.google.com/macros/s/AKfycbxGzc0W3bcNlLZXRrICQvTtnUNR_hI1QUG0-T7Al0w0w8lCCq32EhLs3XczharOoOZf/exec", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: "nama=" + encodeURIComponent(namaPersonel) +
-              "&catatan=" + encodeURIComponent(isi)
+        body:
+            "nama=" + encodeURIComponent(namaPersonel) +
+            "&catatan=" + encodeURIComponent(isi)
     })
     .then(res => res.text())
     .then(msg => {
-        alert("Catatan Disimpan!");
+        alert("Catatan berhasil disimpan!");
     })
-    .catch(err => alert("Gagal menyimpan."));
+    .catch(err => {
+        alert("Gagal menyimpan.");
+        console.log(err);
+    });
 }
 </script>
+
 </head>
 
 <body onload="loadCatatan()">
