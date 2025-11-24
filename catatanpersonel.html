@@ -1,49 +1,107 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Catatan Personel</title>
+
 <style>
-body { font-family: Arial; padding: 20px; }
-textarea { width: 100%; height: 300px; }
-button { padding: 10px; margin-top: 10px; }
+    body {
+        background-color: black;
+        color: #00ff00;
+        font-family: "Courier New", monospace;
+        padding: 20px;
+        font-size: 14px;
+    }
+
+    textarea {
+        width: 100%;
+        height: 300px;
+        background-color: black;
+        color: #00ff00;
+        border: 1px solid #00ff00;
+        padding: 10px;
+        resize: vertical;
+        font-family: "Courier New", monospace;
+        font-size: 14px;
+    }
+
+    button {
+        background-color: black;
+        color: #00ff00;
+        border: 1px solid #00ff00;
+        padding: 10px 20px;
+        font-family: "Courier New", monospace;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    button:hover {
+        background-color: #003300;
+    }
+
+    h2 {
+        color: #00ff00;
+    }
 </style>
-</head>
-<body>
-
-<h2 id="title">Catatan Personel</h2>
-
-<textarea id="catatan"></textarea>
-<br>
-<button onclick="saveCatatan()">Simpan Catatan</button>
 
 <script>
-const urlParams = new URLSearchParams(window.location.search);
-const nama = urlParams.get("nama");
-document.getElementById("title").innerText = "Catatan: " + nama;
+let namaPersonel = "";
 
-const scriptURL = "https://script.google.com/macros/s/AKfycbwpkLPVYmZeUkUZRzsooZxN3_gaXaInyrigJFURjIl1jVixId5adJi-XZc0Kiyz50RV/exec";
+// ------------------------------
+// 1. Ambil nama dari parameter URL
+// ------------------------------
+function getNamaFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("nama") || "";
+}
 
-// === LOAD CATATAN ===
-fetch(scriptURL + "?nama=" + encodeURIComponent(nama))
-  .then(r => r.text())
-  .then(t => document.getElementById("catatan").value = t);
+// ------------------------------
+// 2. Load catatan dari Apps Script
+// ------------------------------
+function loadCatatan() {
+    namaPersonel = getNamaFromURL();
+    document.getElementById("judul").innerText = "CATATAN: " + namaPersonel;
 
-// === SAVE CATATAN ===
-function saveCatatan() {
-  const isi = document.getElementById("catatan").value;
+    fetch("YOUR_WEB_APP_URL?nama=" + encodeURIComponent(namaPersonel))
+        .then(res => res.text())
+        .then(text => {
+            document.getElementById("catatan").value = text;
+        })
+        .catch(err => console.log(err));
+}
 
-  fetch(scriptURL, {
-    method: "POST",
-    body: new URLSearchParams({
-      nama: nama,
-      catatan: isi
+// ------------------------------
+// 3. Simpan catatan ke Apps Script
+// ------------------------------
+function simpanCatatan() {
+    const isi = document.getElementById("catatan").value;
+
+    fetch("https://script.google.com/macros/s/AKfycbxGzc0W3bcNlLZXRrICQvTtnUNR_hI1QUG0-T7Al0w0w8lCCq32EhLs3XczharOoOZf/exec", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "nama=" + encodeURIComponent(namaPersonel) +
+              "&catatan=" + encodeURIComponent(isi)
     })
-  })
-  .then(r => r.text())
-  .then(res => alert("Catatan disimpan!"));
+    .then(res => res.text())
+    .then(msg => {
+        alert("Catatan Disimpan!");
+    })
+    .catch(err => alert("Gagal menyimpan."));
 }
 </script>
+</head>
+
+<body onload="loadCatatan()">
+
+<h2 id="judul">CATATAN:</h2>
+
+<textarea id="catatan" placeholder="Tulis catatan personel di sini..."></textarea>
+
+<br>
+
+<button onclick="simpanCatatan()">SIMPAN</button>
+<button onclick="history.back()">KEMBALI</button>
 
 </body>
 </html>
