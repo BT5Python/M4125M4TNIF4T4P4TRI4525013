@@ -63,7 +63,7 @@ function loadCatatan() {
     namaPersonel = getNamaFromURL();
     document.getElementById("judul").innerText = "CATATAN: " + namaPersonel;
 
-    fetch("YOUR_WEB_APP_URL?nama=" + encodeURIComponent(namaPersonel))
+    fetch("https://script.google.com/macros/s/AKfycbxGzc0W3bcNlLZXRrICQvTtnUNR_hI1QUG0-T7Al0w0w8lCCq32EhLs3XczharOoOZf/exec?nama=" + encodeURIComponent(namaPersonel))
         .then(res => res.text())
         .then(text => {
             document.getElementById("catatan").value = text;
