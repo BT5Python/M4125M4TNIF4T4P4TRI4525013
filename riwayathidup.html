@@ -538,7 +538,8 @@ KGB BERIKUTNYA      : ${nextKGBInfo}
 --------------------------------------------------
 ${agent.tanda_jasa || "Tidak ada data"}
 
-[SECURITY FOOTNOTE]   <a href="catatan.html" class="catatan-btn">CATATAN</a>
+[SECURITY FOOTNOTE]   <button class="catatan-btn" onclick="openCatatan('${agent.catatan_link || ""}')">CATATAN</button>
+-----------------------------------------------------
 -----------------------------------------------------
 
 This dossier is property of PUSLAT KODIKLATAU.
@@ -610,6 +611,30 @@ searchInput.addEventListener("keydown", e=>{
         if(query) showMemberButtons(query);
     }
 });
+
+function openCatatan(link) {
+    if (!link || link.trim() === "" || link === "undefined") {
+        alert("❌ File CATATAN belum tersedia untuk personel ini.");
+        return;
+    }
+
+    let finalURL = link;
+
+    // Jika link Google Drive → ubah jadi direct preview
+    if (link.includes("drive.google.com")) {
+        const match = link.match(/[-\w]{25,}/);
+        if (match) {
+            finalURL = `https://drive.google.com/uc?export=preview&id=${match[0]}`;
+        }
+    }
+    // Jika hanya ID file
+    else if (/^[A-Za-z0-9_-]{25,}$/.test(link)) {
+        finalURL = `https://drive.google.com/uc?export=preview&id=${link}`;
+    }
+
+    window.location.href = finalURL;
+}
+
 </script>
 </body>
 </html>
