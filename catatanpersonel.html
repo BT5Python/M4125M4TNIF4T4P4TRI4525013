@@ -1,167 +1,52 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Catatan Personel</title>
-
-<style>
-    body {
-        background-color: black;
-        color: #00ff00;
-        font-family: "Courier New", monospace;
-        padding: 20px;
-    }
-
-    h2 {
-        color: #00ff00;
-    }
-
-    input, textarea, select {
-        width: 100%;
-        background-color: black;
-        color: #00ff00;
-        border: 1px solid #00ff00;
-        padding: 8px;
-        margin-bottom: 10px;
-        font-family: "Courier New", monospace;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 15px;
-    }
-
-    table, th, td {
-        border: 1px solid #00ff00;
-    }
-
-    th, td {
-        padding: 8px;
-        text-align: left;
-        color: #00ff00;
-    }
-
-    button {
-        background-color: black;
-        color: #00ff00;
-        border: 1px solid #00ff00;
-        padding: 10px 20px;
-        cursor: pointer;
-        font-family: "Courier New", monospace;
-    }
-
-    button:hover {
-        background-color: #003300;
-    }
-</style>
-
 <script>
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxGzc0W3bcNlLZXRrICQvTtnUNR_hI1QUG0-T7Al0w0w8lCCq32EhLs3XczharOoOZf/exec";
-
 let namaPersonel = "";
 
-// Ambil nama dari URL
+// ------------------------------
+// 1. Ambil nama dari URL
+// ------------------------------
 function getNamaFromURL() {
     const params = new URLSearchParams(window.location.search);
     return params.get("nama") || "";
 }
 
-// Load tabel catatan
-function loadTabel() {
+// ------------------------------
+// 2. Load catatan dari Web App
+// ------------------------------
+function loadCatatan() {
     namaPersonel = getNamaFromURL();
     document.getElementById("judul").innerText = "CATATAN: " + namaPersonel;
 
-    fetch(WEB_APP_URL + "?nama=" + encodeURIComponent(namaPersonel))
+    fetch("https://script.google.com/macros/s/AKfycbxGzc0W3bcNlLZXRrICQvTtnUNR_hI1QUG0-T7Al0w0w8lCCq32EhLs3XczharOoOZf/exec?nama=" + encodeURIComponent(namaPersonel))
         .then(res => res.text())
         .then(text => {
-            if (!text.trim()) return;
-
-            // Format data: dipisah baris
-            const rows = text.split("||");
-
-            let html = "";
-            rows.forEach(r => {
-                const col = r.split("|");
-                html += `
-                    <tr>
-                        <td>${col[0] || ""}</td>
-                        <td>${col[1] || ""}</td>
-                        <td>${col[2] || ""}</td>
-                        <td>${col[3] || ""}</td>
-                        <td>${col[4] || ""}</td>
-                    </tr>`;
-            });
-
-            document.getElementById("tabel-body").innerHTML = html;
+            document.getElementById("catatan").value = text;
+        })
+        .catch(err => {
+            alert("Gagal mengambil catatan.");
+            console.log(err);
         });
 }
 
-// Simpan data baru
+// ------------------------------
+// 3. Simpan catatan ke Web App
+// ------------------------------
 function simpanCatatan() {
-    const no = document.getElementById("no").value;
-    const catatan = document.getElementById("catatan").value;
-    const keputusan = document.getElementById("keputusan").value;
-    const keterangan = document.getElementById("keterangan").value;
+    const isi = document.getElementById("catatan").value;
 
-    const paket = 
-        no + "|" + 
-        namaPersonel + "|" + 
-        catatan + "|" + 
-        keputusan + "|" + 
-        keterangan;
-
-    fetch(WEB_APP_URL, {
+    fetch("https://script.google.com/macros/s/AKfycbxGzc0W3bcNlLZXRrICQvTtnUNR_hI1QUG0-T7Al0w0w8lCCq32EhLs3XczharOoOZf/exec", {
         method: "POST",
-        headers: {"Content-Type": "application/x-www-form-urlencoded"},
-        body: "nama=" + encodeURIComponent(namaPersonel) +
-              "&catatan=" + encodeURIComponent(paket)
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body:
+            "nama=" + encodeURIComponent(namaPersonel) +
+            "&catatan=" + encodeURIComponent(isi)
     })
     .then(res => res.text())
     .then(msg => {
-        alert("Catatan Ditambahkan!");
-        loadTabel();
+        alert("Catatan berhasil disimpan!");
+    })
+    .catch(err => {
+        alert("Gagal menyimpan.");
+        console.log(err);
     });
 }
 </script>
-</head>
-
-<body onload="loadTabel()">
-
-<h2 id="judul">CATATAN:</h2>
-
-<!-- Form Input -->
-<label>NO</label>
-<input id="no">
-
-<label>CATATAN</label>
-<textarea id="catatan"></textarea>
-
-<label>KEPUTUSAN</label>
-<input id="keputusan">
-
-<label>KETERANGAN</label>
-<input id="keterangan">
-
-<button onclick="simpanCatatan()">SIMPAN</button>
-<button onclick="history.back()">KEMBALI</button>
-
-<hr>
-
-<!-- Tabel Output -->
-<table>
-    <thead>
-        <tr>
-            <th>NO</th>
-            <th>NAMA</th>
-            <th>CATATAN</th>
-            <th>KEPUTUSAN</th>
-            <th>KETERANGAN</th>
-        </tr>
-    </thead>
-    <tbody id="tabel-body"></tbody>
-</table>
-
-</body>
-</html>
