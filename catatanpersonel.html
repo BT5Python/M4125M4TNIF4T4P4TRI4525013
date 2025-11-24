@@ -63,7 +63,7 @@ function loadCatatan() {
     namaPersonel = getNamaFromURL();
     document.getElementById("judul").innerText = "CATATAN: " + namaPersonel;
 
-    fetch("https://script.google.com/macros/s/AKfycbxGzc0W3bcNlLZXRrICQvTtnUNR_hI1QUG0-T7Al0w0w8lCCq32EhLs3XczharOoOZf/exec?nama=" + encodeURIComponent(namaPersonel))
+    fetch("https://script.google.com/macros/s/AKfycbwmRity98eXi3PHs9HsSN0dM9Vfojp1WrddP_rhpa8qhxbVAMmuzCzImiGwVmAT_JVD/exec?nama=" + encodeURIComponent(namaPersonel))
         .then(res => res.text())
         .then(text => {
             document.getElementById("catatan").value = text;
@@ -80,7 +80,7 @@ function loadCatatan() {
 function simpanCatatan() {
     const isi = document.getElementById("catatan").value;
 
-    fetch("https://script.google.com/macros/s/AKfycbxGzc0W3bcNlLZXRrICQvTtnUNR_hI1QUG0-T7Al0w0w8lCCq32EhLs3XczharOoOZf/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbwmRity98eXi3PHs9HsSN0dM9Vfojp1WrddP_rhpa8qhxbVAMmuzCzImiGwVmAT_JVD/exec", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body:
