@@ -6,99 +6,162 @@
 <title>Catatan Personel</title>
 
 <style>
-  body {
-    background-color: black;
-    color: #00ff00;
-    font-family: "Courier New", monospace;
-    padding: 20px;
-    font-size: 14px;
-  }
+    body {
+        background-color: black;
+        color: #00ff00;
+        font-family: "Courier New", monospace;
+        padding: 20px;
+    }
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-  }
+    h2 {
+        color: #00ff00;
+    }
 
-  th, td {
-    border: 1px solid #00ff00;
-    padding: 8px;
-  }
+    input, textarea, select {
+        width: 100%;
+        background-color: black;
+        color: #00ff00;
+        border: 1px solid #00ff00;
+        padding: 8px;
+        margin-bottom: 10px;
+        font-family: "Courier New", monospace;
+    }
 
-  th {
-    background-color: #003300;
-    font-weight: bold;
-  }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
 
-  textarea, input {
-    width: 100%;
-    background: #000;
-    color: #00ff00;
-    border: 1px solid #00ff00;
-    padding: 6px;
-    font-family: "Courier New", monospace;
-  }
+    table, th, td {
+        border: 1px solid #00ff00;
+    }
 
-  button {
-    background: black;
-    border: 1px solid #00ff00;
-    color: #00ff00;
-    padding: 8px 12px;
-    cursor: pointer;
-    margin-top: 10px;
-  }
+    th, td {
+        padding: 8px;
+        text-align: left;
+        color: #00ff00;
+    }
 
-  button:hover {
-    background: #003300;
-  }
+    button {
+        background-color: black;
+        color: #00ff00;
+        border: 1px solid #00ff00;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-family: "Courier New", monospace;
+    }
+
+    button:hover {
+        background-color: #003300;
+    }
 </style>
-</head>
-
-<body>
-
-<h2>📄 CATATAN PERSONEL</h2>
-
-<table>
-  <thead>
-    <tr>
-      <th>NO</th>
-      <th>NAMA</th>
-      <th>CATATAN</th>
-      <th>KEPUTUSAN</th>
-      <th>KETERANGAN</th>
-    </tr>
-  </thead>
-  <tbody id="data-body">
-    <!-- data akan muncul otomatis dari Google Apps Script -->
-  </tbody>
-</table>
 
 <script>
-// URL WebApp kamu
-const url = "https://script.google.com/macros/s/AKfycbxGzc0W3bcNlLZXRrICQvTtnUNR_hI1QUG0-T7Al0w0w8lCCq32EhLs3XczharOoOZf/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxGzc0W3bcNlLZXRrICQvTtnUNR_hI1QUG0-T7Al0w0w8lCCq32EhLs3XczharOoOZf/exec";
 
-async function muatData() {
-  const res = await fetch(url + "?action=getCatatanSemua");
-  const data = await res.json();
+let namaPersonel = "";
 
-  let html = "";
-  data.forEach((row, index) => {
-    html += `
-      <tr>
-        <td>${index + 1}</td>
-        <td>${row.nama}</td>
-        <td>${row.catatan}</td>
-        <td>${row.keputusan}</td>
-        <td>${row.keterangan}</td>
-      </tr>
-    `;
-  });
-
-  document.getElementById("data-body").innerHTML = html;
+// Ambil nama dari URL
+function getNamaFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("nama") || "";
 }
 
-muatData();
+// Load tabel catatan
+function loadTabel() {
+    namaPersonel = getNamaFromURL();
+    document.getElementById("judul").innerText = "CATATAN: " + namaPersonel;
+
+    fetch(WEB_APP_URL + "?nama=" + encodeURIComponent(namaPersonel))
+        .then(res => res.text())
+        .then(text => {
+            if (!text.trim()) return;
+
+            // Format data: dipisah baris
+            const rows = text.split("||");
+
+            let html = "";
+            rows.forEach(r => {
+                const col = r.split("|");
+                html += `
+                    <tr>
+                        <td>${col[0] || ""}</td>
+                        <td>${col[1] || ""}</td>
+                        <td>${col[2] || ""}</td>
+                        <td>${col[3] || ""}</td>
+                        <td>${col[4] || ""}</td>
+                    </tr>`;
+            });
+
+            document.getElementById("tabel-body").innerHTML = html;
+        });
+}
+
+// Simpan data baru
+function simpanCatatan() {
+    const no = document.getElementById("no").value;
+    const catatan = document.getElementById("catatan").value;
+    const keputusan = document.getElementById("keputusan").value;
+    const keterangan = document.getElementById("keterangan").value;
+
+    const paket = 
+        no + "|" + 
+        namaPersonel + "|" + 
+        catatan + "|" + 
+        keputusan + "|" + 
+        keterangan;
+
+    fetch(WEB_APP_URL, {
+        method: "POST",
+        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        body: "nama=" + encodeURIComponent(namaPersonel) +
+              "&catatan=" + encodeURIComponent(paket)
+    })
+    .then(res => res.text())
+    .then(msg => {
+        alert("Catatan Ditambahkan!");
+        loadTabel();
+    });
+}
 </script>
+</head>
+
+<body onload="loadTabel()">
+
+<h2 id="judul">CATATAN:</h2>
+
+<!-- Form Input -->
+<label>NO</label>
+<input id="no">
+
+<label>CATATAN</label>
+<textarea id="catatan"></textarea>
+
+<label>KEPUTUSAN</label>
+<input id="keputusan">
+
+<label>KETERANGAN</label>
+<input id="keterangan">
+
+<button onclick="simpanCatatan()">SIMPAN</button>
+<button onclick="history.back()">KEMBALI</button>
+
+<hr>
+
+<!-- Tabel Output -->
+<table>
+    <thead>
+        <tr>
+            <th>NO</th>
+            <th>NAMA</th>
+            <th>CATATAN</th>
+            <th>KEPUTUSAN</th>
+            <th>KETERANGAN</th>
+        </tr>
+    </thead>
+    <tbody id="tabel-body"></tbody>
+</table>
 
 </body>
 </html>
