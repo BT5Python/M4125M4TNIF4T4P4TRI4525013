@@ -538,7 +538,7 @@ KGB BERIKUTNYA      : ${nextKGBInfo}
 --------------------------------------------------
 ${agent.tanda_jasa || "Tidak ada data"}
 
-[SECURITY FOOTNOTE]   <button class="catatan-btn" onclick="openCatatan('${agent.catatan_link || ""}')">CATATAN</button>
+[SECURITY FOOTNOTE]   <button class="catatan-btn" onclick="openCatatan()">CATATAN</button>
 -----------------------------------------------------
 -----------------------------------------------------
 
@@ -612,11 +612,9 @@ searchInput.addEventListener("keydown", e=>{
     }
 });
 
-function openCatatan(link) {
-    if (!link || link.trim() === "" || link === "undefined") {
-        alert("❌ File CATATAN belum tersedia untuk personel ini.");
-        return;
-    }
+function openCatatan() {
+    window.location.href = "catatanpersonel.html";
+}
 
     let finalURL = link;
 
