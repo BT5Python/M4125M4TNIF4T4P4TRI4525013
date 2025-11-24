@@ -1,115 +1,104 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Catatan Personel</title>
 
 <style>
-    body {
-        background-color: black;
-        color: #00ff00;
-        font-family: "Courier New", monospace;
-        padding: 20px;
-        font-size: 14px;
-    }
+  body {
+    background-color: black;
+    color: #00ff00;
+    font-family: "Courier New", monospace;
+    padding: 20px;
+    font-size: 14px;
+  }
 
-    textarea {
-        width: 100%;
-        height: 300px;
-        background-color: black;
-        color: #00ff00;
-        border: 1px solid #00ff00;
-        padding: 10px;
-        resize: vertical;
-        font-family: "Courier New", monospace;
-        font-size: 14px;
-    }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+  }
 
-    button {
-        background-color: black;
-        color: #00ff00;
-        border: 1px solid #00ff00;
-        padding: 10px 20px;
-        font-family: "Courier New", monospace;
-        cursor: pointer;
-        margin-top: 10px;
-    }
+  th, td {
+    border: 1px solid #00ff00;
+    padding: 8px;
+  }
 
-    button:hover {
-        background-color: #003300;
-    }
+  th {
+    background-color: #003300;
+    font-weight: bold;
+  }
 
-    h2 {
-        color: #00ff00;
-    }
+  textarea, input {
+    width: 100%;
+    background: #000;
+    color: #00ff00;
+    border: 1px solid #00ff00;
+    padding: 6px;
+    font-family: "Courier New", monospace;
+  }
+
+  button {
+    background: black;
+    border: 1px solid #00ff00;
+    color: #00ff00;
+    padding: 8px 12px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  button:hover {
+    background: #003300;
+  }
 </style>
-
-<script>
-let namaPersonel = "";
-
-// ------------------------------
-// 1. Ambil nama dari URL
-// ------------------------------
-function getNamaFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get("nama") || "";
-}
-
-// ------------------------------
-// 2. Load catatan dari Web App
-// ------------------------------
-function loadCatatan() {
-    namaPersonel = getNamaFromURL();
-    document.getElementById("judul").innerText = "CATATAN: " + namaPersonel;
-
-    fetch("https://script.google.com/macros/s/AKfycbwmRity98eXi3PHs9HsSN0dM9Vfojp1WrddP_rhpa8qhxbVAMmuzCzImiGwVmAT_JVD/exec?nama=" + encodeURIComponent(namaPersonel))
-        .then(res => res.text())
-        .then(text => {
-            document.getElementById("catatan").value = text;
-        })
-        .catch(err => {
-            alert("Gagal mengambil catatan.");
-            console.log(err);
-        });
-}
-
-// ------------------------------
-// 3. Simpan catatan ke Web App
-// ------------------------------
-function simpanCatatan() {
-    const isi = document.getElementById("catatan").value;
-
-    fetch("https://script.google.com/macros/s/AKfycbwmRity98eXi3PHs9HsSN0dM9Vfojp1WrddP_rhpa8qhxbVAMmuzCzImiGwVmAT_JVD/exec", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body:
-            "nama=" + encodeURIComponent(namaPersonel) +
-            "&catatan=" + encodeURIComponent(isi)
-    })
-    .then(res => res.text())
-    .then(msg => {
-        alert("Catatan berhasil disimpan!");
-    })
-    .catch(err => {
-        alert("Gagal menyimpan.");
-        console.log(err);
-    });
-}
-</script>
-
 </head>
 
-<body onload="loadCatatan()">
+<body>
 
-<h2 id="judul">CATATAN:</h2>
+<h2>📄 CATATAN PERSONEL</h2>
 
-<textarea id="catatan" placeholder="Tulis catatan personel di sini..."></textarea>
+<table>
+  <thead>
+    <tr>
+      <th>NO</th>
+      <th>NAMA</th>
+      <th>CATATAN</th>
+      <th>KEPUTUSAN</th>
+      <th>KETERANGAN</th>
+    </tr>
+  </thead>
+  <tbody id="data-body">
+    <!-- data akan muncul otomatis dari Google Apps Script -->
+  </tbody>
+</table>
 
-<br>
+<script>
+// URL WebApp kamu
+const url = "https://script.google.com/macros/s/AKfycbxGzc0W3bcNlLZXRrICQvTtnUNR_hI1QUG0-T7Al0w0w8lCCq32EhLs3XczharOoOZf/exec";
 
-<button onclick="simpanCatatan()">SIMPAN</button>
-<button onclick="history.back()">KEMBALI</button>
+async function muatData() {
+  const res = await fetch(url + "?action=getCatatanSemua");
+  const data = await res.json();
+
+  let html = "";
+  data.forEach((row, index) => {
+    html += `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${row.nama}</td>
+        <td>${row.catatan}</td>
+        <td>${row.keputusan}</td>
+        <td>${row.keterangan}</td>
+      </tr>
+    `;
+  });
+
+  document.getElementById("data-body").innerHTML = html;
+}
+
+muatData();
+</script>
 
 </body>
 </html>
