@@ -221,7 +221,7 @@ FILE: PERSONEL PUSLAT KODIKLATAU   |   CLASSIFICATION : <span class="rahasia-bli
   document.querySelector(".title-bar").insertAdjacentText('afterbegin', "   ");
   // add name to header area (top left ASCII style)
   const hdr = document.querySelector(".header");
-  hdr.textContent = hdr.textContent + "\n\nCATATAN: " + nama + "\n\n";
+  hdr.innerHTML = hdr.innerHTML + "<br><br>CATATAN: " + nama + "<br><br>";
 
   // ----- ROW CREATION -----
   function buatBaris(index, data = {}) {
