@@ -1,118 +1,319 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Catatan Personel</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Personel — Terminal Style</title>
 
 <style>
-    body {
-        background-color: black;
-        color: #00ff00;
-        font-family: "Courier New", monospace;
-        padding: 20px;
-        font-size: 14px;
-    }
+  :root{
+    --bg:#000;
+    --green:#00ff00;
+    --green-dim: rgba(0,255,0,0.06);
+    --green-line: rgba(0,255,0,0.18);
+    --mono: "Courier New", monospace;
+  }
 
-    textarea {
-        width: 100%;
-        height: 300px;
-        background-color: black;
-        color: #00ff00;
-        border: 1px solid #00ff00;
-        padding: 10px;
-        resize: vertical;
-        font-family: "Courier New", monospace;
-        font-size: 10px;
-    }
+  html,body{
+    height:100%;
+    margin:0;
+    background:var(--bg);
+    color:var(--green);
+    font-family:var(--mono);
+    font-size:13px;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
 
-    button {
-        background-color: black;
-        color: #00ff00;
-        border: 1px solid #00ff00;
-        padding: 10px 20px;
-        font-family: "Courier New", monospace;
-        cursor: pointer;
-        margin-top: 10px;
-    }
+  .page {
+    max-width:1100px;
+    margin:20px auto;
+    padding:18px;
+  }
 
-    button:hover {
-        background-color: #003300;
-    }
+  /* ASCII header block */
+  .header {
+    white-space:pre;
+    color:var(--green);
+    margin-bottom:18px;
+    line-height:1.1;
+  }
 
-    h2 {
-        color: #00ff00;
-    }
+  /* small top meta lines */
+  .meta {
+    display:block;
+    margin-bottom:16px;
+    color:var(--green);
+    opacity:0.95;
+  }
+
+  /* section title bar (dark green block) */
+  .title-bar {
+    background:linear-gradient(0deg, rgba(0,40,0,0.95), rgba(0,20,0,0.95));
+    padding:6px 10px;
+    border:1px solid var(--green-line);
+    margin-bottom:10px;
+    font-weight:700;
+    letter-spacing:0.6px;
+  }
+
+  /* column headings row */
+  .cols {
+    display:grid;
+    grid-template-columns: 60px 1fr 220px 120px 120px 1fr;
+    align-items:center;
+    gap:6px;
+    padding:8px 6px;
+    border-left:1px solid transparent;
+    border-right:1px solid transparent;
+    margin-bottom:6px;
+    color:var(--green);
+    font-size:12px;
+  }
+
+  .cols .col {
+    padding-left:8px;
+    text-transform:uppercase;
+    font-weight:700;
+    letter-spacing:0.8px;
+  }
+
+  /* rows area: many horizontal stripes */
+  .rows {
+    border-left:1px solid transparent;
+    border-right:1px solid transparent;
+    margin-bottom:18px;
+    position:relative;
+  }
+
+  .row {
+    display:grid;
+    grid-template-columns: 60px 1fr 220px 120px 120px 1fr;
+    gap:6px;
+    padding:8px 6px;
+    min-height:28px;
+    align-items:center;
+    background:linear-gradient(180deg, rgba(0,0,0,0.0), rgba(0,0,0,0.0));
+    border-top:1px solid var(--green-dim);
+  }
+
+  .cell {
+    padding-left:8px;
+    outline:none;
+    color:var(--green);
+    background:transparent;
+    font-family:var(--mono);
+    font-size:12px;
+    min-height:18px;
+  }
+
+  /* subtle right edge dot like in image */
+  .rows::after{
+    content: "";
+    position:absolute;
+    right:6px;
+    top:0;
+    bottom:0;
+    width:2px;
+    background: linear-gradient(180deg, rgba(0,255,0,0.06) 0%, rgba(0,0,0,0) 50%);
+    opacity:0.6;
+  }
+
+  /* footer signature area */
+  .footer {
+    margin-top:14px;
+    padding-top:10px;
+    border-top:1px dashed var(--green-line);
+    font-size:12px;
+    color:var(--green);
+  }
+
+  /* buttons */
+  .controls {
+    margin:12px 0;
+  }
+
+  button {
+    background:transparent;
+    color:var(--green);
+    border:1px solid var(--green-line);
+    padding:8px 12px;
+    font-family:var(--mono);
+    cursor:pointer;
+    margin-right:6px;
+    letter-spacing:0.6px;
+  }
+  button:hover{ background: rgba(0,255,0,0.02); }
+
+  /* small helpers */
+  .muted { color: rgba(0,255,0,0.5); font-size:12px;}
+  .small { font-size:12px; }
+  input[type="date"] { background:transparent; color:var(--green); border:0; outline:none; font-family:var(--mono); }
 </style>
-
-<script>
-let namaPersonel = "";
-
-// ------------------------------
-// 1. Ambil nama dari URL
-// ------------------------------
-function getNamaFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get("nama") || "";
-}
-
-// ------------------------------
-// 2. Load catatan dari Web App
-// ------------------------------
-function loadCatatan() {
-    namaPersonel = getNamaFromURL();
-
-    // ⬅⬅⬅ SATU-SATUNYA BAGIAN YANG DIUBAH
-    document.getElementById("judul").innerText =
-        "CATATAN:\n" + namaPersonel;
-
-    fetch("https://script.google.com/macros/s/AKfycbztqChoA2m81ag7O5dET4wOhyVwmvA94lGNfgQGAK3KtNMwSLLigCYkYfUdEzXdK5Xf/exec?nama=" + encodeURIComponent(namaPersonel))
-        .then(res => res.text())
-        .then(text => {
-            document.getElementById("catatan").value = text;
-        })
-        .catch(err => {
-            alert("Gagal mengambil catatan.");
-            console.log(err);
-        });
-}
-
-// ------------------------------
-// 3. Simpan catatan ke Web App
-// ------------------------------
-function simpanCatatan() {
-    const isi = document.getElementById("catatan").value;
-
-    fetch("https://script.google.com/macros/s/AKfycbztqChoA2m81ag7O5dET4wOhyVwmvA94lGNfgQGAK3KtNMwSLLigCYkYfUdEzXdK5Xf/exec", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body:
-            "nama=" + encodeURIComponent(namaPersonel) +
-            "&catatan=" + encodeURIComponent(isi)
-    })
-    .then(res => res.text())
-    .then(msg => {
-        alert("Catatan berhasil disimpan!");
-    })
-    .catch(err => {
-        alert("Gagal menyimpan.");
-        console.log(err);
-    });
-}
-</script>
-
 </head>
 
-<body onload="loadCatatan()">
+<body>
+  <div class="page">
 
-<h2 id="judul" style="white-space: pre-line;"></h2>
+    <div class="header">
+FILE: PERSONEL PUSLAT KODIKLATAU   |   CLASSIFICATION : RAHASIA
+==============================================
+    </div>
 
-<textarea id="catatan" placeholder="Tulis catatan personel di sini..."></textarea>
+    <div class="meta muted">
+      PUSLAT
+    </div>
 
-<br>
+    <div class="title-bar small">
+      DAFTAR PERSONEL MASUK — PUSLAT KODIKLATAU PERIODE NOVEMBER 2025 &nbsp;&nbsp;&nbsp; STATUS: Update
+    </div>
 
-<button onclick="simpanCatatan()">SIMPAN</button>
-<button onclick="history.back()">KEMBALI</button>
+    <div class="cols">
+      <div class="col">NO</div>
+      <div class="col">NAMA</div>
+      <div class="col">PANGKAT</div>
+      <div class="col">JABATAN</div>
+      <div class="col">TMT MASUK</div>
+      <div class="col">TMT KELUAR</div>
+    </div>
 
+    <div class="rows" id="rowsContainer">
+      <!-- rows injected by script -->
+    </div>
+
+    <div class="controls">
+      <button onclick="tambahBaris(5)">+ Tambah 5 Baris</button>
+      <button onclick="simpan()">SIMPAN</button>
+      <button onclick="loadData()">Muat Ulang</button>
+    </div>
+
+    <div class="footer">
+      <div class="muted">Kepala Dinas Personel,</div>
+      <div style="height:80px"></div>
+      <div class="muted">Endriady, S.H<br>Letkol Adm NRP 522726</div>
+
+      <div style="margin-top:18px" class="muted small">
+        * Center personnel data is automatically updated from Spreadsheet.<br>
+        * Information is only for the PUSLAT KODIKLATAU environment.
+      </div>
+    </div>
+  </div>
+
+<script>
+  // ----- CONFIG -----
+  const APP_URL = "https://script.google.com/macros/s/AKfycbztqChoA2m81ag7O5dET4wOhyVwmvA94lGNfgQGAK3KtNMwSLLigCYkYfUdEzXdK5Xf/exec";
+  let nama = new URLSearchParams(location.search).get("nama") || "Andi Darmawan, S.E";
+
+  // Render header title dynamic
+  document.querySelector(".title-bar").insertAdjacentText('afterbegin', "   ");
+  // add name to header area (top left ASCII style)
+  const hdr = document.querySelector(".header");
+  hdr.textContent = hdr.textContent + "\n\nCATATAN: " + nama + "\n\n";
+
+  // ----- ROW CREATION -----
+  function buatBaris(index, data = {}) {
+    const div = document.createElement("div");
+    div.className = "row";
+
+    // six cells: no, nama, pangkat, jabatan, tmt_masuk, tmt_keluar
+    div.innerHTML = `
+      <div class="cell" contenteditable="true">${data.no ?? index}</div>
+      <div class="cell" contenteditable="true">${data.nama ?? ""}</div>
+      <div class="cell" contenteditable="true">${data.pangkat ?? ""}</div>
+      <div class="cell" contenteditable="true">${data.jabatan ?? ""}</div>
+      <div class="cell" contenteditable="true">${data.tmt_masuk ?? ""}</div>
+      <div class="cell" contenteditable="true">${data.tmt_keluar ?? ""}</div>
+    `;
+    return div;
+  }
+
+  function renderEmpty(jumlah = 20) {
+    const c = document.getElementById("rowsContainer");
+    c.innerHTML = "";
+    for (let i = 1; i <= jumlah; i++) {
+      c.appendChild(buatBaris(i));
+    }
+  }
+
+  // add n more blank rows
+  function tambahBaris(n = 1) {
+    const c = document.getElementById("rowsContainer");
+    const current = c.children.length;
+    for (let i = 1; i <= n; i++) {
+      c.appendChild(buatBaris(current + i));
+    }
+  }
+
+  // read data from UI into array
+  function readRows() {
+    const out = [];
+    document.querySelectorAll("#rowsContainer .row").forEach(r => {
+      const cells = r.querySelectorAll(".cell");
+      out.push({
+        no: cells[0].innerText.trim(),
+        nama: cells[1].innerText.trim(),
+        pangkat: cells[2].innerText.trim(),
+        jabatan: cells[3].innerText.trim(),
+        tmt_masuk: cells[4].innerText.trim(),
+        tmt_keluar: cells[5].innerText.trim()
+      });
+    });
+    return out;
+  }
+
+  // ----- SAVE/LOAD (Apps Script) -----
+  function simpan() {
+    const payload = {
+      nama: nama,
+      catatan: JSON.stringify(readRows())
+    };
+
+    // send as form-encoded
+    const body = Object.entries(payload).map(([k,v]) => encodeURIComponent(k) + "=" + encodeURIComponent(v)).join("&");
+
+    fetch(APP_URL, { method: "POST", headers: {"Content-Type":"application/x-www-form-urlencoded"}, body })
+      .then(r => r.text())
+      .then(t => { alert("Tersimpan."); })
+      .catch(e => { alert("Gagal simpan."); console.error(e); });
+  }
+
+  function loadData() {
+    const url = APP_URL + "?nama=" + encodeURIComponent(nama);
+    fetch(url)
+      .then(r => r.text())
+      .then(txt => {
+        if (!txt || txt.trim() === "") {
+          renderEmpty(20);
+          return;
+        }
+        try {
+          const data = JSON.parse(txt);
+          const c = document.getElementById("rowsContainer");
+          c.innerHTML = "";
+          data.forEach((row, idx) => c.appendChild(buatBaris(idx+1, {
+            no: row.no,
+            nama: row.nama || row.NAMA || "",
+            pangkat: row.pangkat || row.PANGKAT || "",
+            jabatan: row.jabatan || row.JABATAN || "",
+            tmt_masuk: row.tmt_masuk || row.tmt_masuk || row.TMT_MASUK || "",
+            tmt_keluar: row.tmt_keluar || row.tmt_keluar || row.TMT_KELUAR || ""
+          })));
+        } catch(e) {
+          // fallback if server returns plain text
+          renderEmpty(20);
+        }
+      })
+      .catch(err => { console.error(err); renderEmpty(20); });
+  }
+
+  // initial render
+  loadData();
+
+  // keyboard helper: Enter to add row
+  document.addEventListener("keydown", (ev) => {
+    if (ev.key === "F2") { tambahBaris(1); }
+  });
+
+</script>
 </body>
 </html>
