@@ -71,7 +71,26 @@ function getNamaFromURL() {
     return params.get("nama") || "";
 }
 
-// Ambil data dari Web App
+// ---- AUTO BUAT 10 BARIS KOSONG ----
+function buatBarisKosong(jumlah = 10) {
+    const tbody = document.getElementById("tbody");
+    tbody.innerHTML = "";
+
+    for (let i = 1; i <= jumlah; i++) {
+        let tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td contenteditable="true">${i}</td>
+            <td contenteditable="true"></td>
+            <td contenteditable="true"></td>
+            <td contenteditable="true"></td>
+            <td contenteditable="true"></td>
+            <td contenteditable="true"></td>
+        `;
+        tbody.appendChild(tr);
+    }
+}
+
+// Load catatan dari Google Script
 function loadCatatan() {
     namaPersonel = getNamaFromURL();
     document.getElementById("judul").innerText = "CATATAN: " + namaPersonel;
@@ -79,37 +98,43 @@ function loadCatatan() {
     fetch("https://script.google.com/macros/s/AKfycbztqChoA2m81ag7O5dET4wOhyVwmvA94lGNfgQGAK3KtNMwSLLigCYkYfUdEzXdK5Xf/exec?nama=" + encodeURIComponent(namaPersonel))
         .then(res => res.text())
         .then(text => {
-            if (!text) return;
 
+            // Jika tidak ada data → buat 10 baris kosong
+            if (!text || text.trim() === "") {
+                buatBarisKosong();
+                return;
+            }
+
+            // Jika ada data → tampilkan
             try {
                 let data = JSON.parse(text);
                 isiTable(data);
             } catch {
-                console.log("Format lama (textarea).");
+                buatBarisKosong();
             }
         });
 }
 
-// Tampilkan data ke tabel
+// Tampilkan data dari database
 function isiTable(rows) {
     const tbody = document.getElementById("tbody");
     tbody.innerHTML = "";
 
-    rows.forEach(r => {
+    rows.forEach((r, i) => {
         let tr = document.createElement("tr");
         tr.innerHTML = `
-            <td contenteditable="true">${r.no}</td>
-            <td contenteditable="true">${r.catatan}</td>
-            <td contenteditable="true">${r.jenis}</td>
-            <td contenteditable="true">${r.mulai}</td>
-            <td contenteditable="true">${r.selesai}</td>
-            <td contenteditable="true">${r.keterangan}</td>
+            <td contenteditable="true">${r.no || i+1}</td>
+            <td contenteditable="true">${r.catatan || ""}</td>
+            <td contenteditable="true">${r.jenis || ""}</td>
+            <td contenteditable="true">${r.mulai || ""}</td>
+            <td contenteditable="true">${r.selesai || ""}</td>
+            <td contenteditable="true">${r.keterangan || ""}</td>
         `;
         tbody.appendChild(tr);
     });
 }
 
-// Ambil data dari tabel
+// Ambil data dari tabel sebelum simpan
 function ambilDataTabel() {
     const rows = [];
     document.querySelectorAll("#tbody tr").forEach(tr => {
@@ -126,7 +151,7 @@ function ambilDataTabel() {
     return rows;
 }
 
-// Simpan ke Web App
+// Simpan ke Google Script
 function simpanCatatan() {
     const data = ambilDataTabel();
 
@@ -159,10 +184,13 @@ function simpanCatatan() {
             <th>KETERANGAN</th>
         </tr>
     </thead>
+
     <tbody id="tbody">
-        <!-- Diisi otomatis -->
+        <!-- 10 baris muncul otomatis -->
     </tbody>
 </table>
+
+<br>
 
 <button onclick="simpanCatatan()">SIMPAN</button>
 <button onclick="history.back()">KEMBALI</button>
