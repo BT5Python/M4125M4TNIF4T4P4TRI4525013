@@ -14,16 +14,36 @@
         font-size: 14px;
     }
 
-    textarea {
-        width: 100%;
-        height: 300px;
-        background-color: black;
+    h2 {
         color: #00ff00;
+        margin-bottom: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        color: #00ff00;
+        font-size: 12px;
+    }
+
+    th, td {
         border: 1px solid #00ff00;
-        padding: 10px;
-        resize: vertical;
-        font-family: "Courier New", monospace;
-        font-size: 10px;
+        padding: 6px;
+        text-align: left;
+    }
+
+    th {
+        text-align: center;
+        font-weight: bold;
+    }
+
+    td {
+        height: 25px;
+    }
+
+    td[contenteditable="true"] {
+        background-color: black;
+        outline: none;
     }
 
     button {
@@ -33,32 +53,25 @@
         padding: 10px 20px;
         font-family: "Courier New", monospace;
         cursor: pointer;
-        margin-top: 10px;
+        margin-top: 15px;
+        margin-right: 5px;
     }
 
     button:hover {
         background-color: #003300;
-    }
-
-    h2 {
-        color: #00ff00;
     }
 </style>
 
 <script>
 let namaPersonel = "";
 
-// ------------------------------
-// 1. Ambil nama dari URL
-// ------------------------------
+// Ambil nama dari URL
 function getNamaFromURL() {
     const params = new URLSearchParams(window.location.search);
     return params.get("nama") || "";
 }
 
-// ------------------------------
-// 2. Load catatan dari Web App
-// ------------------------------
+// Ambil data dari Web App
 function loadCatatan() {
     namaPersonel = getNamaFromURL();
     document.getElementById("judul").innerText = "CATATAN: " + namaPersonel;
@@ -66,35 +79,66 @@ function loadCatatan() {
     fetch("https://script.google.com/macros/s/AKfycbztqChoA2m81ag7O5dET4wOhyVwmvA94lGNfgQGAK3KtNMwSLLigCYkYfUdEzXdK5Xf/exec?nama=" + encodeURIComponent(namaPersonel))
         .then(res => res.text())
         .then(text => {
-            document.getElementById("catatan").value = text;
-        })
-        .catch(err => {
-            alert("Gagal mengambil catatan.");
-            console.log(err);
+            if (!text) return;
+
+            try {
+                let data = JSON.parse(text);
+                isiTable(data);
+            } catch {
+                console.log("Format lama (textarea).");
+            }
         });
 }
 
-// ------------------------------
-// 3. Simpan catatan ke Web App
-// ------------------------------
+// Tampilkan data ke tabel
+function isiTable(rows) {
+    const tbody = document.getElementById("tbody");
+    tbody.innerHTML = "";
+
+    rows.forEach(r => {
+        let tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td contenteditable="true">${r.no}</td>
+            <td contenteditable="true">${r.catatan}</td>
+            <td contenteditable="true">${r.jenis}</td>
+            <td contenteditable="true">${r.mulai}</td>
+            <td contenteditable="true">${r.selesai}</td>
+            <td contenteditable="true">${r.keterangan}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+// Ambil data dari tabel
+function ambilDataTabel() {
+    const rows = [];
+    document.querySelectorAll("#tbody tr").forEach(tr => {
+        let tds = tr.querySelectorAll("td");
+        rows.push({
+            no: tds[0].innerText.trim(),
+            catatan: tds[1].innerText.trim(),
+            jenis: tds[2].innerText.trim(),
+            mulai: tds[3].innerText.trim(),
+            selesai: tds[4].innerText.trim(),
+            keterangan: tds[5].innerText.trim()
+        });
+    });
+    return rows;
+}
+
+// Simpan ke Web App
 function simpanCatatan() {
-    const isi = document.getElementById("catatan").value;
+    const data = ambilDataTabel();
 
     fetch("https://script.google.com/macros/s/AKfycbztqChoA2m81ag7O5dET4wOhyVwmvA94lGNfgQGAK3KtNMwSLLigCYkYfUdEzXdK5Xf/exec", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body:
             "nama=" + encodeURIComponent(namaPersonel) +
-            "&catatan=" + encodeURIComponent(isi)
+            "&catatan=" + encodeURIComponent(JSON.stringify(data))
     })
     .then(res => res.text())
-    .then(msg => {
-        alert("Catatan berhasil disimpan!");
-    })
-    .catch(err => {
-        alert("Gagal menyimpan.");
-        console.log(err);
-    });
+    .then(msg => alert("Catatan berhasil disimpan!"));
 }
 </script>
 
@@ -104,9 +148,21 @@ function simpanCatatan() {
 
 <h2 id="judul">CATATAN:</h2>
 
-<textarea id="catatan" placeholder="Tulis catatan personel di sini..."></textarea>
-
-<br>
+<table>
+    <thead>
+        <tr>
+            <th>NO</th>
+            <th>CATATAN HUKUMAN</th>
+            <th>JENIS HUKUMAN</th>
+            <th>TANGGAL<br>MULAI</th>
+            <th>TANGGAL<br>SELESAI</th>
+            <th>KETERANGAN</th>
+        </tr>
+    </thead>
+    <tbody id="tbody">
+        <!-- Diisi otomatis -->
+    </tbody>
+</table>
 
 <button onclick="simpanCatatan()">SIMPAN</button>
 <button onclick="history.back()">KEMBALI</button>
