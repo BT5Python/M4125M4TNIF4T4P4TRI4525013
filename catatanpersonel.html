@@ -31,6 +31,18 @@
     padding:18px;
   }
 
+  .rahasia-blink {
+  color: red;
+  font-weight: bold;
+  animation: blink 0.8s infinite;
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
   /* ASCII header block */
   .header {
     white-space:pre;
@@ -143,19 +155,8 @@
     margin-right:6px;
     letter-spacing:0.6px;
   }
-
-  .rahasia-blink {
-  color: red;
-  font-weight: bold;
-  animation: blink 0.8s infinite;
-}
-
-@keyframes blink {
-  0% { opacity: 1; }
-  50% { opacity: 0; }
-  100% { opacity: 1; }
-}
-button:hover{ background: rgba(0,255,0,0.02); }
+  
+  button:hover{ background: rgba(0,255,0,0.02); }
 
   /* small helpers */
   .muted { color: rgba(0,255,0,0.5); font-size:12px;}
