@@ -283,7 +283,7 @@ FILE: PERSONEL PUSLAT KODIKLATAU   |   CLASSIFICATION : RAHASIA
       .then(r => r.text())
       .then(txt => {
         if (!txt || txt.trim() === "") {
-          renderEmpty(5);
+          renderEmpty(1);
           return;
         }
         try {
