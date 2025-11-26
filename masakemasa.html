@@ -40,15 +40,18 @@
   }
 
   /* Container foto kecil di atas garis */
+  /* Container foto kecil di atas garis */
   #top-photos {
     position: fixed;
     top: 90px;
-    left: 20px;
+    left: 50%;
+    transform: translateX(-50%); /* supaya mulai dari tengah */
     display: flex;
-    flex-direction: row; /* berjajar horizontal */
+    flex-direction: row;
     gap: 10px;
     z-index: 3;
   }
+
   #top-photos img {
     width: 100px;        
     height: auto;
