@@ -26,7 +26,7 @@
   }
 
   #title {
-    font-size: 2vw;       
+    font-size: 2vw;
     font-weight: bold;
     margin: 0;
     white-space: nowrap;
@@ -35,7 +35,7 @@
   /* Garis horizontal full layar */
   #title-underline {
     position: fixed;
-    top: 300px;
+    top: 80px;
     left: 0;
     width: 100%;
     height: 2px;
@@ -43,10 +43,10 @@
     z-index: 3;
   }
 
-  /* Foto statis di tengah layar */
+  /* Foto utama di tengah layar */
   #photo {
     position: fixed;
-    top: 75%;
+    top: 65%;
     left: 35%;
     transform: translate(-50%, -50%);
     width: 200px;
@@ -54,15 +54,14 @@
     z-index: 1;
   }
 
-  /* Biodata statis di samping foto */
+  /* Biodata statis di samping kanan foto */
   #bio {
     position: fixed;
-    top: 50%;
-    left: 32%;
-    transform: translate(180px, -50%);
+    top: 300px;       /* posisi tetap dari atas */
+    left: 500px;      /* posisi tetap dari kiri */
     font-size: 15px;
     line-height: 1.6;
-    white-space: pre; /* tetap sesuai format spasi & enter */
+    white-space: pre; /* pertahankan enter & spasi */
     max-width: 500px;
     z-index: 2;
   }
@@ -70,23 +69,24 @@
   /* RESPONSIVE */
   @media (max-width: 1023px) {
     #photo { top: 60%; width: 150px; }
-    #bio { transform: translate(120px, -50%); font-size: 18px; max-width: 350px; }
+    #bio { left: 350px; font-size: 18px; max-width: 350px; }
   }
 
   @media (max-width: 767px) {
     #photo { top: 50%; width: 120px; }
-    #bio { transform: translate(-50%, 160px); left: 50%; font-size: 16px; max-width: 90%; }
+    #bio { left: 50%; top: 400px; transform: translateX(-50%); font-size: 16px; max-width: 90%; }
   }
 </style>
 </head>
 <body>
 
+<!-- Judul dan garis -->
 <div id="title-container">
   <div id="title">KOMANDAN PUSLAT KODIKLATAU DARI MASA KE MASA</div>
 </div>
-
 <div id="title-underline"></div>
 
+<!-- Foto utama dan biodata -->
 <img id="photo">
 <div id="bio"></div>
 
