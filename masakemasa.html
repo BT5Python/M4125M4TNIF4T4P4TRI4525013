@@ -161,7 +161,10 @@ Angkatan : ${s.angkatan}`;
     smallPhoto.src = s.foto;
 
     const caption = document.createElement("div");
-    caption.innerHTML = `${s.nama}<br>${s.periode}`;
+    caption.innerHTML = `
+      ${s.nama}<br>
+      ${s.periode.replace("Danpuslat Kodiklatau Th. ", "").replace("Th. ", "").replace(" - ", "–")}
+      `;
 
     item.appendChild(smallPhoto);
     item.appendChild(caption);
