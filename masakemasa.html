@@ -13,7 +13,7 @@
     overflow: hidden;
   }
 
-  /* Judul di atas */
+  /* Judul dan garis */
   #title-container {
     position: fixed;
     top: 20px;
@@ -23,18 +23,15 @@
     z-index: 3;
     width: 100%;
   }
-
   #title {
-    font-size: 24px;  /* ukuran tetap */
+    font-size: 24px;
     font-weight: bold;
     margin: 0;
-    white-space: nowrap; /* tetap satu baris */
+    white-space: nowrap;
   }
-
-  /* Garis horizontal full layar */
   #title-underline {
     position: fixed;
-    top: 310px;
+    top: 80px;
     left: 0;
     width: 100%;
     height: 2px;
@@ -42,11 +39,27 @@
     z-index: 3;
   }
 
+  /* Container foto kecil di atas garis */
+  #top-photos {
+    position: fixed;
+    top: 90px;
+    left: 20px;
+    display: flex;
+    flex-direction: row; /* berjajar horizontal */
+    gap: 10px;
+    z-index: 3;
+  }
+  #top-photos img {
+    width: 60px;        
+    height: auto;
+    border: 2px solid #00ff00;
+  }
+
   /* Foto utama */
   #photo {
     position: fixed;
-    top: 330px; /* posisi tetap */
-    left: 200px; 
+    top: 300px;
+    left: 200px;
     width: 200px;
     height: auto;
     z-index: 1;
@@ -55,11 +68,11 @@
   /* Biodata statis */
   #bio {
     position: fixed;
-    top: 340px; /* posisi tetap */
-    left: 420px; 
+    top: 300px;
+    left: 420px;
     font-size: 15px;
     line-height: 1.6;
-    white-space: pre; /* pertahankan enter & spasi */
+    white-space: pre;
     max-width: 500px;
     z-index: 2;
   }
@@ -71,14 +84,15 @@
   <div id="title">KOMANDAN PUSLAT KODIKLATAU DARI MASA KE MASA</div>
 </div>
 <div id="title-underline"></div>
+<div id="top-photos"></div>
 
 <img id="photo">
 <div id="bio"></div>
 
 <script>
 const slides = [
-  { periode: "Danpuslat Kodiklatau Th. 2020 - Th. 2021", nama: "Fata Patria", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 1998", foto: "danpus pdh.jpg" },
-  { periode: "Danpuslat Kodiklatau Th. 2021 - Th. 2022", nama: "Andi Darmawan", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 1999", foto: "kabid kl.jpg" },
+  { periode: "Danpuslat Kodiklatau Th. 2020 - Th. 2021", nama: "Fata Patria", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 1998", foto: "https://via.placeholder.com/200x250?text=Foto+1" },
+  { periode: "Danpuslat Kodiklatau Th. 2021 - Th. 2022", nama: "Andi Darmawan", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 1999", foto: "https://via.placeholder.com/200x250?text=Foto+2" },
   { periode: "Danpuslat Kodiklatau Th. 2022 - Th. 2023", nama: "Rizal Pratama", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 2000", foto: "https://via.placeholder.com/200x250?text=Foto+3" },
   { periode: "Danpuslat Kodiklatau Th. 2023 - Th. 2024", nama: "Dwi Wicaksono", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 2001", foto: "https://via.placeholder.com/200x250?text=Foto+4" },
   { periode: "Danpuslat Kodiklatau Th. 2024 - Sekarang", nama: "Joko Prasetyo", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 2002", foto: "https://via.placeholder.com/200x250?text=Foto+5" }
@@ -89,7 +103,6 @@ function typingEffect(element, text, speed = 35) {
   let lines = text.split("\n"); 
   let lineIndex = 0;
   let charIndex = 0;
-
   function type() {
     if(lineIndex >= lines.length) return;
     if(charIndex < lines[lineIndex].length) {
@@ -107,10 +120,10 @@ function typingEffect(element, text, speed = 35) {
 }
 
 let index = 0;
-
 function showSlide(i) {
   const photo = document.getElementById("photo");
   const bio = document.getElementById("bio");
+  const topPhotos = document.getElementById("top-photos");
   const s = slides[i];
 
   photo.src = s.foto;
@@ -124,6 +137,14 @@ Angkatan : ${s.angkatan}`;
 
   typingEffect(bio, biodata, 35);
 
+  // Tambahkan foto kecil di atas garis tanpa menumpuk
+  setTimeout(() => {
+    const smallPhoto = document.createElement("img");
+    smallPhoto.src = s.foto;
+    topPhotos.appendChild(smallPhoto);
+  }, 3000);
+
+  // Lanjut ke slide berikutnya
   setTimeout(() => {
     index = (index + 1) % slides.length;
     showSlide(index);
