@@ -9,22 +9,26 @@
     background: black;
     color: #00ff00;
     font-family: "Courier New", monospace;
-    padding: 40px;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .container {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
+    gap: 60px; /* jarak antara foto dan bio */
   }
 
   #photo {
-    width: 300px;
+    width: 250px;
     height: auto;
-    margin-right: 40px;
-    opacity: 0;
-    transition: opacity 2.5s ease;
+    opacity: 1; /* foto tetap muncul */
+    flex-shrink: 0; /* agar tidak mengecil */
   }
 
   #bio {
@@ -32,6 +36,7 @@
     line-height: 1.6;
     min-height: 180px;
     white-space: pre-line;
+    max-width: 500px;
   }
 </style>
 
@@ -44,11 +49,6 @@
 </div>
 
 <script>
-/* ==========================================================
-   DATA SLIDE (5 SLIDE)
-   GANTI FOTO SESUAI FILE ASLI MU
-========================================================== */
-
 const slides = [
   {
     periode: "Danpuslat Kodiklatau Th. 2020 - Th. 2021",
@@ -87,9 +87,6 @@ const slides = [
   }
 ];
 
-/* ==========================================================
-   FUNGSI KETIKAN BIO
-========================================================== */
 function typingEffect(element, text, speed = 35) {
   element.innerHTML = "";
   let i = 0;
@@ -105,26 +102,18 @@ function typingEffect(element, text, speed = 35) {
   });
 }
 
-/* ==========================================================
-   TAMPILKAN SLIDE
-========================================================== */
 let index = 0;
 
 async function showSlide(i) {
   const photo = document.getElementById("photo");
   const bio = document.getElementById("bio");
-
   const s = slides[i];
 
-  // Reset
-  photo.style.opacity = 0;
+  // Reset bio
   bio.innerHTML = "";
 
-  // Foto fade-in
+  // Set foto
   photo.src = s.foto;
-  setTimeout(() => {
-    photo.style.opacity = 1;
-  }, 200);
 
   // Format biodata
   const biodata = 
@@ -135,9 +124,7 @@ Pangkat  : ${s.pangkat}
 Angkatan : ${s.angkatan}`;
 
   // Efek ketikan
-  setTimeout(() => {
-    typingEffect(bio, biodata, 35);
-  }, 1200);
+  typingEffect(bio, biodata, 35);
 
   // Lanjut ke slide berikutnya
   setTimeout(() => {
