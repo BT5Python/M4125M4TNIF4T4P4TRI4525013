@@ -30,14 +30,15 @@
     margin: 0;
   }
 
-  /* Garis horizontal di bawah judul */
+  /* Garis horizontal full layar */
   #title-underline {
-    width: 200%;
+    position: fixed;
+    top: 80px;
+    left: 0;
+    width: 100%;
     height: 2px;
     background: #00ff00;
-    margin-top: 180px; /* jarak 200px dari judul */
-    margin-left: 0px;
-   
+    z-index: 3;
   }
 
   /* Foto statis di tengah layar */
@@ -63,14 +64,47 @@
     max-width: 500px;
     z-index: 2;
   }
+
+  /* ========== RESPONSIVE ========== */
+  /* Tablet */
+  @media (max-width: 1023px) {
+    #photo {
+      top: 60%;
+      width: 150px;
+    }
+    #bio {
+      transform: translate(120px, -50%);
+      font-size: 18px;
+      max-width: 350px;
+    }
+  }
+
+  /* HP */
+  @media (max-width: 767px) {
+    #photo {
+      top: 50%;
+      width: 120px;
+    }
+    #bio {
+      transform: translate(-50%, 160px); /* muncul di bawah foto */
+      left: 50%;
+      font-size: 16px;
+      max-width: 90%;
+    }
+    #title {
+      font-size: 20px;
+    }
+  }
 </style>
 </head>
 <body>
 
 <div id="title-container">
   <div id="title">KOMANDAN PUSLAT KODIKLATAU DARI MASA KE MASA</div>
-  <div id="title-underline"></div>
 </div>
+
+<!-- Garis full layar -->
+<div id="title-underline"></div>
 
 <img id="photo">
 <div id="bio"></div>
