@@ -198,17 +198,34 @@ Biodata will appear after clicking the member button
 </div>
 
 <script>
+// ===== JSONP LOADER =====
+function fetchJSONP(url, callback) {
+  const cbName = "jsonp_cb_" + Math.random().toString(36).substr(2, 9);
+
+  window[cbName] = function(data) {
+    callback(data);
+    delete window[cbName];
+    document.body.removeChild(script);
+  };
+
+  const script = document.createElement("script");
+  script.src = url + "?callback=" + cbName;
+  document.body.appendChild(script);
+}
+
 function goTo(url) { window.location.href = url; }
 
 // ======== LOAD DATABASE DARI GOOGLE SHEET ========
 let personnelDB = [];
 
-fetch("https://script.google.com/macros/s/AKfycbylnXB3-kWMQxR-x0wk4eiI7FspFTeaa6kltG9e3hDeb99cJdIBUQG7izt39IOzAx13/exec")
-  .then(res => res.json())
-  .then(data => {
-    personnelDB = data;
-    console.log("✅ Data loaded from Google Sheet", data);
-    populateCategoryDropdown();
+let personeIDB = [];
+
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzO0NnT9BdWbZY1pdIBsQPTb2oFUOt4HBdQr4dVqCn8gpFCmFM-AK_mN8iK4hv22Ox-/exec"; // GANTI
+
+fetchJSONP(WEBAPP_URL, data => {
+  personeIDB = data;
+  console.log("✔ Data loaded:", data);
+  populateCategoryDropdown();
   })
   .catch(err => console.error("❌ Gagal memuat data:", err));
 
