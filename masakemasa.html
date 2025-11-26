@@ -22,13 +22,14 @@
     transform: translateX(-50%);
     text-align: center;
     z-index: 3;
-    width: auto; /* desktop satu baris */
+    width: 100%;
   }
 
   #title {
-    font-size: 24px;
+    font-size: 2vw;          /* ukuran font mengikuti lebar layar */
     font-weight: bold;
     margin: 0;
+    white-space: nowrap;      /* tetap satu baris */
   }
 
   /* Garis horizontal full layar */
@@ -69,12 +70,6 @@
   /* ========== RESPONSIVE ========== */
   /* Tablet */
   @media (max-width: 1023px) {
-    #title-container {
-        width: 80%; /* teks otomatis wrap jadi 2 baris */
-    }
-    #title {
-        font-size: 22px;
-    }
     #photo {
       top: 60%;
       width: 150px;
@@ -88,12 +83,6 @@
 
   /* HP */
   @media (max-width: 767px) {
-    #title-container {
-        width: 90%;
-    }
-    #title {
-        font-size: 18px;
-    }
     #photo {
       top: 50%;
       width: 120px;
