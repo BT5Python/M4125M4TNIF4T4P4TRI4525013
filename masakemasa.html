@@ -145,6 +145,11 @@ Angkatan : ${s.angkatan}`;
     const smallPhoto = document.createElement("img");
     smallPhoto.src = s.foto;
     topPhotos.appendChild(smallPhoto);
+
+// tetap center setiap kali bertambah foto
+const totalWidth = topPhotos.scrollWidth;
+topPhotos.style.transform = `translateX(-${totalWidth / 2}px)`;
+
   }, 3000);
 
   // ❗ STOP SETELAH FOTO KE-5 (TIDAK LOOPING)
