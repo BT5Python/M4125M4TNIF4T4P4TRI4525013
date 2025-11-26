@@ -1,1 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slide Foto Masa ke Masa</title>
+
+<style>
+body {
+  background: #000;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.slider-container {
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  overflow: hidden;
+  border: 3px solid #00ff00;
+  border-radius: 12px;
+  box-shadow: 0 0 15px #00ff00;
+}
+
+.slide {
+  display: none;
+  text-align: center;
+}
+
+.slide img {
+  width: 100%;
+  height: auto;
+  border-bottom: 2px solid #00ff00;
+}
+
+.caption {
+  padding: 10px;
+  background: rgba(0, 255, 0, 0.1);
+  font-size: 18px;
+}
+
+.btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 255, 0, 0.3);
+  border: none;
+  padding: 12px;
+  cursor: pointer;
+  color: #00ff00;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.2s;
+  border-radius: 50%;
+}
+
+.btn:hover {
+  background: rgba(0, 255, 0, 0.5);
+}
+
+#prevBtn { left: 10px; }
+#nextBtn { right: 10px; }
+</style>
+</head>
+<body>
+
+<div class="slider-container">
+  <button class="btn" id="prevBtn">&#10094;</button>
+  <button class="btn" id="nextBtn">&#10095;</button>
+
+  <div id="slideArea"></div>
+</div>
+
+<script>
+// =============================
+// DATA FOTO MASA KE MASA
+// =============================
+const slides = [
+  { img: "https://via.placeholder.com/500x300?text=2005", caption: "Tahun 2005 — Awal Karier" },
+  { img: "https://via.placeholder.com/500x300?text=2010", caption: "Tahun 2010 — Kenaikan Pangkat" },
+  { img: "https://via.placeholder.com/500x300?text=2015", caption: "Tahun 2015 — Penugasan Baru" },
+  { img: "https://via.placeholder.com/500x300?text=2020", caption: "Tahun 2020 — Prestasi Besar" },
+  { img: "https://via.placeholder.com/500x300?text=2025", caption: "Tahun 2025 — Saat Ini" }
+];
+
+// Render slide secara otomatis
+const slideArea = document.getElementById("slideArea");
+
+slides.forEach(s => {
+  slideArea.innerHTML += `
+    <div class="slide">
+      <img src="${s.img}">
+      <div class="caption">${s.caption}</div>
+    </div>
+  `;
+});
+
+let index = 0;
+const slideList = document.getElementsByClassName("slide");
+
+function showSlide(i) {
+  if (i >= slideList.length) index = 0;
+  if (i < 0) index = slideList.length - 1;
+
+  for (let s of slideList) s.style.display = "none";
+  slideList[index].style.display = "block";
+}
+
+document.getElementById("prevBtn").onclick = () => {
+  index--;
+  showSlide(index);
+};
+
+document.getElementById("nextBtn").onclick = () => {
+  index++;
+  showSlide(index);
+};
+
+// Slide otomatis ganti setiap 5 detik
+setInterval(() => {
+  index++;
+  showSlide(index);
+}, 5000);
+
+// Tampilkan slide awal
+showSlide(index);
+</script>
+
+</body>
+</html>
 
