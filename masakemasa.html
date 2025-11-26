@@ -11,80 +11,46 @@
     font-family: "Courier New", monospace;
     margin: 0;
     height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    overflow: hidden;
   }
 
-  .container {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 60px; /* jarak antara foto dan bio */
-  }
-
+  /* Foto statis di tengah layar */
   #photo {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 250px;
     height: auto;
-    opacity: 1; /* foto tetap muncul */
-    flex-shrink: 0; /* agar tidak mengecil */
+    z-index: 1;
   }
 
+  /* Teks muncul di samping kanan foto */
   #bio {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(180px, -50%); /* geser kanan dari foto */
     font-size: 20px;
     line-height: 1.6;
-    min-height: 180px;
     white-space: pre-line;
     max-width: 500px;
+    z-index: 2;
   }
 </style>
-
 </head>
 <body>
 
-<div class="container">
-  <img id="photo">
-  <div id="bio"></div>
-</div>
+<img id="photo">
+<div id="bio"></div>
 
 <script>
 const slides = [
-  {
-    periode: "Danpuslat Kodiklatau Th. 2020 - Th. 2021",
-    nama: "Fata Patria",
-    pangkat: "Marsekal Pertama TNI",
-    angkatan: "Akabri 1998",
-    foto: "danpus pdh.jpg"
-  },
-  {
-    periode: "Danpuslat Kodiklatau Th. 2021 - Th. 2022",
-    nama: "Andi Darmawan",
-    pangkat: "Marsekal Pertama TNI",
-    angkatan: "Akabri 1999",
-    foto: "https://via.placeholder.com/350x450?text=Foto+2"
-  },
-  {
-    periode: "Danpuslat Kodiklatau Th. 2022 - Th. 2023",
-    nama: "Rizal Pratama",
-    pangkat: "Marsekal Pertama TNI",
-    angkatan: "Akabri 2000",
-    foto: "https://via.placeholder.com/350x450?text=Foto+3"
-  },
-  {
-    periode: "Danpuslat Kodiklatau Th. 2023 - Th. 2024",
-    nama: "Dwi Wicaksono",
-    pangkat: "Marsekal Pertama TNI",
-    angkatan: "Akabri 2001",
-    foto: "https://via.placeholder.com/350x450?text=Foto+4"
-  },
-  {
-    periode: "Danpuslat Kodiklatau Th. 2024 - Sekarang",
-    nama: "Joko Prasetyo",
-    pangkat: "Marsekal Pertama TNI",
-    angkatan: "Akabri 2002",
-    foto: "https://via.placeholder.com/350x450?text=Foto+5"
-  }
+  { periode: "Danpuslat Kodiklatau Th. 2020 - Th. 2021", nama: "Fata Patria", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 1998", foto: "danpus pdh.jpg" },
+  { periode: "Danpuslat Kodiklatau Th. 2021 - Th. 2022", nama: "Andi Darmawan", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 1999", foto: "https://via.placeholder.com/350x450?text=Foto+2" },
+  { periode: "Danpuslat Kodiklatau Th. 2022 - Th. 2023", nama: "Rizal Pratama", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 2000", foto: "https://via.placeholder.com/350x450?text=Foto+3" },
+  { periode: "Danpuslat Kodiklatau Th. 2023 - Th. 2024", nama: "Dwi Wicaksono", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 2001", foto: "https://via.placeholder.com/350x450?text=Foto+4" },
+  { periode: "Danpuslat Kodiklatau Th. 2024 - Sekarang", nama: "Joko Prasetyo", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 2002", foto: "https://via.placeholder.com/350x450?text=Foto+5" }
 ];
 
 function typingEffect(element, text, speed = 35) {
@@ -109,13 +75,8 @@ async function showSlide(i) {
   const bio = document.getElementById("bio");
   const s = slides[i];
 
-  // Reset bio
-  bio.innerHTML = "";
-
-  // Set foto
   photo.src = s.foto;
 
-  // Format biodata
   const biodata = 
 `▶ ${s.periode}
 
@@ -123,10 +84,8 @@ Nama     : ${s.nama}
 Pangkat  : ${s.pangkat}
 Angkatan : ${s.angkatan}`;
 
-  // Efek ketikan
   typingEffect(bio, biodata, 35);
 
-  // Lanjut ke slide berikutnya
   setTimeout(() => {
     index = (index + 1) % slides.length;
     showSlide(index);
