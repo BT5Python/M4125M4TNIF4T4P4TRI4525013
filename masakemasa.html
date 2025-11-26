@@ -79,6 +79,18 @@
     max-width: 500px;
     z-index: 2;
   }
+
+  .top-item {
+  text-align: center;
+  color: #00ff00;
+  font-size: 12px;
+  font-family: "Courier New", monospace;
+}
+.top-item img {
+  width: 100px;
+  border: 2px solid #00ff00;
+}
+
 </style>
 </head>
 <body>
@@ -142,9 +154,20 @@ Angkatan : ${s.angkatan}`;
 
   // Tambahkan foto kecil
   setTimeout(() => {
+    const item = document.createElement("div");
+    item.className = "top-item";
+
     const smallPhoto = document.createElement("img");
     smallPhoto.src = s.foto;
-    topPhotos.appendChild(smallPhoto);
+
+    const caption = document.createElement("div");
+    caption.innerHTML = `${s.nama}<br>${s.periode}`;
+
+    item.appendChild(smallPhoto);
+    item.appendChild(caption);
+
+    topPhotos.appendChild(item);
+
 
 // tetap center setiap kali bertambah foto
 const totalWidth = topPhotos.scrollWidth;
