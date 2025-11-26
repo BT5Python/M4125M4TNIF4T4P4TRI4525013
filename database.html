@@ -138,9 +138,10 @@ function fetchJSONP(url, callback, timeout = 12000){
   const to = setTimeout(()=>{ timedOut = true; cleanup(); console.error("JSONP timeout"); }, timeout);
 }
 
-/* ---------- GLOBAL DB & CONFIG (GANTI URL INI) ---------- */
+/* ---------- GLOBAL DB & CONFIG (GANTI URL INI JIKA PERLU) ---------- */
 let personnelDB = [];
-const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyRplg_WxH6EstYiYCP47K623f6APA03ADcZ3w0pbtvI_vLCXWndhMczlshnocYnLpw/exec"; // <-- GANTI (Apps Script exec URL)
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyRplg_WxH6EstYiYCP47K623f6APA03ADcZ3w0pbtvI_vLCXWndhMczlshnocYnLpw/exec"; // data personel (tetap seperti sebelumnya)
+const ONLINE_API = "https://script.google.com/macros/s/AKfycbyF_gSpfz7ZZsQzdppAfXXUEETQOnYEgBwY2NfNoPXHxZmJp_l0UWoh6n-llFtnGdwY/exec"; // online users API (yang kamu kirim)
 
 /* ---------- Load DB dari Google Sheet via JSONP ---------- */
 function initData(){
@@ -371,27 +372,42 @@ searchInput.addEventListener("keydown", e=>{
   }
 });
 document.getElementById("category-filter").addEventListener("change", ()=>{
-  // jika ada query saat ini, jalankan ulang filter; kalau tidak, tampil semua nama kategori (opsional)
   const q = searchInput.value.trim();
   if(q) showMemberButtons(q);
 });
 
-/* ---------- USER ONLINE (PRO) - requires separate Apps Script (replace ONLINE_API) ---------- */
+/* ---------- USER ONLINE (PRO) ---------- */
+// generate persistent user id for this browser/device
 let localUserID = localStorage.getItem("portalUserID");
 if(!localUserID){
   localUserID = "USR-" + Math.random().toString(36).substring(2,10).toUpperCase();
   localStorage.setItem("portalUserID", localUserID);
 }
-const ONLINE_API = "https://script.google.com/macros/s/AKfycbxnTjooL_EqsCtvxXxWm0TjWUIMHl1whpRNEy0sALLfmW9NP7-p6i3FGq2xqXkR-B8G/exec"; // <-- GANTI
 
+// store client IP (get once)
+let clientIP = localStorage.getItem("clientIP") || "";
+if(!clientIP){
+  fetch("https://api.ipify.org?format=json")
+    .then(r=>r.json())
+    .then(j=>{
+      clientIP = j.ip;
+      localStorage.setItem("clientIP", clientIP);
+    })
+    .catch(()=>{ clientIP = ""; });
+}
+
+// send ping (userID, ip, ua)
 function sendOnlinePing(){
   if(!ONLINE_API || ONLINE_API.indexOf("PASTE")>-1) return;
-  // fire-and-forget
-  fetch(ONLINE_API + "?action=ping&userID=" + encodeURIComponent(localUserID))
-    .catch(()=>{/* ignore errors */});
+  const ua = navigator.userAgent || "";
+  const ip = clientIP || "";
+  // best-effort, no waiting
+  navigator.sendBeacon
+    ? navigator.sendBeacon(ONLINE_API + "?action=ping&userID=" + encodeURIComponent(localUserID) + "&ip=" + encodeURIComponent(ip) + "&ua=" + encodeURIComponent(ua))
+    : fetch(ONLINE_API + "?action=ping&userID=" + encodeURIComponent(localUserID) + "&ip=" + encodeURIComponent(ip) + "&ua=" + encodeURIComponent(ua)).catch(()=>{});
 }
 setInterval(sendOnlinePing, 10000);
-sendOnlinePing();
+sendOnlinePing(); // immediate
 
 function showOnlineUsers(){
   if(!ONLINE_API || ONLINE_API.indexOf("PASTE")>-1){
@@ -399,10 +415,11 @@ function showOnlineUsers(){
     return;
   }
   fetch(ONLINE_API + "?action=getOnline")
-    .then(res => res.json())
-    .then(list => {
+    .then(res=>res.json())
+    .then(list=>{
       if(!Array.isArray(list)){ alert("Response tidak valid"); return; }
       let html = "===== USER ONLINE =====\n";
+      if(list.length === 0) html += "(tidak ada user aktif)\n";
       list.forEach((u,i)=> html += `${i+1}. ${u.userID}  (${u.lastSeen})\n`);
       alert(html);
     })
