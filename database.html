@@ -145,7 +145,7 @@ button:hover { background-color: #00FF00; color: black; }
 
     
 </style>
-</head>
+</head>    
 <body>
 
 <video autoplay muted loop id="bg-video">
@@ -169,6 +169,7 @@ button:hover { background-color: #00FF00; color: black; }
         <button onclick="goTo('radiogram.html')">RADIOGRAM</button>
         <button onclick="goTo('bankdokumen.html')">bank DATA</button>
         <button onclick="goTo('index.html')">LOGOUT</button>
+        <button onclick="showOnlineUsers()">USER ONLINE (PRO)</button>
     </div>
 </header>
 
@@ -582,7 +583,56 @@ searchInput.addEventListener("keydown", e=>{
         if(query) showMemberButtons(query);
     }
 });
+
+// ======== GENERATE USER ID (Tetap sama setiap device) ========
+let localUserID = localStorage.getItem("portalUserID");
+if (!localUserID) {
+    localUserID = "USR-" + Math.random().toString(36).substring(2, 10).toUpperCase();
+    localStorage.setItem("portalUserID", localUserID);
+}
+
+// ======== SERVER URL APPS SCRIPT ========
+const ONLINE_API = "PASTE-URL-APPS-SCRIPT-DISINI"; 
+
+// ======== KIRIM STATUS ONLINE TIAP 10 DETIK ========
+function sendOnlinePing() {
+    fetch(ONLINE_API + "?action=ping&userID=" + localUserID)
+        .catch(err => console.log("Ping gagal:", err));
+}
+
+setInterval(sendOnlinePing, 10000);
+sendOnlinePing(); // langsung ping saat masuk
+
+function showOnlineUsers() {
+    fetch(ONLINE_API + "?action=getOnline")
+        .then(res => res.json())
+        .then(list => {
+            let html = "===== USER ONLINE =====\n";
+            list.forEach((u, i) => {
+                html += `${i+1}. ${u.userID}  (${u.lastSeen})\n`;
+            });
+
+            alert(html);
+        })
+        .catch(err => alert("Gagal mengambil data user online"));
+}
+
 </script>
+<div style="
+    position: fixed;
+    bottom: 15px;
+    right: 20px;
+    background: rgba(0,255,0,0.1);
+    border: 1px solid #00FF00;
+    padding: 8px 15px;
+    color: #00FF00;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    border-radius: 6px;
+    backdrop-filter: blur(3px);
+">
+    ★ PRO VERSION ACTIVE
+</div>
 </body>
 </html>
 evolutionismyrevolution/BT5Python
