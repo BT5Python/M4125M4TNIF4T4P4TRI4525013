@@ -14,10 +14,22 @@
     overflow: hidden;
   }
 
+  /* Judul di atas */
+  #title {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+    font-weight: bold;
+    z-index: 3;
+    text-align: center;
+  }
+
   /* Foto statis di tengah layar */
   #photo {
     position: fixed;
-    top: 25%;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 250px;
@@ -30,7 +42,7 @@
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(180px, -50%); /* geser kanan dari foto */
+    transform: translate(180px, -50%);
     font-size: 20px;
     line-height: 1.6;
     white-space: pre-line;
@@ -41,6 +53,7 @@
 </head>
 <body>
 
+<div id="title">KOMANDAN PUSLAT KODIKLATAU DARI MASA KE MASA</div>
 <img id="photo">
 <div id="bio"></div>
 
