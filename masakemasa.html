@@ -2,144 +2,128 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Slide Komandan PUSLAT</title>
-
+<title>Slide Komandan Puslat</title>
 <style>
-body {
-  background: #000;
-  color: #00ff00;
-  font-family: "Courier New", monospace;
-  text-align: center;
-  padding-top: 40px;
-}
+  body {
+    background: black;
+    color: #00ff00;
+    font-family: "Courier New", monospace;
+    text-align: center;
+    padding-top: 50px;
+  }
 
-#judul {
-  font-size: 20px;
-  margin-bottom: 20px;
-  min-height: 30px;
-  opacity: 0;
-  transition: opacity 1.5s ease-in-out;
-}
+  #title, #name {
+    font-size: 22px;
+    margin-top: 20px;
+    min-height: 30px;
+  }
 
-#foto {
-  width: 320px;
-  height: auto;
-  border: 2px solid #00ff00;
-  border-radius: 10px;
-  opacity: 0;
-  transition: opacity 2s ease-in-out;
-  box-shadow: 0 0 20px rgba(0,255,0,0.4);
-}
+  #photo {
+    width: 320px;
+    height: auto;
+    margin-top: 25px;
+    opacity: 0;
+    transition: opacity 2.5s ease;
+  }
 
-#ketikan {
-  font-size: 20px;
-  margin-top: 20px;
-  min-height: 30px;
-  letter-spacing: 1px;
-}
+  .hidden {
+    opacity: 0;
+  }
 </style>
 </head>
 <body>
 
-<div id="judul"></div>
-<img id="foto" src="" />
-<div id="ketikan"></div>
+<div id="title"></div>
+<img id="photo" src="">
+<div id="name"></div>
 
 <script>
-// =====================================================
-// DATA 5 SLIDE KOMANDAN PUSLAT
-// =====================================================
+/* ================================
+   DATA SLIDE (5 SLIDE)
+================================ */
 const slides = [
   {
-    judul: "KOMANDAN PUSLAT KODIKLATAU TH. 2020 S.D. TH. 2021",
-    foto: "danpus pdh.jpg",
-    nama: "MARSEKAL PERTAMA TNI FATA PATRIA"
+    title: "KOMANDAN PUSLAT KODIKLATAU TH. 2020 S.D. TH. 2021",
+    photo: "https://via.placeholder.com/350x450?text=Foto+1",
+    name: "MARSEKAL PERTAMA TNI FATA PATRIA"
   },
   {
-    judul: "KOMANDAN PUSLAT KODIKLATAU TH. 2021 S.D. 2022",
-    foto: "https://via.placeholder.com/320x400?text=ANDI+DARMAWAN",
-    nama: "MARSEKAL PERTAMA TNI ANDI DARMAWAN"
+    title: "KOMANDAN PUSLAT KODIKLATAU TH. 2021 S.D. TH. 2022",
+    photo: "https://via.placeholder.com/350x450?text=Foto+2",
+    name: "MARSEKAL PERTAMA TNI ANDI DARMAWAN"
   },
   {
-    judul: "KOMANDAN PUSLAT KODIKLATAU TH. 2022 S.D. 2023",
-    foto: "https://via.placeholder.com/320x400?text=KOMANDAN+3",
-    nama: "MARSEKAL PERTAMA TNI RIZAL PRANOTO"
+    title: "KOMANDAN PUSLAT KODIKLATAU TH. 2022 S.D. TH. 2023",
+    photo: "https://via.placeholder.com/350x450?text=Foto+3",
+    name: "MARSEKAL PERTAMA TNI RIZAL PRATAMA"
   },
   {
-    judul: "KOMANDAN PUSLAT KODIKLATAU TH. 2023 S.D. 2024",
-    foto: "https://via.placeholder.com/320x400?text=KOMANDAN+4",
-    nama: "MARSEKAL PERTAMA TNI SURYA DHARMA"
+    title: "KOMANDAN PUSLAT KODIKLATAU TH. 2023 S.D. TH. 2024",
+    photo: "https://via.placeholder.com/350x450?text=Foto+4",
+    name: "MARSEKAL PERTAMA TNI DWI WICAKSONO"
   },
   {
-    judul: "KOMANDAN PUSLAT KODIKLATAU TH. 2024 S.D. SEKARANG",
-    foto: "https://via.placeholder.com/320x400?text=KOMANDAN+5",
-    nama: "MARSEKAL PERTAMA TNI SUGENG PRIYONO"
+    title: "KOMANDAN PUSLAT KODIKLATAU TH. 2024 S.D. SEKARANG",
+    photo: "https://via.placeholder.com/350x450?text=Foto+5",
+    name: "MARSEKAL PERTAMA TNI JOKO PRASETYO"
   }
 ];
 
-const judulEl = document.getElementById("judul");
-const fotoEl = document.getElementById("foto");
-const ketikEl = document.getElementById("ketikan");
-
 let index = 0;
 
-// =====================================================
-// FUNGSI EFEK KETIKAN
-// =====================================================
-function ketikTeks(teks, callback) {
-  ketikEl.innerHTML = "";
+/* ================================
+   FUNGSI KETIKAN
+================================ */
+function typingEffect(element, text, speed = 50) {
+  element.innerHTML = "";
   let i = 0;
-  const speed = 60; // speed ketik
-
-  const run = setInterval(() => {
-    ketikEl.innerHTML += teks.charAt(i);
-    i++;
-    if (i >= teks.length) {
-      clearInterval(run);
-      if (callback) callback();
-    }
-  }, speed);
+  return new Promise((resolve) => {
+    let interval = setInterval(() => {
+      element.innerHTML += text.charAt(i);
+      i++;
+      if (i >= text.length) {
+        clearInterval(interval);
+        resolve();
+      }
+    }, speed);
+  });
 }
 
-// =====================================================
-// FUNGSI TAMPIL SLIDE
-// =====================================================
-function tampilSlide() {
-  const item = slides[index];
+/* ================================
+   TAMPILKAN SLIDE
+================================ */
+async function showSlide(i) {
+  const t = document.getElementById("title");
+  const p = document.getElementById("photo");
+  const n = document.getElementById("name");
 
-  // Reset tampilan
-  judulEl.style.opacity = 0;
-  fotoEl.style.opacity = 0;
-  ketikEl.innerHTML = "";
+  // Reset semua
+  t.innerHTML = "";
+  n.innerHTML = "";
+  p.style.opacity = 0;
 
-  // 1. Tampilkan judul
+  const slide = slides[i];
+
+  // 1) Efek ketikan judul
+  await typingEffect(t, slide.title, 40);
+
+  // 2) Tampilkan foto fade-in
+  p.src = slide.photo;
+  setTimeout(() => { p.style.opacity = 1; }, 200);
+
+  // 3) Ketik nama komandannya
   setTimeout(() => {
-    judulEl.innerHTML = item.judul;
-    judulEl.style.opacity = 1;
-  }, 300);
+    typingEffect(n, slide.name, 40);
+  }, 2500);
 
-  // 2. Tampilkan foto setelah jeda
+  // 4) Ganti slide setelah 7 detik
   setTimeout(() => {
-    fotoEl.src = item.foto;
-    fotoEl.style.opacity = 1;
-  }, 2000);
-
-  // 3. Efek ketikan setelah foto tampil penuh
-  setTimeout(() => {
-    ketikTeks(item.nama);
-  }, 4000);
-
-  // Pindah ke slide berikutnya
-  index++;
-  if (index >= slides.length) index = 0;
-
-  // Interval antar slide (10 detik)
-  setTimeout(tampilSlide, 10000);
+    index = (index + 1) % slides.length;
+    showSlide(index);
+  }, 7000);
 }
 
-// MULAI
-tampilSlide();
+showSlide(index);
 </script>
 
 </body>
