@@ -137,16 +137,19 @@ Angkatan : ${s.angkatan}`;
 
   typingEffect(bio, biodata, 35);
 
-  // Tambahkan foto kecil di atas garis tanpa menumpuk
+  // Tambahkan foto kecil
   setTimeout(() => {
     const smallPhoto = document.createElement("img");
     smallPhoto.src = s.foto;
     topPhotos.appendChild(smallPhoto);
   }, 3000);
 
-  // Lanjut ke slide berikutnya
+  // ❗ STOP SETELAH FOTO KE-5 (TIDAK LOOPING)
+  if (i === slides.length - 1) return;
+
+  // Slide berikutnya
   setTimeout(() => {
-    index = (index + 1) % slides.length;
+    index++;
     showSlide(index);
   }, 9000);
 }
