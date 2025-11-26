@@ -411,20 +411,26 @@ sendOnlinePing(); // immediate
 
 function showOnlineUsers(){
   if(!ONLINE_API || ONLINE_API.indexOf("PASTE")>-1){
-    alert("Online API belum diset. Ganti ONLINE_API pada script.");
+    alert("Online API belum diset.");
     return;
   }
-  fetch(ONLINE_API + "?action=getOnline")
-    .then(res=>res.json())
-    .then(list=>{
-      if(!Array.isArray(list)){ alert("Response tidak valid"); return; }
-      let html = "===== USER ONLINE =====\n";
-      if(list.length === 0) html += "(tidak ada user aktif)\n";
-      list.forEach((u,i)=> html += `${i+1}. ${u.userID}  (${u.lastSeen})\n`);
-      alert(html);
-    })
-    .catch(err => { console.error(err); alert("Gagal mengambil data user online"); });
+
+  const url = ONLINE_API + "?action=getOnline";
+
+  fetchJSONP(url, data => {
+    if(!Array.isArray(data)){
+      alert("Response SALAH dari API Online.\nPeriksa Apps Script kamu.");
+      return;
+    }
+
+    let html = "===== USER ONLINE =====\n";
+    if(data.length === 0) html += "(tidak ada user aktif)\n";
+    else data.forEach((u,i)=> html += `${i+1}. ${u.userID}  (${u.lastSeen})\n`);
+
+    alert(html);
+  });
 }
+
 
 /* ---------- INIT ---------- */
 initData();
