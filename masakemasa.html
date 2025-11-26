@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Foto Bergantian + Efek Ketikan</title>
+<title>Slide Komandan PUSLAT</title>
 
 <style>
 body {
@@ -15,9 +15,11 @@ body {
 }
 
 #judul {
-  font-size: 22px;
+  font-size: 20px;
   margin-bottom: 20px;
-  text-shadow: 0 0 8px #00ff00;
+  min-height: 30px;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
 }
 
 #foto {
@@ -40,85 +42,103 @@ body {
 </head>
 <body>
 
-<div id="judul">KOMANDAN PUSLAT KODIKLATAU</div>
-
+<div id="judul"></div>
 <img id="foto" src="" />
-
 <div id="ketikan"></div>
 
 <script>
 // =====================================================
-// DATA FOTO + TEKS YANG AKAN MUNCUL
+// DATA 5 SLIDE KOMANDAN PUSLAT
 // =====================================================
-const dataSlide = [
+const slides = [
   {
-    foto: "https://via.placeholder.com/320x400?text=KOMANDAN+1",
-    teks: "MARSEKAL PERTAMA FATA PATRIA"
+    judul: "KOMANDAN PUSLAT KODIKLATAU TH. 2020 S.D. TH. 2021",
+    foto: "danpus pdh.jpg",
+    nama: "MARSEKAL PERTAMA TNI FATA PATRIA"
   },
   {
-    foto: "https://via.placeholder.com/320x400?text=KOMANDAN+2",
-    teks: "MARSEKAL MUDA SURYA DHARMA"
+    judul: "KOMANDAN PUSLAT KODIKLATAU TH. 2021 S.D. 2022",
+    foto: "https://via.placeholder.com/320x400?text=ANDI+DARMAWAN",
+    nama: "MARSEKAL PERTAMA TNI ANDI DARMAWAN"
   },
   {
+    judul: "KOMANDAN PUSLAT KODIKLATAU TH. 2022 S.D. 2023",
     foto: "https://via.placeholder.com/320x400?text=KOMANDAN+3",
-    teks: "MARSEKAL MUDA SUGENG PRIYONO"
+    nama: "MARSEKAL PERTAMA TNI RIZAL PRANOTO"
+  },
+  {
+    judul: "KOMANDAN PUSLAT KODIKLATAU TH. 2023 S.D. 2024",
+    foto: "https://via.placeholder.com/320x400?text=KOMANDAN+4",
+    nama: "MARSEKAL PERTAMA TNI SURYA DHARMA"
+  },
+  {
+    judul: "KOMANDAN PUSLAT KODIKLATAU TH. 2024 S.D. SEKARANG",
+    foto: "https://via.placeholder.com/320x400?text=KOMANDAN+5",
+    nama: "MARSEKAL PERTAMA TNI SUGENG PRIYONO"
   }
 ];
 
+const judulEl = document.getElementById("judul");
 const fotoEl = document.getElementById("foto");
 const ketikEl = document.getElementById("ketikan");
 
 let index = 0;
 
 // =====================================================
-// FUNGSI KETIK TEKS
+// FUNGSI EFEK KETIKAN
 // =====================================================
-function ketikTeks(text, callback) {
+function ketikTeks(teks, callback) {
   ketikEl.innerHTML = "";
   let i = 0;
+  const speed = 60; // speed ketik
 
-  const interval = setInterval(() => {
-    ketikEl.innerHTML += text.charAt(i);
+  const run = setInterval(() => {
+    ketikEl.innerHTML += teks.charAt(i);
     i++;
-
-    if (i === text.length) {
-      clearInterval(interval);
+    if (i >= teks.length) {
+      clearInterval(run);
       if (callback) callback();
     }
-  }, 70); // Kecepatan ketik
+  }, speed);
 }
 
 // =====================================================
-// FUNGSI MENAMPILKAN SLIDE BERIKUTNYA
+// FUNGSI TAMPIL SLIDE
 // =====================================================
 function tampilSlide() {
-  ketikEl.innerHTML = "";       // reset teks
-  fotoEl.style.opacity = 0;     // reset foto
+  const item = slides[index];
 
-  const item = dataSlide[index];
+  // Reset tampilan
+  judulEl.style.opacity = 0;
+  fotoEl.style.opacity = 0;
+  ketikEl.innerHTML = "";
 
-  // Ganti foto
-  fotoEl.src = item.foto;
-
-  // Efek fade-in foto
+  // 1. Tampilkan judul
   setTimeout(() => {
-    fotoEl.style.opacity = 1;
-
-    // Setelah foto muncul → mulai ketik teks
-    setTimeout(() => {
-      ketikTeks(item.teks);
-    }, 2000);
-
+    judulEl.innerHTML = item.judul;
+    judulEl.style.opacity = 1;
   }, 300);
 
-  // Lanjut ke foto berikutnya
-  index++;
-  if (index >= dataSlide.length) index = 0;
+  // 2. Tampilkan foto setelah jeda
+  setTimeout(() => {
+    fotoEl.src = item.foto;
+    fotoEl.style.opacity = 1;
+  }, 2000);
 
-  // Auto next per 8 detik
-  setTimeout(tampilSlide, 8000);
+  // 3. Efek ketikan setelah foto tampil penuh
+  setTimeout(() => {
+    ketikTeks(item.nama);
+  }, 4000);
+
+  // Pindah ke slide berikutnya
+  index++;
+  if (index >= slides.length) index = 0;
+
+  // Interval antar slide (10 detik)
+  setTimeout(tampilSlide, 10000);
 }
 
+// MULAI
 tampilSlide();
 </script>
 
