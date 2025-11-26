@@ -382,7 +382,7 @@ if(!localUserID){
   localUserID = "USR-" + Math.random().toString(36).substring(2,10).toUpperCase();
   localStorage.setItem("portalUserID", localUserID);
 }
-const ONLINE_API = "PASTE_ONLINE_API_WEBAPP_HERE"; // <-- GANTI
+const ONLINE_API = "https://script.google.com/macros/s/AKfycbxnTjooL_EqsCtvxXxWm0TjWUIMHl1whpRNEy0sALLfmW9NP7-p6i3FGq2xqXkR-B8G/exec"; // <-- GANTI
 
 function sendOnlinePing(){
   if(!ONLINE_API || ONLINE_API.indexOf("PASTE")>-1) return;
