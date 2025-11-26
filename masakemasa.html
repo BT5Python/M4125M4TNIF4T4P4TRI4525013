@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Slide Komandan Puslat</title>
+
 <style>
   body {
     background: black;
@@ -20,15 +21,15 @@
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
-    z-index: 5;
+    z-index: 3;
     width: 100%;
   }
 
   #title {
-    font-size: 2vw;      /* font menyesuaikan lebar layar */
+    font-size: 2vw;          /* ukuran font mengikuti lebar layar */
     font-weight: bold;
     margin: 0;
-    white-space: nowrap;  /* tetap satu baris */
+    white-space: nowrap;      /* tetap satu baris */
   }
 
   /* Garis horizontal full layar */
@@ -39,27 +40,10 @@
     width: 100%;
     height: 2px;
     background: #00ff00;
-    z-index: 4;
+    z-index: 3;
   }
 
-  /* Strip 5 foto di atas garis */
-  #photo-strip {
-    position: fixed;
-    top: 10px; /* di atas garis */
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 20px; /* jarak antar foto */
-    z-index: 6;
-  }
-
-  #photo-strip img {
-    width: 60px;
-    height: auto;
-    border: 2px solid #00ff00;
-  }
-
-  /* Foto utama di tengah layar */
+  /* Foto statis di tengah layar */
   #photo {
     position: fixed;
     top: 65%;
@@ -70,7 +54,7 @@
     z-index: 1;
   }
 
-  /* Biodata di samping kanan foto */
+  /* Teks muncul di samping kanan foto */
   #bio {
     position: fixed;
     top: 50%;
@@ -114,32 +98,23 @@
 </head>
 <body>
 
-<!-- Judul dan garis -->
 <div id="title-container">
   <div id="title">KOMANDAN PUSLAT KODIKLATAU DARI MASA KE MASA</div>
 </div>
+
+<!-- Garis full layar -->
 <div id="title-underline"></div>
 
-<!-- Strip 5 foto di atas garis -->
-<div id="photo-strip">
-  <img src="https://via.placeholder.com/60x80?text=1" alt="Foto 1">
-  <img src="https://via.placeholder.com/60x80?text=2" alt="Foto 2">
-  <img src="https://via.placeholder.com/60x80?text=3" alt="Foto 3">
-  <img src="https://via.placeholder.com/60x80?text=4" alt="Foto 4">
-  <img src="https://via.placeholder.com/60x80?text=5" alt="Foto 5">
-</div>
-
-<!-- Foto utama dan biodata -->
 <img id="photo">
 <div id="bio"></div>
 
 <script>
 const slides = [
-  { periode: "Danpuslat Kodiklatau Th. 2020 - Th. 2021", nama: "Fata Patria", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 1998", foto: "https://via.placeholder.com/200x250?text=Foto+Utama+1" },
-  { periode: "Danpuslat Kodiklatau Th. 2021 - Th. 2022", nama: "Andi Darmawan", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 1999", foto: "https://via.placeholder.com/200x250?text=Foto+Utama+2" },
-  { periode: "Danpuslat Kodiklatau Th. 2022 - Th. 2023", nama: "Rizal Pratama", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 2000", foto: "https://via.placeholder.com/200x250?text=Foto+Utama+3" },
-  { periode: "Danpuslat Kodiklatau Th. 2023 - Th. 2024", nama: "Dwi Wicaksono", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 2001", foto: "https://via.placeholder.com/200x250?text=Foto+Utama+4" },
-  { periode: "Danpuslat Kodiklatau Th. 2024 - Sekarang", nama: "Joko Prasetyo", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 2002", foto: "https://via.placeholder.com/200x250?text=Foto+Utama+5" }
+  { periode: "Danpuslat Kodiklatau Th. 2020 - Th. 2021", nama: "Fata Patria", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 1998", foto: "danpus pdh.jpg" },
+  { periode: "Danpuslat Kodiklatau Th. 2021 - Th. 2022", nama: "Andi Darmawan", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 1999", foto: "https://via.placeholder.com/350x450?text=Foto+2" },
+  { periode: "Danpuslat Kodiklatau Th. 2022 - Th. 2023", nama: "Rizal Pratama", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 2000", foto: "https://via.placeholder.com/350x450?text=Foto+3" },
+  { periode: "Danpuslat Kodiklatau Th. 2023 - Th. 2024", nama: "Dwi Wicaksono", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 2001", foto: "https://via.placeholder.com/350x450?text=Foto+4" },
+  { periode: "Danpuslat Kodiklatau Th. 2024 - Sekarang", nama: "Joko Prasetyo", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 2002", foto: "https://via.placeholder.com/350x450?text=Foto+5" }
 ];
 
 function typingEffect(element, text, speed = 35) {
