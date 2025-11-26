@@ -3,82 +3,98 @@
 <head>
 <meta charset="UTF-8">
 <title>Slide Komandan Puslat</title>
+
 <style>
   body {
     background: black;
     color: #00ff00;
     font-family: "Courier New", monospace;
-    text-align: center;
-    padding-top: 50px;
+    padding: 40px;
   }
 
-  #title, #name {
-    font-size: 22px;
-    margin-top: 20px;
-    min-height: 30px;
+  .container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
   }
 
   #photo {
-    width: 250px;
+    width: 300px;
     height: auto;
-    margin-top: 25px;
+    margin-right: 40px;
     opacity: 0;
     transition: opacity 2.5s ease;
   }
 
-  .hidden {
-    opacity: 0;
+  #bio {
+    font-size: 20px;
+    line-height: 1.6;
+    min-height: 180px;
+    white-space: pre-line;
   }
 </style>
+
 </head>
 <body>
 
-<div id="title"></div>
-<img id="photo" src="">
-<div id="name"></div>
+<div class="container">
+  <img id="photo">
+  <div id="bio"></div>
+</div>
 
 <script>
-/* ================================
+/* ==========================================================
    DATA SLIDE (5 SLIDE)
-================================ */
+   GANTI FOTO SESUAI FILE ASLI MU
+========================================================== */
+
 const slides = [
   {
-    title: "KOMANDAN PUSLAT KODIKLATAU TH. 2020 S.D. TH. 2021",
-    photo: "danpus pdh.jpg",
-    name: "MARSEKAL PERTAMA TNI FATA PATRIA"
+    periode: "Danpuslat Kodiklatau Th. 2020 - Th. 2021",
+    nama: "Fata Patria",
+    pangkat: "Marsekal Pertama TNI",
+    angkatan: "Akabri 1998",
+    foto: "https://via.placeholder.com/350x450?text=Foto+1"
   },
   {
-    title: "KOMANDAN PUSLAT KODIKLATAU TH. 2021 S.D. TH. 2022",
-    photo: "https://via.placeholder.com/350x450?text=Foto+2",
-    name: "MARSEKAL PERTAMA TNI ANDI DARMAWAN"
+    periode: "Danpuslat Kodiklatau Th. 2021 - Th. 2022",
+    nama: "Andi Darmawan",
+    pangkat: "Marsekal Pertama TNI",
+    angkatan: "Akabri 1999",
+    foto: "https://via.placeholder.com/350x450?text=Foto+2"
   },
   {
-    title: "KOMANDAN PUSLAT KODIKLATAU TH. 2022 S.D. TH. 2023",
-    photo: "https://via.placeholder.com/350x450?text=Foto+3",
-    name: "MARSEKAL PERTAMA TNI RIZAL PRATAMA"
+    periode: "Danpuslat Kodiklatau Th. 2022 - Th. 2023",
+    nama: "Rizal Pratama",
+    pangkat: "Marsekal Pertama TNI",
+    angkatan: "Akabri 2000",
+    foto: "https://via.placeholder.com/350x450?text=Foto+3"
   },
   {
-    title: "KOMANDAN PUSLAT KODIKLATAU TH. 2023 S.D. TH. 2024",
-    photo: "https://via.placeholder.com/350x450?text=Foto+4",
-    name: "MARSEKAL PERTAMA TNI DWI WICAKSONO"
+    periode: "Danpuslat Kodiklatau Th. 2023 - Th. 2024",
+    nama: "Dwi Wicaksono",
+    pangkat: "Marsekal Pertama TNI",
+    angkatan: "Akabri 2001",
+    foto: "https://via.placeholder.com/350x450?text=Foto+4"
   },
   {
-    title: "KOMANDAN PUSLAT KODIKLATAU TH. 2024 S.D. SEKARANG",
-    photo: "https://via.placeholder.com/350x450?text=Foto+5",
-    name: "MARSEKAL PERTAMA TNI JOKO PRASETYO"
+    periode: "Danpuslat Kodiklatau Th. 2024 - Sekarang",
+    nama: "Joko Prasetyo",
+    pangkat: "Marsekal Pertama TNI",
+    angkatan: "Akabri 2002",
+    foto: "https://via.placeholder.com/350x450?text=Foto+5"
   }
 ];
 
-let index = 0;
-
-/* ================================
-   FUNGSI KETIKAN
-================================ */
-function typingEffect(element, text, speed = 50) {
+/* ==========================================================
+   FUNGSI KETIKAN BIO
+========================================================== */
+function typingEffect(element, text, speed = 35) {
   element.innerHTML = "";
   let i = 0;
   return new Promise((resolve) => {
-    let interval = setInterval(() => {
+    const interval = setInterval(() => {
       element.innerHTML += text.charAt(i);
       i++;
       if (i >= text.length) {
@@ -89,38 +105,45 @@ function typingEffect(element, text, speed = 50) {
   });
 }
 
-/* ================================
+/* ==========================================================
    TAMPILKAN SLIDE
-================================ */
+========================================================== */
+let index = 0;
+
 async function showSlide(i) {
-  const t = document.getElementById("title");
-  const p = document.getElementById("photo");
-  const n = document.getElementById("name");
+  const photo = document.getElementById("photo");
+  const bio = document.getElementById("bio");
 
-  // Reset semua
-  t.innerHTML = "";
-  n.innerHTML = "";
-  p.style.opacity = 0;
+  const s = slides[i];
 
-  const slide = slides[i];
+  // Reset
+  photo.style.opacity = 0;
+  bio.innerHTML = "";
 
-  // 1) Efek ketikan judul
-  await typingEffect(t, slide.title, 40);
-
-  // 2) Tampilkan foto fade-in
-  p.src = slide.photo;
-  setTimeout(() => { p.style.opacity = 1; }, 200);
-
-  // 3) Ketik nama komandannya
+  // Foto fade-in
+  photo.src = s.foto;
   setTimeout(() => {
-    typingEffect(n, slide.name, 40);
-  }, 2500);
+    photo.style.opacity = 1;
+  }, 200);
 
-  // 4) Ganti slide setelah 7 detik
+  // Format biodata
+  const biodata = 
+`▶ ${s.periode}
+
+Nama     : ${s.nama}
+Pangkat  : ${s.pangkat}
+Angkatan : ${s.angkatan}`;
+
+  // Efek ketikan
+  setTimeout(() => {
+    typingEffect(bio, biodata, 35);
+  }, 1200);
+
+  // Lanjut ke slide berikutnya
   setTimeout(() => {
     index = (index + 1) % slides.length;
     showSlide(index);
-  }, 7000);
+  }, 9000);
 }
 
 showSlide(index);
