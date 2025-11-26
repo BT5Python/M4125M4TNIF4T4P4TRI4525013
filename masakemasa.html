@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>Slide Komandan Puslat</title>
-
 <style>
   body {
     background: black;
@@ -14,85 +13,78 @@
     overflow: hidden;
   }
 
-  /* Judul */
+  /* Judul dan garis */
   #title-container {
     position: fixed;
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
+    z-index: 3;
     width: 100%;
-    z-index: 5;
   }
-
   #title {
-    font-size: 2vw;
+    font-size: 24px;
     font-weight: bold;
     margin: 0;
     white-space: nowrap;
   }
-
-  /* Garis */
   #title-underline {
     position: fixed;
-    top: 300px;
+    top: 80px;
     left: 0;
     width: 100%;
     height: 2px;
     background: #00ff00;
-    z-index: 5;
+    z-index: 3;
   }
 
-  /* FOTO KECIL BERJAJAR */
-  #mini-row {
+  /* Container foto kecil di atas garis */
+  #top-photos {
     position: fixed;
-    top: 310px;
-    left: 50%;
-    transform: translateX(-50%);
+    top: 90px;
+    left: 20px;
     display: flex;
-    gap: 20px;
-    z-index: 6;
+    flex-direction: row; /* berjajar horizontal */
+    gap: 10px;
+    z-index: 3;
+  }
+  #top-photos img {
+    width: 60px;        
+    height: auto;
+    border: 2px solid #00ff00;
   }
 
-  .mini-photo {
-    width: 80px;
-    border: 3px solid #00ff00;
-  }
-
-  /* Foto besar */
+  /* Foto utama */
   #photo {
     position: fixed;
-    top: 75%;
-    left: 35%;
-    transform: translate(-50%, -50%);
+    top: 300px;
+    left: 200px;
     width: 200px;
+    height: auto;
     z-index: 1;
   }
 
-  /* Biodata */
+  /* Biodata statis */
   #bio {
     position: fixed;
-    top: 50%;
-    left: 32%;
-    transform: translate(180px, -50%);
+    top: 300px;
+    left: 420px;
     font-size: 15px;
-    white-space: pre-line;
+    line-height: 1.6;
+    white-space: pre;
     max-width: 500px;
     z-index: 2;
   }
 </style>
 </head>
-
 <body>
 
 <div id="title-container">
   <div id="title">KOMANDAN PUSLAT KODIKLATAU DARI MASA KE MASA</div>
 </div>
-
 <div id="title-underline"></div>
-
-<!-- FOTO KECIL BERJAJAR -->
-<div id="mini-row"></div>
+<div id="top-photos"></div>
 
 <img id="photo">
 <div id="bio"></div>
@@ -100,37 +92,40 @@
 <script>
 const slides = [
   { periode: "Danpuslat Kodiklatau Th. 2020 - Th. 2021", nama: "Fata Patria", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 1998", foto: "danpus pdh.jpg" },
-  { periode: "Danpuslat Kodiklatau Th. 2021 - Th. 2022", nama: "Andi Darmawan", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 1999", foto: "https://via.placeholder.com/350x450?text=Foto+2" },
-  { periode: "Danpuslat Kodiklatau Th. 2022 - Th. 2023", nama: "Rizal Pratama", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 2000", foto: "https://via.placeholder.com/350x450?text=Foto+3" },
-  { periode: "Danpuslat Kodiklatau Th. 2023 - Th. 2024", nama: "Dwi Wicaksono", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 2001", foto: "https://via.placeholder.com/350x450?text=Foto+4" },
-  { periode: "Danpuslat Kodiklatau Th. 2024 - Sekarang", nama: "Joko Prasetyo", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 2002", foto: "https://via.placeholder.com/350x450?text=Foto+5" }
+  { periode: "Danpuslat Kodiklatau Th. 2021 - Th. 2022", nama: "Andi Darmawan", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 1999", foto: "kabid kl.jpg" },
+  { periode: "Danpuslat Kodiklatau Th. 2022 - Th. 2023", nama: "Rizal Pratama", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 2000", foto: "danpus pdh.jpg" },
+  { periode: "Danpuslat Kodiklatau Th. 2023 - Th. 2024", nama: "Dwi Wicaksono", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 2001", foto: "kabid kl.jpg" },
+  { periode: "Danpuslat Kodiklatau Th. 2024 - Sekarang", nama: "Joko Prasetyo", pangkat: "Marsekal Pertama TNI", angkatan: "Akabri 2002", foto: "danpus pdh.jpg" }
 ];
 
 function typingEffect(element, text, speed = 35) {
   element.innerHTML = "";
-  let i = 0;
-
-  return new Promise((resolve) => {
-    const interval = setInterval(() => {
-      element.innerHTML += text.charAt(i);
-      i++;
-      if (i >= text.length) {
-        clearInterval(interval);
-        resolve();
-      }
-    }, speed);
-  });
+  let lines = text.split("\n"); 
+  let lineIndex = 0;
+  let charIndex = 0;
+  function type() {
+    if(lineIndex >= lines.length) return;
+    if(charIndex < lines[lineIndex].length) {
+      element.innerHTML += lines[lineIndex].charAt(charIndex);
+      charIndex++;
+      setTimeout(type, speed);
+    } else {
+      element.innerHTML += "\n";
+      lineIndex++;
+      charIndex = 0;
+      setTimeout(type, speed);
+    }
+  }
+  type();
 }
 
 let index = 0;
-
-async function showSlide(i) {
+function showSlide(i) {
   const photo = document.getElementById("photo");
   const bio = document.getElementById("bio");
-  const mini = document.getElementById("mini-row");
+  const topPhotos = document.getElementById("top-photos");
   const s = slides[i];
 
-  // foto besar
   photo.src = s.foto;
 
   const biodata = 
@@ -140,21 +135,20 @@ Nama     : ${s.nama}
 Pangkat  : ${s.pangkat}
 Angkatan : ${s.angkatan}`;
 
-  await typingEffect(bio, biodata, 25);
+  typingEffect(bio, biodata, 35);
 
-  // TAMBAHKAN FOTO KECIL
-  const img = document.createElement("img");
-  img.src = s.foto;
-  img.className = "mini-photo";
-  mini.appendChild(img);
-
-  // STOP SETELAH FOTO KE-5
-  if (i === slides.length - 1) return;
-
+  // Tambahkan foto kecil di atas garis tanpa menumpuk
   setTimeout(() => {
-    index++;
+    const smallPhoto = document.createElement("img");
+    smallPhoto.src = s.foto;
+    topPhotos.appendChild(smallPhoto);
+  }, 3000);
+
+  // Lanjut ke slide berikutnya
+  setTimeout(() => {
+    index = (index + 1) % slides.length;
     showSlide(index);
-  }, 2000);
+  }, 9000);
 }
 
 showSlide(index);
