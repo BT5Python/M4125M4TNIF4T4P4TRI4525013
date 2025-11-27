@@ -73,6 +73,18 @@ header {
     font-weight: bold;
 }
 
+.blink-catatan {
+  animation: kedip 0.8s infinite;
+  color: red !important;
+  border-color: red !important;
+}
+
+@keyframes kedip {
+  0% { opacity: 1; }
+  50% { opacity: 0.1; }
+  100% { opacity: 1; }
+}
+
 .header-buttons button:hover { background-color: #00FF00; color: black; }
 
 .main-container { display: flex; flex: 1; border-top: 1px solid #00FF00; }
@@ -152,18 +164,6 @@ button:hover { background-color: #00FF00; color: black; }
 .catatan-btn:hover {
     background-color: darkred;  /* warna saat hover */
     border-color: darkred;
-}
-
-.blink-catatan {
-  animation: kedip 0.8s infinite;
-  color: red !important;
-  border-color: red !important;
-}
-
-@keyframes kedip {
-  0% { opacity: 1; }
-  50% { opacity: 0.1; }
-  100% { opacity: 1; }
 }
 
 </style>
