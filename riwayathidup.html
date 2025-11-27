@@ -540,7 +540,7 @@ KGB BERIKUTNYA      : ${nextKGBInfo}
 --------------------------------------------------
 ${agent.tanda_jasa || "Tidak ada data"}
 
-[SECURITY FOOTNOTE]   <button id="btnCatatan" onclick="window.location='catatanpersonel.html?nama='+nama">CATATAN</button>
+[SECURITY FOOTNOTE]   <button class="catatan-btn" onclick="window.location='catatanpersonel.html?nama='+encodeURIComponent('${agent.nama_lengkap}')">CATATAN</button>
 -----------------------------------------------------
 -----------------------------------------------------
 
