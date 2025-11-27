@@ -106,6 +106,7 @@ FILE: PERSONEL PUSLAT KODIKLATAU | CLASSIFICATION : <span class="rahasia-blink">
 
 <div class="controls">
   <button onclick="tambahBaris(1)">+ Tambah 1 Baris</button>
+  <button onclick="bukaCatatan()">CATATAN PERSONEL</button>
   <button onclick="simpan()">SIMPAN</button>
   <button onclick="loadData()">Muat Ulang</button>
   <button onclick="history.back()">← KEMBALI</button>
@@ -223,6 +224,11 @@ function loadData(){
 }
 
 loadData();
+
+  function bukaCatatan() {
+    window.location.href = "catatanpersonel.html?nama=" + encodeURIComponent(nama);
+}
+
 </script>
 
 </body>
