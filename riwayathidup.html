@@ -565,10 +565,10 @@ let pdfLink = "#";
 if (mergedLink.includes("drive.google.com")) {
     const match = mergedLink.match(/[-\w]{25,}/);
     if (match) {
-        pdfLink = `https://drive.google.com/uc?export=preview&id=${match[0]}`;
+        const fileId = match[0];
+        pdfLink = `https://drive.google.com/file/d/${fileId}/view`;
     }
 }
-
 
             // Tombol di bawah biodata
             const docs = [
