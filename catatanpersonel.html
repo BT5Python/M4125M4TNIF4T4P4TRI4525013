@@ -319,6 +319,34 @@ FILE: PERSONEL PUSLAT KODIKLATAU   |   CLASSIFICATION : <span class="rahasia-bli
   document.addEventListener("keydown", e=>{
     if (e.key === "F2") tambahBaris(1);
   });
+
+      memberBtnContainer.innerHTML = "";
+    const oldDocs = agentContainer.querySelector(".doc-buttons");
+    if(oldDocs) oldDocs.remove();
+    showMemberButtons(searchInput.value.trim());
+});
+
+searchInput.addEventListener("keypress", e=>{
+    if(e.key === "Enter"){
+        dossierEl.textContent="Biodata will appear after clicking the member button";
+        const oldDocs = agentContainer.querySelector(".doc-buttons");
+        if(oldDocs) oldDocs.remove();
+        showMemberButtons(searchInput.value.trim());
+    }
+});
+
+// Filter berdasarkan kategori
+document.getElementById("category-filter").addEventListener("change", ()=>{
+    dossierEl.textContent="Biodata will appear after clicking the member button";
+    const oldDocs = agentContainer.querySelector(".doc-buttons");
+    if(oldDocs) oldDocs.remove();
+    showMemberButtons(searchInput.value.trim());
+});
+</script>
+
+</body>
+</html>
+
 </script>
 </body>
 </html>
