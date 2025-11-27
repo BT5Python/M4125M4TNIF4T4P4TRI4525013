@@ -32,18 +32,17 @@
   }
 
   .rahasia-blink {
-  color: red;
-  font-weight: bold;
-  animation: blink 0.8s infinite;
-}
+    color: red;
+    font-weight: bold;
+    animation: blink 0.8s infinite;
+  }
 
-@keyframes blink {
-  0% { opacity: 1; }
-  50% { opacity: 0; }
-  100% { opacity: 1; }
-}
+  @keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+  }
 
-  /* ASCII header block */
   .header {
     white-space:pre;
     color:var(--green);
@@ -51,7 +50,6 @@
     line-height:1.1;
   }
 
-  /* small top meta lines */
   .meta {
     display:block;
     margin-bottom:16px;
@@ -59,7 +57,6 @@
     opacity:0.95;
   }
 
-  /* section title bar (dark green block) */
   .title-bar {
     background:linear-gradient(0deg, rgba(0,40,0,0.95), rgba(0,20,0,0.95));
     padding:6px 10px;
@@ -69,15 +66,12 @@
     letter-spacing:0.6px;
   }
 
-  /* column headings row */
   .cols {
     display:grid;
     grid-template-columns: 40px 220px 220px 125px 125px 1fr;
     align-items:center;
     gap:6px;
     padding:8px 6px;
-    border-left:1px solid transparent;
-    border-right:1px solid transparent;
     margin-bottom:6px;
     color:var(--green);
     font-size:12px;
@@ -90,7 +84,6 @@
     letter-spacing:0.8px;
   }
 
-  /* rows area: many horizontal stripes */
   .rows {
     border-left:1px solid transparent;
     border-right:1px solid transparent;
@@ -105,7 +98,6 @@
     padding:8px 6px;
     min-height:28px;
     align-items:center;
-    background:linear-gradient(180deg, rgba(0,0,0,0.0), rgba(0,0,0,0.0));
     border-top:1px solid var(--green-dim);
   }
 
@@ -116,10 +108,8 @@
     background:transparent;
     font-family:var(--mono);
     font-size:12px;
-    min-height:18px;
   }
 
-  /* subtle right edge dot like in image */
   .rows::after{
     content: "";
     position:absolute;
@@ -131,16 +121,6 @@
     opacity:0.6;
   }
 
-  /* footer signature area */
-  .footer {
-    margin-top:14px;
-    padding-top:10px;
-    border-top:1px dashed var(--green-line);
-    font-size:12px;
-    color:var(--green);
-  }
-
-  /* buttons */
   .controls {
     margin:12px 0;
   }
@@ -158,10 +138,16 @@
   
   button:hover{ background: rgba(0,255,0,0.02); }
 
-  /* small helpers */
   .muted { color: rgba(0,255,0,0.5); font-size:12px;}
   .small { font-size:12px; }
-  input[type="date"] { background:transparent; color:var(--green); border:0; outline:none; font-family:var(--mono); }
+
+  input[type="date"] {
+    background:transparent;
+    color:var(--green);
+    border:0;
+    outline:none;
+    font-family:var(--mono);
+  }
 </style>
 </head>
 
@@ -173,12 +159,10 @@ FILE: PERSONEL PUSLAT KODIKLATAU   |   CLASSIFICATION : <span class="rahasia-bli
 ================================================================
     </div>
 
-    <div class="meta muted">
-      PUSLAT
-    </div>
+    <div class="meta muted">PUSLAT</div>
 
     <div class="title-bar small">
-      DAFTAR PERSONEL MASUK — PUSLAT KODIKLATAU PERIODE NOVEMBER 2025 &nbsp;&nbsp;&nbsp; STATUS: Update
+      DAFTAR CATATAN PERSONEL — STATUS: Update
     </div>
 
     <div class="cols">
@@ -190,9 +174,7 @@ FILE: PERSONEL PUSLAT KODIKLATAU   |   CLASSIFICATION : <span class="rahasia-bli
       <div class="col">KETERANGAN</div>
     </div>
 
-    <div class="rows" id="rowsContainer">
-      <!-- rows injected by script -->
-    </div>
+    <div class="rows" id="rowsContainer"></div>
 
     <div class="controls">
       <button onclick="tambahBaris(1)">+ Tambah 1 Baris</button>
@@ -207,127 +189,136 @@ FILE: PERSONEL PUSLAT KODIKLATAU   |   CLASSIFICATION : <span class="rahasia-bli
       <div class="muted">Endriady, S.H<br>Letkol Adm NRP 522726</div>
 
       <div style="margin-top:18px" class="muted small">
-        * Center personnel data is automatically updated from Spreadsheet.<br>
-        * Information is only for the PUSLAT KODIKLATAU environment.
+        * Data catatan personel tersimpan otomatis di Spreadsheet.<br>
+        * Informasi hanya untuk lingkungan PUSLAT KODIKLATAU.
       </div>
     </div>
   </div>
 
 <script>
-  // ----- CONFIG -----
+  //----------------------------------------------------
+  // KONFIGURASI
+  //----------------------------------------------------
   const APP_URL = "https://script.google.com/macros/s/AKfycbztqChoA2m81ag7O5dET4wOhyVwmvA94lGNfgQGAK3KtNMwSLLigCYkYfUdEzXdK5Xf/exec";
-  let nama = new URLSearchParams(location.search).get("nama") || "Andi Darmawan, S.E";
+  let nama = new URLSearchParams(location.search).get("nama") || "";
 
-  // Render header title dynamic
-  document.querySelector(".title-bar").insertAdjacentText('afterbegin', "   ");
-  // add name to header area (top left ASCII style)
   const hdr = document.querySelector(".header");
-  hdr.innerHTML = hdr.innerHTML + "<br><br>CATATAN: " + nama + "<br><br>";
+  hdr.innerHTML += "\nCATATAN PERSONEL: " + nama + "\n\n";
 
-  // ----- ROW CREATION -----
+  //----------------------------------------------------
+  // FUNGSI MEMBUAT BARIS
+  //----------------------------------------------------
   function buatBaris(index, data = {}) {
     const div = document.createElement("div");
     div.className = "row";
 
-    // six cells: no, nama, pangkat, jabatan, tmt_masuk, tmt_keluar
     div.innerHTML = `
       <div class="cell" contenteditable="true">${data.no ?? index}</div>
-      <div class="cell" contenteditable="true">${data.nama ?? ""}</div>
-      <div class="cell" contenteditable="true">${data.pangkat ?? ""}</div>
-      <div class="cell" contenteditable="true">${data.jabatan ?? ""}</div>
-      <div class="cell" contenteditable="true">${data.tmt_masuk ?? ""}</div>
-      <div class="cell" contenteditable="true">${data.tmt_keluar ?? ""}</div>
+      <div class="cell" contenteditable="true">${data.catatan_hukuman ?? ""}</div>
+      <div class="cell" contenteditable="true">${data.jenis_catatan ?? ""}</div>
+      <div class="cell" contenteditable="true">${data.tanggal_mulai ?? ""}</div>
+      <div class="cell" contenteditable="true">${data.tanggal_keluar ?? ""}</div>
+      <div class="cell" contenteditable="true">${data.keterangan ?? ""}</div>
     `;
     return div;
   }
 
-  function renderEmpty(jumlah = 1) {
-    const c = document.getElementById("rowsContainer");
-    c.innerHTML = "";
-    for (let i = 1; i <= jumlah; i++) {
-      c.appendChild(buatBaris(i));
-    }
-  }
-
-  // add n more blank rows
-  function tambahBaris(n = 1) {
+  //----------------------------------------------------
+  // TAMBAH BARIS KOSONG
+  //----------------------------------------------------
+  function tambahBaris(jumlah = 1) {
     const c = document.getElementById("rowsContainer");
     const current = c.children.length;
-    for (let i = 1; i <= n; i++) {
+    for (let i = 1; i <= jumlah; i++) {
       c.appendChild(buatBaris(current + i));
     }
   }
 
-  // read data from UI into array
+  //----------------------------------------------------
+  // BACA BARIS KE ARRAY
+  //----------------------------------------------------
   function readRows() {
-    const out = [];
-    document.querySelectorAll("#rowsContainer .row").forEach(r => {
-      const cells = r.querySelectorAll(".cell");
-      out.push({
-        no: cells[0].innerText.trim(),
-        nama: cells[1].innerText.trim(),
-        pangkat: cells[2].innerText.trim(),
-        jabatan: cells[3].innerText.trim(),
-        tmt_masuk: cells[4].innerText.trim(),
-        tmt_keluar: cells[5].innerText.trim()
+    const hasil = [];
+    document.querySelectorAll("#rowsContainer .row").forEach(row => {
+      const t = row.querySelectorAll(".cell");
+      hasil.push({
+        no: t[0].innerText.trim(),
+        catatan_hukuman: t[1].innerText.trim(),
+        jenis_catatan: t[2].innerText.trim(),
+        tanggal_mulai: t[3].innerText.trim(),
+        tanggal_keluar: t[4].innerText.trim(),
+        keterangan: t[5].innerText.trim()
       });
     });
-    return out;
+    return hasil;
   }
 
-  // ----- SAVE/LOAD (Apps Script) -----
+  //----------------------------------------------------
+  // SIMPAN KE SPREADSHEET
+  //----------------------------------------------------
   function simpan() {
     const payload = {
       nama: nama,
       catatan: JSON.stringify(readRows())
     };
 
-    // send as form-encoded
-    const body = Object.entries(payload).map(([k,v]) => encodeURIComponent(k) + "=" + encodeURIComponent(v)).join("&");
+    const body = Object.entries(payload)
+      .map(([k,v]) => encodeURIComponent(k) + "=" + encodeURIComponent(v))
+      .join("&");
 
-    fetch(APP_URL, { method: "POST", headers: {"Content-Type":"application/x-www-form-urlencoded"}, body })
-      .then(r => r.text())
-      .then(t => { alert("Tersimpan."); })
-      .catch(e => { alert("Gagal simpan."); console.error(e); });
+    fetch(APP_URL, {
+      method: "POST",
+      headers: {"Content-Type":"application/x-www-form-urlencoded"},
+      body
+    })
+    .then(r=>r.text())
+    .then(t=>alert("Tersimpan."))
+    .catch(e=>{ alert("Gagal simpan."); console.error(e); });
   }
 
+  //----------------------------------------------------
+  // LOAD DATA DARI SPREADSHEET
+  //----------------------------------------------------
   function loadData() {
-    const url = APP_URL + "?nama=" + encodeURIComponent(nama);
-    fetch(url)
+    fetch(APP_URL + "?nama=" + encodeURIComponent(nama))
       .then(r => r.text())
       .then(txt => {
+        const c = document.getElementById("rowsContainer");
+        c.innerHTML = "";
+
         if (!txt || txt.trim() === "") {
-          renderEmpty(1);
+          tambahBaris(1);
           return;
         }
+
         try {
           const data = JSON.parse(txt);
-          const c = document.getElementById("rowsContainer");
-          c.innerHTML = "";
-          data.forEach((row, idx) => c.appendChild(buatBaris(idx+1, {
-            no: row.no,
-            nama: row.nama || row.NAMA || "",
-            pangkat: row.pangkat || row.PANGKAT || "",
-            jabatan: row.jabatan || row.JABATAN || "",
-            tmt_masuk: row.tmt_masuk || row.tmt_masuk || row.TMT_MASUK || "",
-            tmt_keluar: row.tmt_keluar || row.tmt_keluar || row.TMT_KELUAR || ""
-          })));
-        } catch(e) {
-          // fallback if server returns plain text
-          renderEmpty(5);
+          data.forEach((row, idx) => {
+            c.appendChild(buatBaris(idx+1, {
+              no: row.no,
+              catatan_hukuman: row.catatan_hukuman,
+              jenis_catatan: row.jenis_catatan,
+              tanggal_mulai: row.tanggal_mulai,
+              tanggal_keluar: row.tanggal_keluar,
+              keterangan: row.keterangan
+            }));
+          });
+        } catch(err) {
+          console.error(err);
+          tambahBaris(5);
         }
       })
-      .catch(err => { console.error(err); renderEmpty(20); });
+      .catch(e => {
+        console.error(e);
+        tambahBaris(5);
+      });
   }
 
-  // initial render
   loadData();
 
-  // keyboard helper: Enter to add row
-  document.addEventListener("keydown", (ev) => {
-    if (ev.key === "F2") { tambahBaris(1); }
+  document.addEventListener("keydown", e=>{
+    if (e.key === "F2") tambahBaris(1);
   });
-
 </script>
 </body>
 </html>
