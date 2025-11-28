@@ -1,1 +1,191 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Halaman Upload — GitHub Pages</title>
+  <meta name="description" content="Halaman upload sederhana dengan background gelap untuk dipakai di GitHub Pages" />
+  <style>
+    :root{ --bg:#000; --panel:#0b0b0b; --accent:#1db954; --muted:#9aa0a6; --glass: rgba(255,255,255,0.03); }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;color:#e6eef3;background:linear-gradient(180deg,#000 0%, #050505 100%);}
 
+    .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:48px}
+    .card{width:100%;max-width:920px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;padding:28px;border:1px solid rgba(255,255,255,0.04);box-shadow:0 6px 30px rgba(0,0,0,0.6)}
+
+    header{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+    .logo{width:52px;height:52px;border-radius:10px;background:linear-gradient(135deg,#111,#0c0c0c);display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.03)}
+    .logo b{color:var(--accent);font-size:20px}
+    h1{font-size:20px;margin:0}
+    p.lead{margin:2px 0 0;color:var(--muted);font-size:13px}
+
+    .uploader{display:grid;grid-template-columns:1fr 320px;gap:18px}
+
+    .drop{background:var(--glass);border-radius:8px;padding:20px;border:1px dashed rgba(255,255,255,0.06);min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all .18s}
+    .drop.dragover{border-color:var(--accent);transform:translateY(-4px)}
+    .drop .hint{color:var(--muted);text-align:center}
+
+    .controls{display:flex;gap:8px;align-items:center;margin-top:12px}
+    .btn{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:10px 14px;border-radius:8px;color:#e6eef3;cursor:pointer;font-weight:600}
+    .btn.primary{background:linear-gradient(90deg, rgba(29,185,84,0.12), rgba(29,185,84,0.06));border-color:rgba(29,185,84,0.25)}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);font-weight:500}
+
+    input[type=file]{display:none}
+
+    .side{background:rgba(255,255,255,0.02);padding:16px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);min-height:220px}
+    .file-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+    .file-item{display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.02)}
+    .file-item .meta{flex:1}
+    .filename{font-weight:600}
+    .filesize{font-size:12px;color:var(--muted)}
+    .small{font-size:12px;color:var(--muted)}
+
+    footer{margin-top:16px;display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px}
+
+    @media(max-width:880px){.uploader{grid-template-columns:1fr;}.side{order:2}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card" role="main">
+      <header>
+        <div class="logo" aria-hidden><b>GH</b></div>
+        <div>
+          <h1>Halaman Upload — GitHub Pages</h1>
+          <p class="lead">Background gelap, tombol upload, dan area drag & drop. Simpan sebagai <code>index.html</code> lalu deploy ke GitHub Pages.</p>
+        </div>
+      </header>
+
+      <section class="uploader">
+        <div>
+          <div id="drop" class="drop" tabindex="0" aria-label="Area unggah file">
+            <div>
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" aria-hidden>
+                <path d="M12 3v10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8 7l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M21 15v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="hint">
+              <div style="margin-top:8px;font-weight:700">Tarik & lepaskan file di sini</div>
+              <div class="small">atau gunakan tombol <strong>Upload</strong></div>
+              <div class="controls">
+                <label class="btn primary" for="fileInput">Pilih File</label>
+                <button class="btn ghost" id="clearBtn">Bersihkan</button>
+                <input id="fileInput" type="file" multiple />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="side" aria-live="polite">
+          <strong>File dipilih</strong>
+          <p class="small">Daftar file yang akan diunggah (simulasi). Tekan tombol "Bersihkan" untuk membatalkan.</p>
+          <ul id="fileList" class="file-list" aria-hidden="false"></ul>
+
+          <footer>
+            <span id="count">0 file</span>
+            <div>
+              <button id="simulateUpload" class="btn primary">Simulasikan Upload</button>
+            </div>
+          </footer>
+        </aside>
+      </section>
+
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const drop = document.getElementById('drop');
+      const fileInput = document.getElementById('fileInput');
+      const fileList = document.getElementById('fileList');
+      const clearBtn = document.getElementById('clearBtn');
+      const simulateBtn = document.getElementById('simulateUpload');
+      const count = document.getElementById('count');
+
+      let files = [];
+
+      function humanFileSize(size) {
+        const i = size === 0 ? 0 : Math.floor(Math.log(size) / Math.log(1024));
+        return (size / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + ['B','KB','MB','GB','TB'][i];
+      }
+
+      function renderList(){
+        fileList.innerHTML = '';
+        files.forEach((f, idx) => {
+          const li = document.createElement('li');
+          li.className = 'file-item';
+          li.innerHTML = `
+            <div class="meta">
+              <div class="filename">${escapeHtml(f.name)}</div>
+              <div class="filesize">${humanFileSize(f.size)}</div>
+            </div>
+            <div>
+              <button class="btn" data-idx="${idx}">Hapus</button>
+            </div>
+          `;
+          fileList.appendChild(li);
+        });
+        count.textContent = files.length + ' file';
+      }
+
+      function escapeHtml(text) {
+        return text.replace(/[&<>\"]/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; });
+      }
+
+      drop.addEventListener('click', ()=> fileInput.click());
+      fileInput.addEventListener('change', (e)=> addFiles(Array.from(e.target.files)));
+
+      function addFiles(selected){
+        selected.forEach(f => files.push(f));
+        renderList();
+      }
+
+      // remove file
+      fileList.addEventListener('click', (e)=>{
+        if(e.target.tagName === 'BUTTON'){
+          const idx = Number(e.target.dataset.idx);
+          files.splice(idx,1);
+          renderList();
+        }
+      });
+
+      clearBtn.addEventListener('click', ()=>{ files = []; renderList(); fileInput.value = ''; });
+
+      simulateBtn.addEventListener('click', ()=>{
+        if(files.length === 0){ alert('Belum ada file yang dipilih.'); return; }
+        // Simulasi: tampilkan ringkasan di console. Di GitHub Pages tidak mungkin menyimpan file di server tanpa backend.
+        const summary = files.map(f => ({name:f.name, size:f.size, type:f.type}));
+        console.log('Simulasi upload — ringkasan:', summary);
+        alert('Simulasi upload selesai. Lihat Console (DevTools) untuk ringkasan file.');
+      });
+
+      // drag & drop
+      ['dragenter','dragover'].forEach(ev => drop.addEventListener(ev, (e)=>{ e.preventDefault(); e.stopPropagation(); drop.classList.add('dragover'); }));
+      ['dragleave','drop'].forEach(ev => drop.addEventListener(ev, (e)=>{ e.preventDefault(); e.stopPropagation(); drop.classList.remove('dragover'); }));
+
+      drop.addEventListener('drop', (e)=>{
+        const dt = e.dataTransfer;
+        if(dt && dt.files && dt.files.length){ addFiles(Array.from(dt.files)); }
+      });
+
+      // keyboard accessibility: press Enter to open file dialog
+      drop.addEventListener('keydown', (e)=>{ if(e.key === 'Enter' || e.key === ' ') fileInput.click(); });
+
+      // small polyfill: if user tries to paste files
+      window.addEventListener('paste', (e)=>{
+        const items = e.clipboardData && e.clipboardData.items;
+        if(!items) return;
+        const pastedFiles = [];
+        for(let i=0;i<items.length;i++){
+          const it = items[i];
+          if(it.kind === 'file') pastedFiles.push(it.getAsFile());
+        }
+        if(pastedFiles.length) addFiles(pastedFiles);
+      });
+
+    })();
+  </script>
+</body>
+</html>
