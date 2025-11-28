@@ -86,7 +86,7 @@
           <footer>
             <span id="count">0 file</span>
             <div>
-              <button id="simulateUpload" class="btn primary">Simulasikan Upload</button>
+              <button id="driveUpload" class="btn primary">Upload ke Google Drive</button>
             </div>
           </footer>
         </aside>
@@ -101,64 +101,10 @@
       const fileInput = document.getElementById('fileInput');
       const fileList = document.getElementById('fileList');
       const clearBtn = document.getElementById('clearBtn');
-      const simulateBtn = document.getElementById('simulateUpload');
-      const count = document.getElementById('count');
-
-      let files = [];
-
-      function humanFileSize(size) {
-        const i = size === 0 ? 0 : Math.floor(Math.log(size) / Math.log(1024));
-        return (size / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + ['B','KB','MB','GB','TB'][i];
-      }
-
-      function renderList(){
-        fileList.innerHTML = '';
-        files.forEach((f, idx) => {
-          const li = document.createElement('li');
-          li.className = 'file-item';
-          li.innerHTML = `
-            <div class="meta">
-              <div class="filename">${escapeHtml(f.name)}</div>
-              <div class="filesize">${humanFileSize(f.size)}</div>
-            </div>
-            <div>
-              <button class="btn" data-idx="${idx}">Hapus</button>
-            </div>
-          `;
-          fileList.appendChild(li);
-        });
-        count.textContent = files.length + ' file';
-      }
-
-      function escapeHtml(text) {
-        return text.replace(/[&<>\"]/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; });
-      }
-
-      drop.addEventListener('click', ()=> fileInput.click());
-      fileInput.addEventListener('change', (e)=> addFiles(Array.from(e.target.files)));
-
-      function addFiles(selected){
-        selected.forEach(f => files.push(f));
-        renderList();
-      }
-
-      // remove file
-      fileList.addEventListener('click', (e)=>{
-        if(e.target.tagName === 'BUTTON'){
-          const idx = Number(e.target.dataset.idx);
-          files.splice(idx,1);
-          renderList();
-        }
-      });
-
-      clearBtn.addEventListener('click', ()=>{ files = []; renderList(); fileInput.value = ''; });
-
-      simulateBtn.addEventListener('click', ()=>{
-        if(files.length === 0){ alert('Belum ada file yang dipilih.'); return; }
-        // Simulasi: tampilkan ringkasan di console. Di GitHub Pages tidak mungkin menyimpan file di server tanpa backend.
-        const summary = files.map(f => ({name:f.name, size:f.size, type:f.type}));
-        console.log('Simulasi upload — ringkasan:', summary);
-        alert('Simulasi upload selesai. Lihat Console (DevTools) untuk ringkasan file.');
+      const driveBtn = document.getElementById('driveUpload');
+driveBtn.addEventListener('click', ()=>{
+  window.open('https://drive.google.com/drive/folders/1OHKzoW7awz1f-k5Wih0FmAVs2lG6Eaoc?usp=drive_link','_blank');
+});
       });
 
       // drag & drop
