@@ -1,57 +1,136 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<title>Upload ke Google Drive</title>
+<meta charset="UTF-8">
+<title>evolution is my revolution</title>
 <style>
-  body { background:#000; color:#0f0; font-family:monospace; text-align:center; padding:40px; }
-  button { padding:12px 25px; font-size:18px; background:#0f0; color:#000; border:0; cursor:pointer; }
-  input[type=file]{ margin:20px; }
+body {
+  background-color: black;
+  color: #00ff00;
+  font-family: "Times New Roman", monospace;
+  padding: 15px;
+}
+h1 {
+  text-align: center;
+  color: #00ff00; 
+  margin: 0;
+  line-height: 1.1;
+  font-size: 70px;
+}
+h2 {
+  text-align: center;
+  color: #ffff00; 
+  margin: 0;
+  line-height: 1.1;
+  font-size: 40px;
+}  
+.top-buttons {
+  text-align: right;
+  margin-top: 8px;
+  margin-bottom: 15px;
+}
+button {
+  background: transparent;
+  border: 1px solid #00ff00;
+  padding: 5px 12px;
+  color: #00ff00;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: bold;
+  margin-left: 5px;
+}
+button:hover {
+  background: #00ff00;
+  color: black;
+}
+.folder, .file {
+  margin-left: 15px;
+  border-left: 1px solid #00ff00;
+  padding-left: 25px;
+}
+.folder-name {
+  cursor: pointer;
+  color: #00ff00;
+  font-size: 15px;
+  font-weight: normal;
+  margin-bottom: 25px; /* ✅ tambahkan jarak antar folder */
+}
+.folder-name:hover {
+  color: #33ff33;
+}
+.file-item {
+  margin: 4px 0;
+  font-size: 13px;
+}
+  .underline-dashed {
+  border-bottom: 2px dashed #00ff00;
+  width: 100%;
+  margin-top: 10px;
+}
 </style>
 </head>
 <body>
+  <h1>PUSLAT KODIKLATAU</h1>
+  <h2>STORAGE OF DOCUMENTS</h2>
+  <div class="underline-dashed"></div>
 
-<h2>UPLOAD KE GOOGLE DRIVE</h2>
+  <div class="top-buttons">
+    <button onclick="window.location.href='database.html'">back to DATABASE</button>
+    <button onclick="logout()">LOGOUT</button>
+  </div>
 
-<input type="file" id="fileInput">
-<button onclick="upload()">Upload</button>
+  <div id="content">Memuat struktur folder...</div>
 
-<p id="status"></p>
+  <script>
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz1ZtNALOlxHFncv8OmlcufiNfckoh4UpVFkIonT-A73YntCXp8Bezi-750gJXTLJqM/exec'; // Ganti URL kamu
+  
+  fetch(SCRIPT_URL)
+    .then(r => r.json())
+    .then(data => displayStructure(data))
+    .catch(err => {
+      document.getElementById('content').innerHTML = `<b style="color:red">Gagal memuat data</b><br>${err}`;
+    });
 
-<script>
-// =======================
-// MASUKKAN URL WEB APP KAMU DI SINI
-// =======================
-const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxLEM-UYmMsckunSp7x8Ax8RkawTs0cMAvTp3Wn2NpGj_ez8ZIuomSkz5OZGP4xDfuCBQ/exec"; 
+  function displayStructure(data) {
+    document.getElementById('content').innerHTML = renderFolder(data);
+  }
 
-async function upload(){
-  const file = document.getElementById("fileInput").files[0];
-  if(!file) return alert("Pilih file dulu!");
+  function renderFolder(folder) {
+    let html = `<div class="folder"><div class="folder-name" onclick="toggleFolder(this)">📁 ${folder.name}</div>`;
+    html += `<div class="children" style="display:none;">`;
+    folder.children.forEach(item => {
+      if (item.type === 'folder') {
+        html += renderFolder(item);
+      } else {
+        html += `
+          <div class="file-item">
+            📄 ${item.name}
+            <button onclick="window.open('${item.url}', '_blank')">Lihat</button>
+            <button onclick="downloadFile('${item.url}')">Unduh</button>
+            <div style="font-size:11px; color:#66ff66;">${item.date} | ${item.size}</div>
+          </div>
+        `;
+      }
+    });
+    html += `</div></div>`;
+    return html;
+  }
 
-  const reader = new FileReader();
-  reader.onloadend = async () => {
-    const base64 = reader.result.split(",")[1];
+  function toggleFolder(el) {
+    const content = el.nextElementSibling;
+    content.style.display = content.style.display === 'none' ? 'block' : 'none';
+  }
 
-    const form = new URLSearchParams();
-    form.append("name", file.name);
-    form.append("type", file.type);
-    form.append("file", base64);
+  function downloadFile(url) {
+    window.open(url + '?export=download', '_blank');
+  }
 
-    document.getElementById("status").innerText = "Uploading...";
-
-    const res = await fetch(WEBAPP_URL, { method: "POST", body: form });
-    const result = await res.json();
-
-    if(result.status === "success"){
-      document.getElementById("status").innerHTML =
-        "✔ Uploaded: <a href='" + result.fileUrl + "' target='_blank'>Buka File</a>";
-    } else {
-      document.getElementById("status").innerText = "❌ Error: " + result.message;
+  function logout() {
+    if (confirm("Yakin ingin logout?")) {
+      window.location.href = 'login.html';
     }
-  };
-  reader.readAsDataURL(file);
-}
-</script>
-
+  }
+  </script>
 </body>
 </html>
+
