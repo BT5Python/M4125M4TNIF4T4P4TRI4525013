@@ -125,30 +125,42 @@ button:hover {
 
 </script>
 <script>
-function loginSuccess(event) {
-  event.preventDefault(); // Mencegah reload halaman
-  // Di sini bisa tambahkan validasi username/password jika diperlukan
-  window.location.href = "database.html"; // Arahkan ke halaman database
-}
-
-function openFullscreen() {
+// Fullscreen untuk Android WebView / PWA
+function forceFullscreen() {
   const elem = document.documentElement;
 
   if (elem.requestFullscreen) {
-    elem.requestFullscreen();
-  } else if (elem.webkitRequestFullscreen) { // Safari / iPad
+    elem.requestFullscreen().catch(()=>{});
+  } else if (elem.webkitRequestFullscreen) {
     elem.webkitRequestFullscreen();
-  } else if (elem.msRequestFullscreen) { // Windows tablet
-    elem.msRequestFullscreen();
   }
 }
 
+// Deteksi jika dijalankan sebagai PWA atau WebView
+function isStandalone() {
+  return (window.matchMedia('(display-mode: standalone)').matches || 
+          window.navigator.standalone === true);
+}
+
+// Jika PWA → langsung fullscreen
+if (isStandalone()) {
+  setTimeout(forceFullscreen, 500);
+}
+
+// Jika Android WebView → auto fullscreen
+if (navigator.userAgent.includes("wv") || navigator.userAgent.includes("Android")) {
+  setTimeout(forceFullscreen, 800);
+}
+
+// Browser biasa tetap butuh klik pertama
 document.addEventListener("click", function() {
-  openFullscreen();
-}, { once:true });
+  forceFullscreen();
+}, { once: true });
 </script>
+
 </body>
 </html>
+
 
 
 
