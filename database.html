@@ -434,39 +434,49 @@ function showOnlineUsers(){
 
 </script>
 <script>
-// Fullscreen untuk Android WebView / PWA
+// Fungsi fullscreen universal
 function forceFullscreen() {
   const elem = document.documentElement;
 
-  if (elem.requestFullscreen) {
-    elem.requestFullscreen().catch(()=>{});
-  } else if (elem.webkitRequestFullscreen) {
-    elem.webkitRequestFullscreen();
-  }
+  if (elem.requestFullscreen) elem.requestFullscreen().catch(()=>{});
+  else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+  else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
 }
 
-// Deteksi jika dijalankan sebagai PWA atau WebView
-function isStandalone() {
-  return (window.matchMedia('(display-mode: standalone)').matches || 
-          window.navigator.standalone === true);
+// Deteksi apakah ini berjalan dalam WebView / PWA
+function isAppMode() {
+  return (
+    window.matchMedia('(display-mode: standalone)').matches || 
+    window.navigator.standalone === true || 
+    navigator.userAgent.includes("wv") || 
+    navigator.userAgent.includes("Android")
+  );
 }
 
-// Jika PWA → langsung fullscreen
-if (isStandalone()) {
-  setTimeout(forceFullscreen, 500);
+// 1) AUTO FULLSCREEN saat halaman baru dibuka
+if (isAppMode()) {
+  setTimeout(forceFullscreen, 400); 
 }
 
-// Jika Android WebView → auto fullscreen
-if (navigator.userAgent.includes("wv") || navigator.userAgent.includes("Android")) {
-  setTimeout(forceFullscreen, 800);
-}
-
-// Browser biasa tetap butuh klik pertama
+// 2) FULLSCREEN saat user TAP pertama (browser biasa)
 document.addEventListener("click", function() {
   forceFullscreen();
 }, { once: true });
-</script>
 
+// 3) FULLSCREEN saat pindah halaman melalui <a href="...">
+document.querySelectorAll("a").forEach(a => {
+  a.addEventListener("click", () => {
+    setTimeout(forceFullscreen, 300);
+  });
+});
+
+// 4) FULLSCREEN saat pindah halaman via window.location
+window.addEventListener("pageshow", () => {
+  if (isAppMode()) {
+    setTimeout(forceFullscreen, 400);
+  }
+});
+</script>
 
 </body>
 </html>
