@@ -123,28 +123,28 @@ button:hover {
   </form>
 </div>
 
-</script>
-<button id="fs-btn" style="
-  position:fixed;bottom:20px;right:20px;
-  background:#00ff00;color:black;
-  border:none;padding:10px 14px;
-  border-radius:8px;cursor:pointer;
-  font-weight:700;z-index:999;
-">FULLSCREEN</button>
-
 <script>
-document.getElementById("fs-btn").onclick = function () {
+function openFullscreen() {
   const elem = document.documentElement;
 
-  if (elem.requestFullscreen) elem.requestFullscreen();
-  else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
-  else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
-};
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.webkitRequestFullscreen) { // Safari / iPad
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) { // Windows tablet
+    elem.msRequestFullscreen();
+  }
+}
+
+document.addEventListener("click", function() {
+  openFullscreen();
+}, { once:true });
 </script>
 
 
 </body>
 </html>
+
 
 
 
