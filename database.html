@@ -434,49 +434,69 @@ function showOnlineUsers(){
 
 </script>
 <script>
-// Fungsi fullscreen universal
+// ===== FULLSCREEN ENGINE untuk Tablet / WebView / Android =====
+
+// Paksa fullscreen
 function forceFullscreen() {
   const elem = document.documentElement;
-
   if (elem.requestFullscreen) elem.requestFullscreen().catch(()=>{});
   else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
   else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
 }
 
-// Deteksi apakah ini berjalan dalam WebView / PWA
+// Deteksi mode aplikasi
 function isAppMode() {
   return (
-    window.matchMedia('(display-mode: standalone)').matches || 
-    window.navigator.standalone === true || 
-    navigator.userAgent.includes("wv") || 
-    navigator.userAgent.includes("Android")
+    window.matchMedia('(display-mode: standalone)').matches ||
+    window.navigator.standalone === true ||
+    navigator.userAgent.includes("wv") ||
+    navigator.userAgent.includes("Android") ||
+    navigator.userAgent.includes("Tablet")
   );
 }
 
-// 1) AUTO FULLSCREEN saat halaman baru dibuka
-if (isAppMode()) {
-  setTimeout(forceFullscreen, 400); 
-}
+// =====================================
+// 1) AUTO FULLSCREEN saat halaman dibuka
+// =====================================
+window.addEventListener("load", () => {
+  if (isAppMode()) {
+    setTimeout(forceFullscreen, 500);
+  }
+});
 
-// 2) FULLSCREEN saat user TAP pertama (browser biasa)
-document.addEventListener("click", function() {
+// ===================================================
+// 2) FULLSCREEN saat TAP PERTAMA (syarat browser modern)
+// ===================================================
+document.addEventListener("click", () => {
   forceFullscreen();
 }, { once: true });
 
-// 3) FULLSCREEN saat pindah halaman melalui <a href="...">
-document.querySelectorAll("a").forEach(a => {
-  a.addEventListener("click", () => {
-    setTimeout(forceFullscreen, 300);
+// =======================================================
+// 3) FULLSCREEN saat pindah halaman melalui function goTo()
+// =======================================================
+const originalGoTo = window.goTo;
+window.goTo = function(url){
+  forceFullscreen();                // masuk fullscreen dulu
+  setTimeout(()=> { originalGoTo(url); }, 200); // baru pindah halaman
+};
+
+// =================================================================
+// 4) FULLSCREEN saat pindah halaman via link <a> (kalau suatu hari kamu pakai)
+// =================================================================
+document.querySelectorAll("a").forEach(a=>{
+  a.addEventListener("click", ()=>{
+    forceFullscreen();
   });
 });
 
-// 4) FULLSCREEN saat pindah halaman via window.location
+// =============================================
+// 5) FULLSCREEN saat halaman kembali tampil (pageshow)
+// =============================================
 window.addEventListener("pageshow", () => {
-  if (isAppMode()) {
-    setTimeout(forceFullscreen, 400);
-  }
+  if (isAppMode()) setTimeout(forceFullscreen, 400);
 });
 </script>
+
 
 </body>
 </html>
