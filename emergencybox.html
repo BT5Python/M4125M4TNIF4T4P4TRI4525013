@@ -96,7 +96,15 @@ button:hover {
   }
 
   function renderFolder(folder) {
-    let html = `<div class="folder"><div class="folder-name" onclick="toggleFolder(this)">📁 ${folder.name}</div>`;
+    let isEmergency = folder.name.toUpperCase().includes("EMERGENCY BOX");
+
+let html = `
+  <div class="folder">
+    <div class="folder-name ${isEmergency ? 'blink-red' : ''}" onclick="toggleFolder(this)">
+      📁 ${folder.name}
+    </div>
+`;
+
     html += `<div class="children" style="display:none;">`;
     folder.children.forEach(item => {
       if (item.type === 'folder') {
