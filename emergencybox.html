@@ -1,1 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>evolution is my revolution</title>
+<style>
+body {
+  background-color: black;
+  color: #00ff00;
+  font-family: "Times New Roman", monospace;
+  padding: 15px;
+}
+h1 {
+  text-align: center;
+  color: #00ff00; 
+  margin: 0;
+  line-height: 1.1;
+  font-size: 70px;
+}
+h2 {
+  text-align: center;
+  color: #ffff00; 
+  margin: 0;
+  line-height: 1.1;
+  font-size: 40px;
+}  
+.top-buttons {
+  text-align: right;
+  margin-top: 8px;
+  margin-bottom: 15px;
+}
+button {
+  background: transparent;
+  border: 1px solid #00ff00;
+  padding: 5px 12px;
+  color: #00ff00;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: bold;
+  margin-left: 5px;
+}
+button:hover {
+  background: #00ff00;
+  color: black;
+}
+.folder, .file {
+  margin-left: 15px;
+  border-left: 1px solid #00ff00;
+  padding-left: 25px;
+}
+.folder-name {
+  cursor: pointer;
+  color: #00ff00;
+  font-size: 15px;
+  font-weight: normal;
+  margin-bottom: 25px; /* ✅ tambahkan jarak antar folder */
+}
+.folder-name:hover {
+  color: #33ff33;
+}
+.file-item {
+  margin: 4px 0;
+  font-size: 13px;
+}
+  .underline-dashed {
+  border-bottom: 2px dashed #00ff00;
+  width: 100%;
+  margin-top: 10px;
+}
+</style>
+</head>
+<body>
+  <h1>SISTEM INFORMASI</h1>
+  <h2>PUSLAT KODIKLATAU</h2>
+  <div class="underline-dashed"></div>
+
+  <div class="top-buttons">
+    <button onclick="window.location.href='database.html'">back to DATABASE</button>
+    <button onclick="logout()">LOGOUT</button>
+  </div>
+
+  <div id="content">Memuat struktur folder...</div>
+
+  <script>
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyeaHlZoHLdLJtZRzYyCgnTSsRfb-pcK-9DphPOVCBWYslGNPjykgm6lR2Pwke685jS6g/exec'; // Ganti URL kamu
+  
+  fetch(SCRIPT_URL)
+    .then(r => r.json())
+    .then(data => displayStructure(data))
+    .catch(err => {
+      document.getElementById('content').innerHTML = `<b style="color:red">Gagal memuat data</b><br>${err}`;
+    });
+
+  function displayStructure(data) {
+    document.getElementById('content').innerHTML = renderFolder(data);
+  }
+
+  function renderFolder(folder) {
+    let html = `<div class="folder"><div class="folder-name" onclick="toggleFolder(this)">📁 ${folder.name}</div>`;
+    html += `<div class="children" style="display:none;">`;
+    folder.children.forEach(item => {
+      if (item.type === 'folder') {
+        html += renderFolder(item);
+      } else {
+        html += `
+          <div class="file-item">
+            📄 ${item.name}
+            <button onclick="window.open('${item.url}', '_blank')">Lihat</button>
+            <button onclick="downloadFile('${item.url}')">Unduh</button>
+            <div style="font-size:11px; color:#66ff66;">${item.date} | ${item.size}</div>
+          </div>
+        `;
+      }
+    });
+    html += `</div></div>`;
+    return html;
+  }
+
+  function toggleFolder(el) {
+    const content = el.nextElementSibling;
+    content.style.display = content.style.display === 'none' ? 'block' : 'none';
+  }
+
+  function downloadFile(url) {
+    window.open(url + '?export=download', '_blank');
+  }
+
+  function logout() {
+    if (confirm("Yakin ingin logout?")) {
+      window.location.href = 'login.html';
+    }
+  }
+  </script>
+  <script>
+// Fullscreen untuk Android WebView / PWA
+function forceFullscreen() {
+  const elem = document.documentElement;
+
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen().catch(()=>{});
+  } else if (elem.webkitRequestFullscreen) {
+    elem.webkitRequestFullscreen();
+  }
+}
+
+// Deteksi jika dijalankan sebagai PWA atau WebView
+function isStandalone() {
+  return (window.matchMedia('(display-mode: standalone)').matches || 
+          window.navigator.standalone === true);
+}
+
+// Jika PWA → langsung fullscreen
+if (isStandalone()) {
+  setTimeout(forceFullscreen, 500);
+}
+
+// Jika Android WebView → auto fullscreen
+if (navigator.userAgent.includes("wv") || navigator.userAgent.includes("Android")) {
+  setTimeout(forceFullscreen, 800);
+}
+
+// Browser biasa tetap butuh klik pertama
+document.addEventListener("click", function() {
+  forceFullscreen();
+}, { once: true });
+</script>
+
+</body>
+</html>
+
 
