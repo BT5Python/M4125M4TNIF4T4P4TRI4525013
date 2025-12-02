@@ -113,9 +113,7 @@ button:hover {
   document.getElementById('content').innerHTML = renderFolder(data);
 
   // 🔥 cek emergency box ada data
-  if (checkEmergency(data)) {
-    playEmergencySound();
-  }
+  if (checkEmergency
 }
 
   function renderFolder(folder) {
@@ -239,6 +237,52 @@ function stopEmergencySound() {
   const audio = document.getElementById("alertAudio");
   audio.pause();
   audio.currentTime = 0;
+}
+</script>
+<script>
+// --- Penyimpanan status file lama ---
+function getSavedFiles() {
+  let data = localStorage.getItem("emergencyFiles");
+  return data ? JSON.parse(data) : [];
+}
+
+function saveFiles(list) {
+  localStorage.setItem("emergencyFiles", JSON.stringify(list));
+}
+
+// --- Ambil semua nama file dalam emergency box ---
+function collectEmergencyFiles(folder, arr = []) {
+  if (!folder.children) return arr;
+
+  if (folder.name.toUpperCase().includes("EMERGENCY BOX")) {
+    folder.children.forEach(item => {
+      if (item.type === "file") arr.push(item.name);
+      if (item.type === "folder") collectEmergencyFiles(item, arr);
+    });
+  } else {
+    folder.children.forEach(item => {
+      if (item.type === "folder") collectEmergencyFiles(item, arr);
+    });
+  }
+
+  return arr;
+}
+
+// --- CEK FILE BARU ---
+function checkNewEmergencyFiles(data) {
+  const currentFiles = collectEmergencyFiles(data);
+  const oldFiles = getSavedFiles();
+
+  // cari apakah ada file yang belum pernah disimpan
+  const newFiles = currentFiles.filter(f => !oldFiles.includes(f));
+
+  if (newFiles.length > 0) {
+    // ada file baru → bunyi alarm
+    playEmergencySound();
+  }
+
+  // simpan daftar baru
+  saveFiles(currentFiles);
 }
 </script>
 
