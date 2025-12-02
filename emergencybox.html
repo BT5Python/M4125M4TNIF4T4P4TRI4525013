@@ -123,7 +123,8 @@ button:hover {
 
 let html = `
   <div class="folder">
-    <div class="folder-name ${isEmergency ? 'blink-red' : ''}" onclick="toggleFolder(this)">
+    <div class="folder-name ${isEmergency ? 'blink-red' : ''}" 
+     onclick="toggleFolder(this); if(this.classList.contains('blink-red')) stopEmergencySound();">
       📁 ${folder.name}
     </div>
 `;
@@ -231,6 +232,13 @@ function playEmergencySound() {
   const audio = document.getElementById("alertAudio");
   audio.loop = true;
   audio.play().catch(()=>{});
+}
+</script>
+<script>
+function stopEmergencySound() {
+  const audio = document.getElementById("alertAudio");
+  audio.pause();
+  audio.currentTime = 0;
 }
 </script>
 
