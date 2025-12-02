@@ -110,8 +110,13 @@ button:hover {
     });
 
   function displayStructure(data) {
-    document.getElementById('content').innerHTML = renderFolder(data);
+  document.getElementById('content').innerHTML = renderFolder(data);
+
+  // 🔥 cek emergency box ada data
+  if (checkEmergency(data)) {
+    playEmergencySound();
   }
+}
 
   function renderFolder(folder) {
     let isEmergency = folder.name.toUpperCase().includes("EMERGENCY BOX");
@@ -221,6 +226,31 @@ function displayStructure(data) {
 function folderHasData(folder) {
   if (!folder.children || folder.children.length === 0) return false;
   return true;
+}
+</script>
+<script>
+function checkEmergency(folder) {
+  if (folder.name.toUpperCase().includes("EMERGENCY BOX")) {
+    return folderHasData(folder);
+  }
+
+  // cek semua anak folder
+  if (folder.children) {
+    for (let i = 0; i < folder.children.length; i++) {
+      if (checkEmergency(folder.children[i])) return true;
+    }
+  }
+
+  return false;
+}
+</script>
+<audio id="alertAudio" src="alarm.mp3" preload="auto"></audio>
+
+<script>
+function playEmergencySound() {
+  const audio = document.getElementById("alertAudio");
+  audio.loop = true;
+  audio.play().catch(()=>{});
 }
 </script>
 
