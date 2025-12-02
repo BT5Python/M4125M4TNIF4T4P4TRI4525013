@@ -100,108 +100,73 @@ button:hover {
   <div id="content">Memuat struktur folder...</div>
 
   <script>
-  <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbygOusSl4SBKm-L-BoCq2Mfsp5g194K5b_M_3QLk5PxJK5fS051ln-bVu5Z-qLg40vWFw/exec';
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbygOusSl4SBKm-L-BoCq2Mfsp5g194K5b_M_3QLk5PxJK5fS051ln-bVu5Z-qLg40vWFw/exec";
 
 fetch(SCRIPT_URL)
   .then(r => r.json())
   .then(data => {
-    displayStructure(data);      // render folder
-    checkNewEmergencyFiles(data); // cek file baru
+    displayStructure(data);      
+    checkNewEmergencyFiles(data); 
   })
   .catch(err => {
-    document.getElementById('content').innerHTML = `<b style="color:red">Gagal memuat data</b><br>${err}`;
+    document.getElementById("content").innerHTML =
+      `<b style="color:red">Gagal memuat data</b><br>${err}`;
   });
-</script>
-<script>
 
-  function displayStructure(data) {
-  document.getElementById('content').innerHTML = renderFolder(data);
-
-  // 🔥 cek emergency box ada data
-  if (checkEmergency
+function displayStructure(data) {
+  document.getElementById("content").innerHTML = renderFolder(data);
 }
 
-  function renderFolder(folder) {
-    let isEmergency = folder.name.toUpperCase().includes("EMERGENCY BOX");
+function renderFolder(folder) {
+  let isEmergency = folder.name.toUpperCase().includes("EMERGENCY BOX");
 
-let html = `
-  <div class="folder">
-    <div class="folder-name ${isEmergency ? 'blink-red' : ''}" 
-     onclick="toggleFolder(this); if(this.classList.contains('blink-red')) stopEmergencySound();">
-      📁 ${folder.name}
-    </div>
-`;
+  let html = `
+    <div class="folder">
+      <div class="folder-name ${isEmergency ? "blink-red" : ""}"
+        onclick="toggleFolder(this); if(this.classList.contains('blink-red')) stopEmergencySound();">
+        📁 ${folder.name}
+      </div>
+  `;
 
-    html += `<div class="children" style="display:none;">`;
-    folder.children.forEach(item => {
-      if (item.type === 'folder') {
-        html += renderFolder(item);
-      } else {
-        html += `
-          <div class="file-item">
-            📄 ${item.name}
-            <button onclick="window.open('${item.url}', '_blank')">Lihat</button>
-            <button onclick="downloadFile('${item.url}')">Unduh</button>
-            <div style="font-size:11px; color:#66ff66;">${item.date} | ${item.size}</div>
-          </div>
-        `;
-      }
-    });
-    html += `</div></div>`;
-    return html;
-  }
+  html += `<div class="children" style="display:none;">`;
 
-  function toggleFolder(el) {
-    const content = el.nextElementSibling;
-    content.style.display = content.style.display === 'none' ? 'block' : 'none';
-  }
-
-  function downloadFile(url) {
-    window.open(url + '?export=download', '_blank');
-  }
-
-  function logout() {
-    if (confirm("Yakin ingin logout?")) {
-      window.location.href = 'login.html';
+  folder.children.forEach(item => {
+    if (item.type === "folder") {
+      html += renderFolder(item);
+    } else {
+      html += `
+        <div class="file-item">
+          📄 ${item.name}
+          <button onclick="window.open('${item.url}', '_blank')">Lihat</button>
+          <button onclick="downloadFile('${item.url}')">Unduh</button>
+          <div style="font-size:11px; color:#66ff66;">${item.date} | ${item.size}</div>
+        </div>
+      `;
     }
+  });
+
+  html += `</div></div>`;
+  return html;
+}
+
+function toggleFolder(el) {
+  const content = el.nextElementSibling;
+  content.style.display = content.style.display === "none" ? "block" : "none";
+}
+
+function downloadFile(url) {
+  window.open(url + "?export=download", "_blank");
+}
+
+function logout() {
+  if (confirm("Yakin ingin logout?")) {
+    window.location.href = "login.html";
   }
-  </script>
-  <script>
-// Fullscreen untuk Android WebView / PWA
-function forceFullscreen() {
-  const elem = document.documentElement;
-
-  if (elem.requestFullscreen) {
-    elem.requestFullscreen().catch(()=>{});
-  } else if (elem.webkitRequestFullscreen) {
-    elem.webkitRequestFullscreen();
-  }
 }
-
-// Deteksi jika dijalankan sebagai PWA atau WebView
-function isStandalone() {
-  return (window.matchMedia('(display-mode: standalone)').matches || 
-          window.navigator.standalone === true);
-}
-
-// Jika PWA → langsung fullscreen
-if (isStandalone()) {
-  setTimeout(forceFullscreen, 500);
-}
-
-// Jika Android WebView → auto fullscreen
-if (navigator.userAgent.includes("wv") || navigator.userAgent.includes("Android")) {
-  setTimeout(forceFullscreen, 800);
-}
-
-// Browser biasa tetap butuh klik pertama
-document.addEventListener("click", function() {
-  forceFullscreen();
-}, { once: true });
 </script>
+
 <script>
-// 🔥 CEK ADA FILE DI EMERGENCY BOX
 function folderHasData(folder) {
   if (!folder.children || folder.children.length === 0) return false;
 
@@ -211,22 +176,19 @@ function folderHasData(folder) {
   }
   return false;
 }
-  function checkEmergency(folder) {
-  // Cek folder utama
+
+function checkEmergency(folder) {
   if (folder.name.toUpperCase().includes("EMERGENCY BOX")) {
     return folderHasData(folder);
   }
 
-  // Cek rekursif ke dalam subfolder
   if (folder.children) {
     for (let item of folder.children) {
       if (checkEmergency(item)) return true;
     }
   }
-
   return false;
 }
-
 </script>
 
 <audio id="alertAudio" src="biohazard-alarm-143105.mp3" preload="auto"></audio>
@@ -235,18 +197,17 @@ function folderHasData(folder) {
 function playEmergencySound() {
   const audio = document.getElementById("alertAudio");
   audio.loop = true;
-  audio.play().catch(()=>{});
+  audio.play().catch(() => {});
 }
-</script>
-<script>
+
 function stopEmergencySound() {
   const audio = document.getElementById("alertAudio");
   audio.pause();
   audio.currentTime = 0;
 }
 </script>
+
 <script>
-// --- Penyimpanan status file lama ---
 function getSavedFiles() {
   let data = localStorage.getItem("emergencyFiles");
   return data ? JSON.parse(data) : [];
@@ -256,7 +217,6 @@ function saveFiles(list) {
   localStorage.setItem("emergencyFiles", JSON.stringify(list));
 }
 
-// --- Ambil semua nama file dalam emergency box ---
 function collectEmergencyFiles(folder, arr = []) {
   if (!folder.children) return arr;
 
@@ -274,22 +234,20 @@ function collectEmergencyFiles(folder, arr = []) {
   return arr;
 }
 
-// --- CEK FILE BARU ---
 function checkNewEmergencyFiles(data) {
   const currentFiles = collectEmergencyFiles(data);
   const oldFiles = getSavedFiles();
 
-  // cari apakah ada file yang belum pernah disimpan
   const newFiles = currentFiles.filter(f => !oldFiles.includes(f));
 
   if (newFiles.length > 0) {
-    // ada file baru → bunyi alarm
     playEmergencySound();
   }
 
-  // simpan daftar baru
   saveFiles(currentFiles);
 }
+</script>
+
 </script>
 
 </body>
