@@ -199,23 +199,14 @@ document.addEventListener("click", function() {
 // 🔥 CEK ADA FILE DI EMERGENCY BOX
 function folderHasData(folder) {
   if (!folder.children || folder.children.length === 0) return false;
-  return folder.children.some(item => item.type === "file");
-}
 
-function checkEmergency(folder) {
-  if (folder.name.toUpperCase().includes("EMERGENCY BOX")) {
-    return folderHasData(folder);
+  for (let item of folder.children) {
+    if (item.type === "file") return true;
+    if (item.type === "folder" && folderHasData(item)) return true;
   }
-
-  // rekursif ke dalam
-  if (folder.children) {
-    for (let i = 0; i < folder.children.length; i++) {
-      if (checkEmergency(folder.children[i])) return true;
-    }
-  }
-
   return false;
 }
+
 </script>
 
 <audio id="alertAudio" src="biohazard-alarm-143105.mp3" preload="auto"></audio>
