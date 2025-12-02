@@ -206,6 +206,21 @@ function folderHasData(folder) {
   }
   return false;
 }
+  function checkEmergency(folder) {
+  // Cek folder utama
+  if (folder.name.toUpperCase().includes("EMERGENCY BOX")) {
+    return folderHasData(folder);
+  }
+
+  // Cek rekursif ke dalam subfolder
+  if (folder.children) {
+    for (let item of folder.children) {
+      if (checkEmergency(item)) return true;
+    }
+  }
+
+  return false;
+}
 
 </script>
 
