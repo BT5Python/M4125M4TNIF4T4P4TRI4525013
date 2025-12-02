@@ -221,8 +221,7 @@ function displayStructure(data) {
     playEmergencySound();
   }
 }
-</scrit>
-<script>
+
 function folderHasData(folder) {
   if (!folder.children || folder.children.length === 0) return false;
   return true;
@@ -245,7 +244,6 @@ function checkEmergency(folder) {
 }
 </script>
 <audio id="alertAudio" src="mixkit-facility-alarm-sound-999.wav" preload="auto"></audio>
-
 <script>
 function playEmergencySound() {
   const audio = document.getElementById("alertAudio");
