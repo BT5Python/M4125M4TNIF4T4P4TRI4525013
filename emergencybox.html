@@ -103,8 +103,6 @@ button:hover {
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbygOusSl4SBKm-L-BoCq2Mfsp5g194K5b_M_3QLk5PxJK5fS051ln-bVu5Z-qLg40vWFw/exec'; // Ganti URL kamu
   
   fetch(SCRIPT_URL)
-    .then(r => r.json())
-    .then(data => displayStructure(data))
     .catch(err => {
       document.getElementById('content').innerHTML = `<b style="color:red">Gagal memuat data</b><br>${err}`;
     });
