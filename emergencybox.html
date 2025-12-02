@@ -195,32 +195,6 @@ document.addEventListener("click", function() {
   forceFullscreen();
 }, { once: true });
 </script>
-<audio id="alertAudio" src="alarm.mp3" preload="auto"></audio>
-
-<script>
-function playEmergencySound() {
-  const audio = document.getElementById("alertAudio");
-  
-  // Loop selamanya
-  audio.loop = true;
-  
-  // Mulai play (beberapa browser butuh interaksi klik)
-  audio.play().catch(() => {
-    console.warn("Menunggu interaksi user untuk memutar audio.");
-  });
-}
-
-// Panggil fungsi ini setelah data folder sudah dimuat:
-function displayStructure(data) {
-  document.getElementById('content').innerHTML = renderFolder(data);
-
-  // Cek apakah ada "EMERGENCY BOX"
-  const exists = JSON.stringify(data).toUpperCase().includes("EMERGENCY BOX");
-
-  if (exists) {
-    playEmergencySound();
-  }
-}
 
 function folderHasData(folder) {
   if (!folder.children || folder.children.length === 0) return false;
