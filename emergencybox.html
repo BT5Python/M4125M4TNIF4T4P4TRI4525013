@@ -100,12 +100,20 @@ button:hover {
   <div id="content">Memuat struktur folder...</div>
 
   <script>
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbygOusSl4SBKm-L-BoCq2Mfsp5g194K5b_M_3QLk5PxJK5fS051ln-bVu5Z-qLg40vWFw/exec'; // Ganti URL kamu
-  
-  fetch(SCRIPT_URL)
-    .catch(err => {
-      document.getElementById('content').innerHTML = `<b style="color:red">Gagal memuat data</b><br>${err}`;
-    });
+  <script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbygOusSl4SBKm-L-BoCq2Mfsp5g194K5b_M_3QLk5PxJK5fS051ln-bVu5Z-qLg40vWFw/exec';
+
+fetch(SCRIPT_URL)
+  .then(r => r.json())
+  .then(data => {
+    displayStructure(data);      // render folder
+    checkNewEmergencyFiles(data); // cek file baru
+  })
+  .catch(err => {
+    document.getElementById('content').innerHTML = `<b style="color:red">Gagal memuat data</b><br>${err}`;
+  });
+</script>
+
 
   function displayStructure(data) {
   document.getElementById('content').innerHTML = renderFolder(data);
