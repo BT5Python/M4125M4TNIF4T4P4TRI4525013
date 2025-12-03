@@ -501,6 +501,13 @@ window.addEventListener("pageshow", () => {
      EMERGENCY BOX ALERT SYSTEM
      =========================== -->
 
+<style>
+@keyframes blinkEmergency {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+</style>
+
 <audio id="alarm-sound" loop>
   <source src="biohazard-alarm-143105.mp3" type="audio/mpeg">
 </audio>
@@ -509,11 +516,14 @@ window.addEventListener("pageshow", () => {
 const emergencyBtn = document.querySelector("button[onclick=\"goTo('emergencybox.html')\"]");
 const alarmSound = document.getElementById("alarm-sound");
 
-function blinkButton(on){
-  if(on){
+/* ---------------------------
+   UI KEDIP TOMBOL
+--------------------------- */
+function blinkButton(active){
+  if(active){
     emergencyBtn.style.background = "#FF0000";
     emergencyBtn.style.color = "#000";
-    emergencyBtn.style.animation = "blinkEmergency 0.6s infinite";
+    emergencyBtn.style.animation = "blinkEmergency .6s infinite";
     emergencyBtn.textContent = "!!! EMERGENCY ACTIVE !!!";
   } else {
     emergencyBtn.style.background = "transparent";
@@ -523,52 +533,61 @@ function blinkButton(on){
   }
 }
 
+/* ---------------------------
+   AUDIO ALARM
+--------------------------- */
 function playAlarm(){
   alarmSound.volume = 1.0;
   alarmSound.play().catch(()=>{});
 }
-
 function stopAlarm(){
   alarmSound.pause();
   alarmSound.currentTime = 0;
 }
 
-<script>
-/* ==== CEK FOLDER ====
-   kalau ada file: hidupkan alarm
-   kalau kosong: matikan alarm
-*/
+/* ---------------------------
+   CEK FOLDER EMERGENCY
+   kalau ada file → ALARM ON
+   kalau kosong   → ALARM OFF
+--------------------------- */
+let lastState = false;
+
 function checkEmergencyFolder(){
   fetch("http://BT5Python/emergencybox/", { cache:"no-store" })
     .then(r => r.text())
     .then(txt => {
-      
-      // deteksi file (sangat simpel: kalau ada "href" berarti ada file)
-      const adaFile = txt.includes("href");
 
-      if(adaFile){
+      // Deteksi file sangat simpel:
+      const hasFile = txt.includes("href=") || txt.match(/\.(pdf|jpg|png|doc|xls|txt)/i);
+
+      if(hasFile && !lastState){
+        lastState = true;
         blinkButton(true);
         playAlarm();
-      } else {
+      }
+
+      if(!hasFile && lastState){
+        lastState = false;
         blinkButton(false);
         stopAlarm();
       }
-
     })
-    .catch(err => {
-      console.error("EMERGENCY CHECK ERROR:", err);
-      // kalau error koneksi, matikan alarm (biar gak ngaco)
+    .catch(err=>{
+      console.warn("Emergency check error:", err);
+      // kalau error dianggap OFF
+      lastState = false;
       blinkButton(false);
       stopAlarm();
     });
 }
 
-// cek setiap 5 detik
-setInterval(checkEmergencyFolder, 5000);
-
-// cek pertama kali saat halaman load
+/* ---------------------------
+   LOOP 2 DETIK SEKALI
+--------------------------- */
+setInterval(checkEmergencyFolder, 2000);
 checkEmergencyFolder();
 </script>
+
 
 </body>
 </html>
