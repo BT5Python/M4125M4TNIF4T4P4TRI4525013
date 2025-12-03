@@ -604,6 +604,7 @@ function stopEmergency(){
    AUTO TIAP 4 DETIK
 --------------------------- */
 setInterval(checkEmergency, 4000);
+window.addEventListener("load", checkEmergency);
 checkEmergency(); // cek langsung saat load
 </script>
 <!-- AUDIO ALARM -->
