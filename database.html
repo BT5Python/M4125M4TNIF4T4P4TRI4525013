@@ -497,6 +497,79 @@ window.addEventListener("pageshow", () => {
   if (isAppMode()) setTimeout(forceFullscreen, 400);
 });
 </script>
+<!-- ===========================
+     EMERGENCY BOX ALERT SYSTEM
+     =========================== -->
+
+<audio id="alarm-sound" loop>
+  <source src="biohazard-alarm-143105.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const emergencyBtn = document.querySelector("button[onclick=\"goTo('emergencybox.html')\"]");
+const alarmSound = document.getElementById("alarm-sound");
+
+function blinkButton(on){
+  if(on){
+    emergencyBtn.style.background = "#FF0000";
+    emergencyBtn.style.color = "#000";
+    emergencyBtn.style.animation = "blinkEmergency 0.6s infinite";
+    emergencyBtn.textContent = "!!! EMERGENCY ACTIVE !!!";
+  } else {
+    emergencyBtn.style.background = "transparent";
+    emergencyBtn.style.color = "#00FF00";
+    emergencyBtn.style.animation = "none";
+    emergencyBtn.textContent = "EMERGENCY BOX";
+  }
+}
+
+function playAlarm(){
+  alarmSound.volume = 1.0;
+  alarmSound.play().catch(()=>{});
+}
+
+function stopAlarm(){
+  alarmSound.pause();
+  alarmSound.currentTime = 0;
+}
+
+/* ==== CEK FOLDER ====
+   kalau ada file: hidupkan alarm
+   kalau kosong: matikan alarm
+*/
+function checkEmergencyFolder(){
+  fetch("http://BT5Python/emergencybox/", { cache:"no-store" })
+    .then(r => r.text())
+    .then(txt => {
+      // cek apakah ada tanda-tanda file dalam listing
+      const adaFile = txt.match(/\.(txt|pdf|jpg|png|docx?|xlsx?)\b/gi);
+
+      if(adaFile){
+        blinkButton(true);
+        playAlarm();
+      } else {
+        blinkButton(false);
+        stopAlarm();
+      }
+    })
+    .catch(()=>{
+      // jika server tidak bisa diakses, anggap tidak ada alarm
+      blinkButton(false);
+      stopAlarm();
+    });
+}
+
+// AUTO cek setiap 5 detik
+setInterval(checkEmergencyFolder, 5000);
+checkEmergencyFolder();
+</script>
+
+<style>
+@keyframes blinkEmergency {
+  0%,100% { opacity:1; }
+  50% { opacity:0; }
+}
+</style>
 
 
 </body>
