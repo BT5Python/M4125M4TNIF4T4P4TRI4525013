@@ -547,45 +547,52 @@ function stopAlarm(){
 
 /* ---------------------------
    CEK FOLDER EMERGENCY
-   kalau ada file → ALARM ON
-   kalau kosong   → ALARM OFF
+   kalau ada...
 --------------------------- */
-let lastState = false;
 
-function checkEmergencyFolder(){
-  fetch("http://BT5Python/emergencybox/", { cache:"no-store" })
-    .then(r => r.text())
-    .then(txt => {
+// API mengecek status emergency
+const EMERGENCY_API = "https://script.google.com/macros/s/AKfycbwTt9GIYx83n__YOUR_API_EXEC_URL__/exec";
 
-      // Deteksi file sangat simpel:
-      const hasFile = txt.includes("href=") || txt.match(/\.(pdf|jpg|png|doc|xls|txt)/i);
-
-      if(hasFile && !lastState){
-        lastState = true;
-        blinkButton(true);
-        playAlarm();
-      }
-
-      if(!hasFile && lastState){
-        lastState = false;
-        blinkButton(false);
-        stopAlarm();
-      }
-    })
-    .catch(err=>{
-      console.warn("Emergency check error:", err);
-      // kalau error dianggap OFF
-      lastState = false;
-      blinkButton(false);
-      stopAlarm();
-    });
-}
+// nilai cache
+let emergencyActive = false;
 
 /* ---------------------------
-   LOOP 2 DETIK SEKALI
+   FUNGSI UPDATE STATUS UI
 --------------------------- */
-setInterval(checkEmergencyFolder, 2000);
-checkEmergencyFolder();
+function updateEmergencyUI(active){
+  emergencyActive = active;
+  if(active){
+    blinkButton(true);
+    playAlarm();
+  } else {
+    blinkButton(false);
+    stopAlarm();
+  }
+}
+
+/* ---------------------------------------------
+   FETCH status emergency setiap 5 detik
+--------------------------------------------- */
+function checkEmergency(){
+  if(!EMERGENCY_API) return;
+
+  fetch(EMERGENCY_API + "?action=getStatus")
+    .then(r=>r.json())
+    .then(data=>{
+      // Data format diasumsikan { emergency: true/false }
+      if(data && typeof data.emergency === "boolean"){
+        updateEmergencyUI(data.emergency);
+      }
+    })
+    .catch(err=> console.warn("Emergency check error:", err));
+}
+
+/* ---------------------------------------------
+   MULAI AUTO-CHECK
+--------------------------------------------- */
+setInterval(checkEmergency, 5000);
+checkEmergency();
+
 </script>
 
 
