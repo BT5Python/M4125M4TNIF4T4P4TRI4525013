@@ -609,37 +609,41 @@ checkEmergency(); // cek langsung saat load
 <!-- AUDIO ALARM -->
 <audio id="alarm-sound" loop>
   <source src="biohazard-alarm-143105.mp3" type="audio/ogg">
-  Your browser does not support the audio element.
 </audio>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbwtQdG1uad94FIYz9molQyBLSYOChvWn89fjWvSbf-CON9YrFHyBEUvG0oZ0dVnwSc5/exec";
+const API = "https://script.google.com/macros/s/AKfycbyXCYqf8Sw_3spi8zEz8g3diC7yW8IGbpPKNIxIt1bTQd9920IW1lgyLiYt-ztpvwxSlg/exec";
 const btn = document.querySelector("button[onclick=\"goTo('emergencybox.html')\"]");
 const alarm = document.getElementById("alarm-sound");
 
-function checkEmergency() {
-  fetch(API_URL + "?action=fileCheck", { cache: "no-store" })
+// nilai saat terakhir user sudah lihat
+let lastSeen = localStorage.getItem("emergency_last_seen") || "0";
+
+function check() {
+  fetch(API + "?action=fileCount", { cache: "no-store" })
     .then(r => r.text())
-    .then(txt => {
-      if (txt.trim() === "1") {
-        // ada file → alarm ON
+    .then(count => {
+      count = count.trim();
+
+      if (count !== lastSeen) {
+        // ada file baru
         btn.style.background = "#FF0000";
-        btn.style.color = "#000";
         btn.style.animation = "blink 1s infinite";
-        if (alarm.paused) alarm.play();
+        alarm.play();
       } else {
-        // tidak ada file → alarm OFF
+        // tidak ada file baru
         btn.style.background = "transparent";
-        btn.style.color = "#00FF00";
         btn.style.animation = "none";
         alarm.pause();
         alarm.currentTime = 0;
       }
-    })
-    .catch(err => console.warn("Emergency check error:", err));
+    });
 }
 
-// definisi keyframes blink
+setInterval(check, 5000);
+check();
+
+// css blink
 const style = document.createElement("style");
 style.textContent = `
 @keyframes blink {
@@ -648,10 +652,6 @@ style.textContent = `
 }
 `;
 document.head.appendChild(style);
-
-// jalankan tiap 5 detik
-setInterval(checkEmergency, 5000);
-checkEmergency();
 </script>
 
 </body>
