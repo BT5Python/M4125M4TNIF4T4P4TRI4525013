@@ -500,101 +500,159 @@ window.addEventListener("pageshow", () => {
 <!-- ===========================
      EMERGENCY BOX ALERT SYSTEM
      =========================== -->
-
-<style>
-@keyframes blinkEmergency {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.2; }
-}
-</style>
-
-<audio id="alarm-sound" loop>
-  <source src="biohazard-alarm-143105.mp3" type="audio/mpeg">
-</audio>
-
 <script>
-const emergencyBtn = document.querySelector("button[onclick=\"goTo('emergencybox.html')\"]");
-const alarmSound = document.getElementById("alarm-sound");
-
-/* ---------------------------
-   UI KEDIP TOMBOL
---------------------------- */
-function blinkButton(active){
-  if(active){
-    emergencyBtn.style.background = "#FF0000";
-    emergencyBtn.style.color = "#000";
-    emergencyBtn.style.animation = "blinkEmergency .6s infinite";
-    emergencyBtn.textContent = "!!! EMERGENCY ACTIVE !!!";
-  } else {
-    emergencyBtn.style.background = "transparent";
-    emergencyBtn.style.color = "#00FF00";
-    emergencyBtn.style.animation = "none";
-    emergencyBtn.textContent = "EMERGENCY BOX";
-  }
-}
-
-/* ---------------------------
-   AUDIO ALARM
---------------------------- */
-function playAlarm(){
-  alarmSound.volume = 1.0;
-  alarmSound.play().catch(()=>{});
-}
-function stopAlarm(){
-  alarmSound.pause();
-  alarmSound.currentTime = 0;
-}
-
 /* ---------------------------
    CEK FOLDER EMERGENCY
-   kalau ada...
 --------------------------- */
 
-// API mengecek status emergency
-const EMERGENCY_API = "https://script.google.com/macros/s/AKfycbwTt9GIYx83n__YOUR_API_EXEC_URL__/exec";
+/*  
+   SYSTEM:
+   — Mengecek file “emergency.txt” di Google Drive (via Apps Script)
+   — Jika ada tulisan "ON", alarm aktif
+   — Jika "OFF" alarm mati
+   — Dicek otomatis setiap 4 detik
+*/
 
-// nilai cache
-let emergencyActive = false;
+const EMERGENCY_API = "https://script.google.com/macros/s/AKfycbyP3MyiNRHb5WuFhqo3pJLcHdbQ21Ic90ScWJpv4_RB7iWZlgA/exec";  // <<< GANTI PUNYA MU
+
+let emergencyState = false;
+let alarmAudio = null;
+
+/* Ambil status emergency */
+function checkEmergency(){
+  fetch(EMERGENCY_API + "?action=status")
+    .then(r => r.json())
+    .then(res => {
+      if(!res || !res.status) return;
+
+      const newState = (res.status === "ON");
+
+      // kalau status berubah
+      if(newState !== emergencyState){
+        emergencyState = newState;
+        handleEmergency(newState);
+      }
+    })
+    .catch(()=>{});
+}
 
 /* ---------------------------
-   FUNGSI UPDATE STATUS UI
+   Handle tampilan & suara
 --------------------------- */
-function updateEmergencyUI(active){
-  emergencyActive = active;
+function handleEmergency(active){
   if(active){
     blinkButton(true);
     playAlarm();
+    console.warn("🚨 EMERGENCY BOX ACTIVE");
   } else {
     blinkButton(false);
     stopAlarm();
+    console.log("✔ EMERGENCY CLEARED");
   }
 }
 
-/* ---------------------------------------------
-   FETCH status emergency setiap 5 detik
---------------------------------------------- */
-function checkEmergency(){
-  if(!EMERGENCY_API) return;
+/* ---------------------------
+   Efek tombol berkedip
+--------------------------- */
+function blinkButton(active){
+  const btn = document.querySelector("button[onclick=\"goTo('emergencybox.html')\"]");
+  if(!btn) return;
 
-  fetch(EMERGENCY_API + "?action=getStatus")
-    .then(r=>r.json())
-    .then(data=>{
-      // Data format diasumsikan { emergency: true/false }
-      if(data && typeof data.emergency === "boolean"){
-        updateEmergencyUI(data.emergency);
-      }
-    })
-    .catch(err=> console.warn("Emergency check error:", err));
+  if(active){
+    btn.style.animation = "blinkText 0.5s infinite";
+    btn.style.borderColor = "#FF0000";
+    btn.style.color = "#FF0000";
+  } else {
+    btn.style.animation = "";
+    btn.style.borderColor = "#00FF00";
+    btn.style.color = "#00FF00";
+  }
 }
 
-/* ---------------------------------------------
-   MULAI AUTO-CHECK
---------------------------------------------- */
+/* ---------------------------
+   Suara alarm
+--------------------------- */
+function playAlarm(){
+  if(!alarmAudio){
+    alarmAudio = new Audio("alarm.mp3"); // ====> siapkan file alarm.mp3 di root
+    alarmAudio.loop = true;
+  }
+  alarmAudio.volume = 1;
+  alarmAudio.play().catch(()=>{});
+}
+
+function stopAlarm(){
+  if(alarmAudio){
+    alarmAudio.pause();
+    alarmAudio.currentTime = 0;
+  }
+}
+
+/* ---------------------------
+   Stop manual via server
+--------------------------- */
+function stopEmergency(){
+  fetch(EMERGENCY_API + "?action=off")
+    .then(r=>r.json())
+    .then(res=>{
+      alert("✔ EMERGENCY OFF (SERVER)");
+    })
+    .catch(()=>{ alert("Gagal kirim OFF"); });
+}
+
+/* ---------------------------
+   AUTO TIAP 4 DETIK
+--------------------------- */
+setInterval(checkEmergency, 4000);
+checkEmergency(); // cek langsung saat load
+</script>
+<!-- AUDIO ALARM -->
+<audio id="alarm-sound" loop>
+  <source src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg" type="audio/ogg">
+  Your browser does not support the audio element.
+</audio>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbwtQdG1uad94FIYz9molQyBLSYOChvWn89fjWvSbf-CON9YrFHyBEUvG0oZ0dVnwSc5/exec";
+const btn = document.querySelector("button[onclick=\"goTo('emergencybox.html')\"]");
+const alarm = document.getElementById("alarm-sound");
+
+function checkEmergency() {
+  fetch(API_URL + "?action=fileCheck", { cache: "no-store" })
+    .then(r => r.text())
+    .then(txt => {
+      if (txt.trim() === "1") {
+        // ada file → alarm ON
+        btn.style.background = "#FF0000";
+        btn.style.color = "#000";
+        btn.style.animation = "blink 1s infinite";
+        if (alarm.paused) alarm.play();
+      } else {
+        // tidak ada file → alarm OFF
+        btn.style.background = "transparent";
+        btn.style.color = "#00FF00";
+        btn.style.animation = "none";
+        alarm.pause();
+        alarm.currentTime = 0;
+      }
+    })
+    .catch(err => console.warn("Emergency check error:", err));
+}
+
+// definisi keyframes blink
+const style = document.createElement("style");
+style.textContent = `
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+`;
+document.head.appendChild(style);
+
+// jalankan tiap 5 detik
 setInterval(checkEmergency, 5000);
 checkEmergency();
-
 </script>
-
 
 </body>
 </html>
