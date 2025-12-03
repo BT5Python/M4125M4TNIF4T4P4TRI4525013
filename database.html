@@ -533,6 +533,7 @@ function stopAlarm(){
   alarmSound.currentTime = 0;
 }
 
+<script>
 /* ==== CEK FOLDER ====
    kalau ada file: hidupkan alarm
    kalau kosong: matikan alarm
@@ -541,43 +542,33 @@ function checkEmergencyFolder(){
   fetch("http://BT5Python/emergencybox/", { cache:"no-store" })
     .then(r => r.text())
     .then(txt => {
-      // cek apakah ada tanda-tanda file dalam listing
-      .then(txt => {
-  // cek apakah ada tanda-tanda file dalam listing
-  // (asumsi listing menampilkan nama file dalam <a> atau teks lain)
-  const adaFile = /href=|\.pdf|\.jpg|\.png|\.doc|\.txt/i.test(txt);
+      
+      // deteksi file (sangat simpel: kalau ada "href" berarti ada file)
+      const adaFile = txt.includes("href");
 
-  if (adaFile) {
-    // HIDUPKAN ALARM
-    blinkButton(true);
-    playAlarm();
-  } else {
-    // MATIKAN ALARM
-    blinkButton(false);
-    stopAlarm();
-  }
-})
-.catch(err => {
-  console.warn("EMERGENCY CHECK ERROR:", err);
-  // kalau gagal fetch, matikan alarm biar aman
-  blinkButton(false);
-  stopAlarm();
-});
+      if(adaFile){
+        blinkButton(true);
+        playAlarm();
+      } else {
+        blinkButton(false);
+        stopAlarm();
+      }
+
+    })
+    .catch(err => {
+      console.error("EMERGENCY CHECK ERROR:", err);
+      // kalau error koneksi, matikan alarm (biar gak ngaco)
+      blinkButton(false);
+      stopAlarm();
+    });
 }
 
-// cek tiap 5 detik
+// cek setiap 5 detik
 setInterval(checkEmergencyFolder, 5000);
 
-// cek awal ketika halaman load
+// cek pertama kali saat halaman load
 checkEmergencyFolder();
 </script>
-
-<style>
-@keyframes blinkEmergency {
-  0%,100% { opacity: 1; }
-  50%     { opacity: 0.2; }
-}
-</style>
 
 </body>
 </html>
