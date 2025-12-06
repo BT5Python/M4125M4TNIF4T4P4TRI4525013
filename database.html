@@ -681,8 +681,6 @@ emergencyBtn.addEventListener("click", function(){
     lastSeen = Date.now();
     localStorage.setItem("emergency_last_seen", lastSeen);
 });
-
-</script>
 // ===== DATABASE.HTML: tombol EMERGENCY BOX indikator alarm =====
 const emergencyBtn = document.querySelector("button[onclick=\"goTo('emergencybox.html')\"]");
 const alarm = document.getElementById("alarm-sound");
@@ -714,5 +712,7 @@ setInterval(() => {
             }
         });
 }, 5000);
+</script>
+
 </body>
 </html>
