@@ -683,6 +683,36 @@ emergencyBtn.addEventListener("click", function(){
 });
 
 </script>
+// ===== DATABASE.HTML: tombol EMERGENCY BOX indikator alarm =====
+const emergencyBtn = document.querySelector("button[onclick=\"goTo('emergencybox.html')\"]");
+const alarm = document.getElementById("alarm-sound");
 
+// tombol hanya navigasi
+emergencyBtn.addEventListener("click", () => {
+    goTo('emergencybox.html');
+});
+
+// cek file baru tiap 5 detik
+setInterval(() => {
+    fetch("API_EMERGENCYBOX_URL?action=fileCount", { cache: "no-store" })
+        .then(r => r.text())
+        .then(count => {
+            count = count.trim();
+            const lastSeen = localStorage.getItem("emergency_last_seen") || "0";
+
+            if (count !== lastSeen) {
+                // ada file baru → tombol kedip + alarm
+                emergencyBtn.style.background = "#FF0000";
+                emergencyBtn.style.animation = "blink 1s infinite";
+                alarm.play();
+            } else {
+                // tidak ada file baru → tombol normal + alarm mati
+                emergencyBtn.style.background = "transparent";
+                emergencyBtn.style.animation = "none";
+                alarm.pause();
+                alarm.currentTime = 0;
+            }
+        });
+}, 5000);
 </body>
 </html>
