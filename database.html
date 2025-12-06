@@ -654,64 +654,45 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// ===== AUTOMATIC STOP ALARM ON EMERGENCY BUTTON CLICK =====
-
-// ambil tombol emergency box dan audio alarm
 const emergencyBtn = document.querySelector("button[onclick=\"goTo('emergencybox.html')\"]");
-const alarm = document.getElementById("alarm-sound");
-
-// simpan state terakhir user lihat (lastSeen)
+const alarmAudio = new Audio("biohazard-alarm-143105.mp3");
+alarmAudio.loop = true;
 let lastSeen = localStorage.getItem("emergency_last_seen") || "0";
 
-// pasang event listener klik tombol
-emergencyBtn.addEventListener("click", function(){
-    // hentikan audio alarm
-    if(alarm){
-        alarm.pause();
-        alarm.currentTime = 0;
-    }
+// cek file baru tiap 5 detik
+setInterval(() => {
+    fetch("API_EMERGENCYBOX_URL?action=fileCount", { cache: "no-store" })
+      .then(r => r.text())
+      .then(count => {
+          count = count.trim();
+          if (count !== lastSeen) {
+              emergencyBtn.style.background = "#FF0000";
+              emergencyBtn.style.animation = "blink 1s infinite";
+              alarmAudio.play();
+          } else {
+              emergencyBtn.style.background = "transparent";
+              emergencyBtn.style.animation = "none";
+              alarmAudio.pause();
+              alarmAudio.currentTime = 0;
+          }
+      }).catch(()=>{});
+}, 5000);
 
-    // reset efek tombol berkedip
+// klik tombol → alarm berhenti & tombol normal
+emergencyBtn.addEventListener("click", () => {
+    alarmAudio.pause();
+    alarmAudio.currentTime = 0;
     emergencyBtn.style.animation = "none";
     emergencyBtn.style.background = "transparent";
     emergencyBtn.style.borderColor = "#00FF00";
     emergencyBtn.style.color = "#00FF00";
 
-    // update lastSeen supaya alarm tidak langsung menyala lagi
     lastSeen = Date.now();
     localStorage.setItem("emergency_last_seen", lastSeen);
-});
-// ===== DATABASE.HTML: tombol EMERGENCY BOX indikator alarm =====
-const emergencyBtn = document.querySelector("button[onclick=\"goTo('emergencybox.html')\"]");
-const alarm = document.getElementById("alarm-sound");
 
-// tombol hanya navigasi
-emergencyBtn.addEventListener("click", () => {
     goTo('emergencybox.html');
 });
 
-// cek file baru tiap 5 detik
-setInterval(() => {
-    fetch("API_EMERGENCYBOX_URL?action=fileCount", { cache: "no-store" })
-        .then(r => r.text())
-        .then(count => {
-            count = count.trim();
-            const lastSeen = localStorage.getItem("emergency_last_seen") || "0";
-
-            if (count !== lastSeen) {
-                // ada file baru → tombol kedip + alarm
-                emergencyBtn.style.background = "#FF0000";
-                emergencyBtn.style.animation = "blink 1s infinite";
-                alarm.play();
-            } else {
-                // tidak ada file baru → tombol normal + alarm mati
-                emergencyBtn.style.background = "transparent";
-                emergencyBtn.style.animation = "none";
-                alarm.pause();
-                alarm.currentTime = 0;
-            }
-        });
-}, 5000);
 </script>
 
 </body>
