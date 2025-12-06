@@ -653,6 +653,35 @@ style.textContent = `
 }
 `;
 document.head.appendChild(style);
+
+// ===== AUTOMATIC STOP ALARM ON EMERGENCY BUTTON CLICK =====
+
+// ambil tombol emergency box dan audio alarm
+const emergencyBtn = document.querySelector("button[onclick=\"goTo('emergencybox.html')\"]");
+const alarm = document.getElementById("alarm-sound");
+
+// simpan state terakhir user lihat (lastSeen)
+let lastSeen = localStorage.getItem("emergency_last_seen") || "0";
+
+// pasang event listener klik tombol
+emergencyBtn.addEventListener("click", function(){
+    // hentikan audio alarm
+    if(alarm){
+        alarm.pause();
+        alarm.currentTime = 0;
+    }
+
+    // reset efek tombol berkedip
+    emergencyBtn.style.animation = "none";
+    emergencyBtn.style.background = "transparent";
+    emergencyBtn.style.borderColor = "#00FF00";
+    emergencyBtn.style.color = "#00FF00";
+
+    // update lastSeen supaya alarm tidak langsung menyala lagi
+    lastSeen = Date.now();
+    localStorage.setItem("emergency_last_seen", lastSeen);
+});
+
 </script>
 
 </body>
