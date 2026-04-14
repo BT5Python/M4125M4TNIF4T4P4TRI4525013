@@ -507,20 +507,20 @@ function displayAgent(agent) {
 
 [DATA IDENTITAS]
 --------------------------------------------------
-NAMA LENGKAP        : ${agent.nama_lengkap || "-"}
-PANGKAT             : ${agent.pangkat || "-"}
-NRP/NIP             : ${agent.nrp_nip || "-"}
-TEMPAT/TGL LAHIR    : ${agent.tempat_lahir || "-"}, ${formatTanggalIndonesia(agent.tanggal_lahir)}
-USIA                : ${usia} Tahun
-GOL DARAH           : ${agent.gol_darah || "-"}
-AGAMA               : ${agent.agama || "-"}
+NAMA LENGKAP            : ${agent.nama_lengkap || "-"}
+PANGKAT                 : ${agent.pangkat || "-"}
+NRP/NIP                 : ${agent.nrp_nip || "-"}
+TEMPAT/TGL LAHIR        : ${agent.tempat_lahir || "-"}, ${formatTanggalIndonesia(agent.tanggal_lahir)}
+USIA                    : ${usia} Tahun
+GOL DARAH               : ${agent.gol_darah || "-"}
+AGAMA                   : ${agent.agama || "-"}
 
 [DATA KELUARGA]
 --------------------------------------------------
-ISTRI               : ${agent.istri || "-"}
-ANAK KE-1           : ${formatTanggalIndonesia(agent.tmt_dikumti)}
-ANAK KE-2           : ${agent.dikmilti || "-"}
-ANAK KE-3           : ${formatTanggalIndonesia(agent.tmt_dikmilti)}
+NAMA ISTRI/NAMA SUAMI   : ${agent.nama istri/nama suami || "-"}
+ANAK KE-1               : ${formatTanggalIndonesia(agent.tmt_dikumti)}
+ANAK KE-2               : ${agent.dikmilti || "-"}
+ANAK KE-3               : ${formatTanggalIndonesia(agent.tmt_dikmilti)}
 
 [SECURITY FOOTNOTE]   <button class="catatan-btn" onclick="window.location='catatanpersonel.html?nama='+encodeURIComponent('${agent.nama_lengkap}')">CATATAN</button>
 -----------------------------------------------------
