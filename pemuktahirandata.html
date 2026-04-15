@@ -548,7 +548,7 @@ Retrieved on: ${new Date().toLocaleString()}
             docContainer.className = "doc-buttons";
 
             // Ambil link dari kolom spreadsheet
-            const mergedLink = agent["Merged Doc URL - PEMUKTAHIRAN DATA"];
+            const mergedLink = agent.merged_doc_url_riwayat_hidup_personel_puslat;
             let pdfLink = "#";
             if (mergedLink) {
                 if (mergedLink.includes("drive.google.com")) {
