@@ -215,7 +215,7 @@ function goTo(url) {
 let personnelDB = [];
 
 // URL Google Apps Script yang mengarah ke data sheet Anda
-const DATA_URL = "https://script.google.com/macros/s/AKfycbzPEdk4tuZOzqDRehrZYGVwiDOy3RoM6Ftzs-pQ-LTl2O8lQW-C376tpBqnxTWlVfPf/exec";
+const DATA_URL = "https://script.google.com/macros/s/AKfycbziCZVe24Fl2vokSkBDHFRfv8rPHoXf9BzpYm7OlbG3Bi6hbuq-nActB6y1LKcX5PGLWw/exec";
 
 fetch(DATA_URL)
   .then(res => res.json())
@@ -559,7 +559,7 @@ Retrieved on: ${new Date().toLocaleString()}
 
             // Ambil link dari kolom spreadsheet
             // Ambil link riwayat hidup dari Google Sheet
-const mergedLink = agent.merged_doc_url_salinan_dari_pemuktahiran_data;
+const mergedLink = agent.merged_doc_url_riwayat_hidup_personel_puslat;
 let pdfLink = "#";
 
 if (mergedLink.includes("drive.google.com")) {
