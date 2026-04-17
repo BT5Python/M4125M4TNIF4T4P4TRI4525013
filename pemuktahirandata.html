@@ -220,7 +220,7 @@ const DATA_URL = "https://script.google.com/macros/s/AKfycbxxFArxdza4zZeME3NcPCI
 fetch(DATA_URL)
   .then(res => res.json())
   .then(data => {
-    // ✅ Bersihkan dan konversi link photo agar bisa langsung tampil
+    // ✅ Bersihkan dan konversi link foto agar bisa langsung tampil
     personnelDB = data.map(person => {
       let photoURL = person.photo?.trim() || "";
 
@@ -241,11 +241,11 @@ fetch(DATA_URL)
           photoURL = `https://drive.google.com/uc?export=view&id=${photoURL}`;
         }
       } else {
-        // photo default jika kolom 'foto' kosong
+        // photo default jika kolom 'photo' kosong
         photoURL = "https://drive.google.com/uc?export=view&id=13KgFyUzOSIUhfK8qw0skSLOEq5Yj0xp2";
       }
 
-      return { ...person, foto: fotoURL };
+      return { ...person, photo: photoURL };
     });
 
     console.log("✅ Data loaded & foto links normalized", personnelDB);
