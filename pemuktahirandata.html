@@ -222,7 +222,7 @@ fetch(DATA_URL)
   .then(data => {
     // ✅ Bersihkan dan konversi link foto agar bisa langsung tampil
     personnelDB = data.map(person => {
-      let photoURL = person.foto?.trim() || "";
+      let fotoURL = person.foto?.trim() || "";
 
       if (photoURL) {
         // Logika konversi link Google Drive (dari Google Form) ke Direct Access
@@ -238,7 +238,7 @@ fetch(DATA_URL)
         }
         // 2. Jika hanya ID (ID yang diekstrak dari Google Form)
         else if (/^[A-Za-z0-9_-]{25,}$/.test(fotoURL)) {
-          photoURL = `https://drive.google.com/uc?export=view&id=${photoURL}`;
+          photoURL = `https://drive.google.com/uc?export=view&id=${fotoURL}`;
         }
       } else {
         // Foto default jika kolom 'foto' kosong
