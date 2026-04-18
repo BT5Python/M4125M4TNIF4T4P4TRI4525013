@@ -228,21 +228,21 @@ fetch(DATA_URL)
         // Logika konversi link Google Drive (dari Google Form) ke Direct Access
         
         // 1. Jika link adalah URL berbagi penuh (drive.google.com/file/d/ID/view)
-        if (photoURL.includes("drive.google.com/file/d/")) {
+        Jika ( photoURL.includes ( "drive.google.com/file/d/" )) {
           // Ekstrak ID File
-          const match = photoURL.match(/\/d\/(.*?)\//);
-          if (match && match[1]) {
+          const match = photoURL.match ( /\/d \ /(. * ?) \// );
+          if ( match && match [ 1 ]) {
             // Ubah ke format Direct Access
-            photoURL = `https://drive.google.com/thumbnail?id= ${ match [ 1 ]} &sz=w1000` ;
+            photoURL = `https://drive.google.com/thumbnail?id=$ { match [ 1 ]} &sz=w1000` ;
           }
         }
         // 2. Jika hanya ID (ID yang diekstrak dari Google Form)
-        else if (/^[A-Za-z0-9_-]{25,}$/.test(photoURL)) {
-          photoURL = `https://drive.google.com/uc?export=view&id=${photoURL}`;
+        else if ( /^[A-Za-z0-9_-]{25,}$/.test(photoURL ) ) {
+          photoURL = `https://drive.google.com/thumbnail?id=$ { photoURL } & sz=w1000`;
         }
       } else {
         // Foto default jika kolom 'photo' kosong
-        photoURL = "https://drive.google.com/uc?export=view&id=13KgFyUzOSIUhfK8qw0skSLOEq5Yj0xp2";
+        photoURL = "https://drive.google.com/thumbnail?id=13KgFyUzOSIUhfK8qw0skSLOEq5Yj0xp2&sz=w1000";
       }
 
       return { ...person, photo: photoURL };
@@ -487,7 +487,7 @@ function displayAgent(agent) {
     if (agent.photo) {
         photoEl.src = agent.photo;
     } else {
-        photoEl.src = "https://drive.google.com/uc?export=view&id=13KgFyUzOSIUhfK8qw0skSLOEq5Yj0xp2"; // Default
+        photoEl.src = " https://drive.google.com/thumbnail?id=13KgFyUzOSIUhfK8qw0skSLOEq5Yj0xp2&sz=w1000 "; // Default
     }
 
     // 3. Hapus tombol dokumen sebelumnya
