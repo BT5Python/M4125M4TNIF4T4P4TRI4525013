@@ -521,10 +521,10 @@ AGAMA               : ${agent.agama || "-"}
 --------------------------------------------------
 NAMA ISTRI/SUAMI    : ${agent.nama_istri_suami || "-"}
 NAMA ANAK           :
-   PERTAMA          : ${formatTanggalIndonesia(agent.tmt_dikumti)}
+   PERTAMA          : ${agent.nama_anak_pertama || "-"}
    KEDUA            : ${agent.nama_anak_kedua || "-"}
-   KETIGA           : ${formatTanggalIndonesia(agent.tmt_dikmilti)}
-   KEEMPAT          :
+   KETIGA           : ${agent.nama_anak_ketiga || "-"}
+   KEEMPAT          : 
 
 [KETERANGAN ORANG TUA]
 --------------------------------------------------
