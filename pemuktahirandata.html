@@ -386,9 +386,9 @@ function typeWriter(element, text, agent, callback, speed = 10) {
                 .map(line => {
                     // Penyorotan warna
                     if (line.includes("[KETERANGAN PERORANGAN]") ||
-                        line.includes("[DATA DIKUMTI & DIKMILTI]") ||
-                        line.includes("[DATA KGB]") ||
-                        line.includes("[DATA JABATAN]") ||
+                        line.includes("[KETERANGAN KELUARGA]") ||
+                        line.includes("[KETERANGAN ORANG TUA]") ||
+                        line.includes("[KETERANGAN MERTUA]") ||
                         line.includes("[SECURITY FOOTNOTE]") ||
                         line.includes("[TANDA JASA/KEHORMATAN]")) {
                         return `<span class="highlight-section">${line}</span>`;
