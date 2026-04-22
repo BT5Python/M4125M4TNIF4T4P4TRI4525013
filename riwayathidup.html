@@ -532,7 +532,7 @@ MASA KERJA JABATAN  : ${masaKerja}
 
 [TANDA JASA/KEHORMATAN TERTINGGI]
 --------------------------------------------------
-${agent.tanda_jasa || "agent.tanda_jasa_tertinggi || "-"},
+${agent.tanda_jasa || ${agent.tanda_jasa_tertinggi || "-"}
 
 [SECURITY FOOTNOTE]   <button class="catatan-btn" onclick="window.location='catatanpersonel.html?nama='+encodeURIComponent('${agent.nama_lengkap}')">CATATAN</button>
 -----------------------------------------------------
