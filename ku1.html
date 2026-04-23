@@ -385,8 +385,8 @@ function typeWriter(element, text, agent, callback, speed = 10) {
                 .split("\n")
                 .map(line => {
                     // Penyorotan warna
-                    if (line.includes("[DATA IDENTITAS]") ||
-                        line.includes("[DATA DIKUMTI & DIKMILTI]") ||
+                    if (line.includes("[KETERANGAN PERORANGAN]") ||
+                        line.includes("[KETERANGAN KELUARGA]") ||
                         line.includes("[DATA KGB]") ||
                         line.includes("[DATA JABATAN]") ||
                         line.includes("[SECURITY FOOTNOTE]") ||
@@ -507,39 +507,21 @@ function displayAgent(agent) {
 |    CLASSIFICATION: RAHASIA             |
 ========================================
 
-[DATA IDENTITAS]
+[KETERANGAN PERORANGAN]
 --------------------------------------------------
 NAMA LENGKAP        : ${agent.nama_lengkap || "-"}
 PANGKAT             : ${agent.pangkat || "-"}
 NRP/NIP             : ${agent.nrp_nip || "-"}
 TEMPAT/TGL LAHIR    : ${agent.tempat_lahir || "-"}, ${formatTanggalIndonesia(agent.tanggal_lahir)}
 USIA                : ${usia} Tahun
-GOL DARAH           : ${agent.gol_darah || "-"}
-AGAMA               : ${agent.agama || "-"}
 
-[DATA DIKUMTI & DIKMILTI]
+[KETERANGAN KELUARGA]
 --------------------------------------------------
-DIKUMTI             : ${agent.dikumti || "-"}
-TMT DIKUMTI         : ${formatTanggalIndonesia(agent.tmt_dikumti)}
-DIKMILTI            : ${agent.dikmilti || "-"}
-TMT DIKMILTI        : ${formatTanggalIndonesia(agent.tmt_dikmilti)}
-
-[DATA JABATAN]
---------------------------------------------------
-JABATAN YG LALU     : ${agent.jabatan_yg_lalu || "-"}
-JABATAN SAAT INI    : ${agent.jab_saat_ini || "-"}
-TMT JABATAN         : ${formatTanggalIndonesia(agent.tmt_jabatan_saat_ini)}
-MASA KERJA JABATAN  : ${masaKerja}
-
-[DATA KGB]
---------------------------------------------------
-TMT KGB TERAKHIR    : ${formatTanggalIndonesia(agent.tmt_kgb)}
-KGB BERIKUTNYA      : ${nextKGBInfo}
-
-[TANDA JASA/KEHORMATAN]
---------------------------------------------------
-${agent.tanda_jasa || "Tidak ada data"}
-
+NAMA ISTRI          : ${agent.nama_istri || "-"}
+NAMA ANAK
+  PERTAMA           : ${agent.nama_anak_tanggungan_1 || "-"}
+  KEDUA             : ${agent.nama_anak_tanggungan_2 || "-"}
+  
 [SECURITY FOOTNOTE]   <button class="catatan-btn" onclick="window.location='catatanpersonel.html?nama='+encodeURIComponent('${agent.nama_lengkap}')">CATATAN</button>
 -----------------------------------------------------
 -----------------------------------------------------
