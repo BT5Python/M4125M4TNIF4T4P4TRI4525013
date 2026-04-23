@@ -510,7 +510,7 @@ function displayAgent(agent) {
 [DATA IDENTITAS]
 --------------------------------------------------
 NAMA LENGKAP        : ${agent.nama_lengkap || "-"}
-PANGKAT             : ${agent.pangkat || "-"}
+PANGKAT             : ${agent.pangkat_gol || "-"}
 KORP/FUNG/SPES      : ${agent.korp_fung_spes || "-"}
 NRP/NIP             : ${agent.nrp_nip || "-"}
 TEMPAT/TGL LAHIR    : ${agent.tempat_lahir || "-"}, ${formatTanggalIndonesia(agent.tanggal_lahir)}
@@ -526,7 +526,7 @@ TMT DIKMILTI        : ${agent.tmt_dikmilti || "-"}
 [DATA JABATAN]
 --------------------------------------------------
 JABATAN YG LALU     : ${agent.jabatan_yg_lalu || "-"}
-JABATAN SAAT INI    : ${agent.jab_saat_ini || "-"}
+JABATAN SAAT INI    : ${agent.JABATAN || "-"}
 TMT JABATAN         : ${formatTanggalIndonesia(agent.tmt_jabatan_saat_ini)}
 MASA KERJA JABATAN  : ${masaKerja}
 
