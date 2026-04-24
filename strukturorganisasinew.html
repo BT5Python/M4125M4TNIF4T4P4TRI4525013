@@ -8,25 +8,41 @@
       text-align: center;
     }
 
-    .container {
-      margin-top: 50px;
+    h2 {
+      margin-top: 30px;
+    }
+
+    .level {
+      margin: 20px 0;
     }
 
     .box {
       display: inline-block;
-      padding: 15px 25px;
+      padding: 12px 20px;
       margin: 10px;
       background-color: #4CAF50;
       color: white;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
+      min-width: 120px;
     }
 
     .box:hover {
       background-color: #45a049;
     }
 
-    /* Popup */
+    /* isi 2 baris */
+    .nama {
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .jabatan {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    /* popup */
     .popup {
       display: none;
       position: fixed;
@@ -58,19 +74,42 @@
 
 <h2>Struktur Organisasi</h2>
 
-<div class="container">
-  <div class="box" onclick="showProfile('ketua')">Ketua</div>
-  <div class="box" onclick="showProfile('wakil')">Wakil</div>
-  <div class="box" onclick="showProfile('sekretaris')">Sekretaris</div>
+<!-- Ketua -->
+<div class="level">
+  <div class="box" onclick="showProfile('ketua')">
+    <div class="nama">Budi</div>
+    <div class="jabatan">Ketua</div>
+  </div>
 </div>
 
-<!-- Popup -->
+<!-- Wakil -->
+<div class="level">
+  <div class="box" onclick="showProfile('wakil')">
+    <div class="nama">Siti</div>
+    <div class="jabatan">Wakil Ketua</div>
+  </div>
+</div>
+
+<!-- Sekretaris & Bendahara -->
+<div class="level">
+  <div class="box" onclick="showProfile('sekretaris')">
+    <div class="nama">Andi</div>
+    <div class="jabatan">Sekretaris</div>
+  </div>
+
+  <div class="box" onclick="showProfile('bendahara')">
+    <div class="nama">Rina</div>
+    <div class="jabatan">Bendahara</div>
+  </div>
+</div>
+
+<!-- POPUP -->
 <div id="popup" class="popup">
   <div class="popup-content">
     <span class="close" onclick="closePopup()">X</span>
-    <h3 id="nama"></h3>
-    <p id="jabatan"></p>
-    <p id="deskripsi"></p>
+    <h3 id="namaPopup"></h3>
+    <p id="jabatanPopup"></p>
+    <p id="deskripsiPopup"></p>
   </div>
 </div>
 
@@ -92,11 +131,15 @@ function showProfile(role) {
     nama = "Andi";
     jabatan = "Sekretaris";
     deskripsi = "Mengelola administrasi dan dokumentasi.";
+  } else if (role === "bendahara") {
+    nama = "Rina";
+    jabatan = "Bendahara";
+    deskripsi = "Mengatur keuangan organisasi.";
   }
 
-  document.getElementById("nama").innerText = nama;
-  document.getElementById("jabatan").innerText = jabatan;
-  document.getElementById("deskripsi").innerText = deskripsi;
+  document.getElementById("namaPopup").innerText = nama;
+  document.getElementById("jabatanPopup").innerText = jabatan;
+  document.getElementById("deskripsiPopup").innerText = deskripsi;
 
   document.getElementById("popup").style.display = "block";
 }
