@@ -3,23 +3,28 @@
 <head>
 <style>
 .box {
-  width: 200px;
+  width: 220px;
   border: 1px solid black;
   font-family: Arial;
+  text-align: center;
 }
 
-.title {
+/* tiap baris */
+.row {
+  padding: 6px;
+}
+
+/* garis pemisah */
+.row:not(:last-child) {
+  border-bottom: 1px solid black;
+}
+
+/* styling teks */
+.judul {
   background: #2da8d8;
   color: white;
-  text-align: center;
-  padding: 5px;
-  font-size: 12px;
   font-weight: bold;
-}
-
-.content {
-  text-align: center;
-  padding: 8px;
+  font-size: 12px;
 }
 
 .nama {
@@ -35,11 +40,17 @@
 <body>
 
 <div class="box">
-  <div class="title">KOMANDAN</div>
-  <div class="content">
-    <div class="nama">Erwan Andrian, S.E., M.M</div>
-    <div class="jabatan">Marsekal Pertama TNI</div>
+
+  <div class="row judul">KOMANDAN</div>
+
+  <div class="row nama">
+    Erwan Andrian, S.E., M.M
   </div>
+
+  <div class="row jabatan">
+    Marsekal Pertama TNI
+  </div>
+
 </div>
 
 </body>
