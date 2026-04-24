@@ -3,10 +3,11 @@
 <head>
 <style>
 .box {
-  width: 220px;
+  width: 230px;
   border: 1px solid black;
   font-family: Arial;
   text-align: center;
+  cursor: pointer;
 }
 
 /* tiap baris */
@@ -19,7 +20,7 @@
   border-bottom: 1px solid black;
 }
 
-/* styling teks */
+/* styling */
 .judul {
   background: #2da8d8;
   color: white;
@@ -34,12 +35,38 @@
 .jabatan {
   font-size: 12px;
 }
+
+/* POPUP */
+.popup {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+}
+
+.popup-content {
+  background: white;
+  width: 300px;
+  margin: 120px auto;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.close {
+  float: right;
+  cursor: pointer;
+  color: red;
+  font-weight: bold;
+}
 </style>
 </head>
 
 <body>
 
-<div class="box">
+<!-- KOTAK -->
+<div class="box" onclick="showProfile()">
 
   <div class="row judul">KOMANDAN</div>
 
@@ -52,6 +79,27 @@
   </div>
 
 </div>
+
+<!-- POPUP -->
+<div id="popup" class="popup">
+  <div class="popup-content">
+    <span class="close" onclick="closePopup()">X</span>
+    <h3>Profil Komandan</h3>
+    <p><b>Nama:</b> Erwan Andrian, S.E., M.M</p>
+    <p><b>Jabatan:</b> Komandan Puslat Kodiklatau</p>
+    <p>Memimpin dan bertanggung jawab atas seluruh kegiatan.</p>
+  </div>
+</div>
+
+<script>
+function showProfile() {
+  document.getElementById("popup").style.display = "block";
+}
+
+function closePopup() {
+  document.getElementById("popup").style.display = "none";
+}
+</script>
 
 </body>
 </html>
