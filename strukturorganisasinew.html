@@ -3,13 +3,54 @@
 <head>
   <title>Struktur Organisasi</title>
   <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+    }
+
+    .container {
+      margin-top: 50px;
+    }
+
     .box {
-      border: 1px solid black;
-      padding: 10px;
-      margin: 10px;
       display: inline-block;
+      padding: 15px 25px;
+      margin: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 8px;
       cursor: pointer;
-      background-color: #f0f0f0;
+    }
+
+    .box:hover {
+      background-color: #45a049;
+    }
+
+    /* Popup */
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+    }
+
+    .popup-content {
+      background: white;
+      padding: 20px;
+      margin: 100px auto;
+      width: 300px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .close {
+      float: right;
+      cursor: pointer;
+      color: red;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -17,23 +58,51 @@
 
 <h2>Struktur Organisasi</h2>
 
-<div class="box" onclick="showInfo('ketua')">Ketua</div>
-<div class="box" onclick="showInfo('wakil')">Wakil</div>
-<div class="box" onclick="showInfo('sekretaris')">Sekretaris</div>
+<div class="container">
+  <div class="box" onclick="showProfile('ketua')">Ketua</div>
+  <div class="box" onclick="showProfile('wakil')">Wakil</div>
+  <div class="box" onclick="showProfile('sekretaris')">Sekretaris</div>
+</div>
 
-<p id="info"></p>
+<!-- Popup -->
+<div id="popup" class="popup">
+  <div class="popup-content">
+    <span class="close" onclick="closePopup()">X</span>
+    <h3 id="nama"></h3>
+    <p id="jabatan"></p>
+    <p id="deskripsi"></p>
+  </div>
+</div>
 
 <script>
-function showInfo(jabatan) {
-  let text = "";
-  if (jabatan === "ketua") {
-    text = "Ketua: Bertanggung jawab penuh atas organisasi.";
-  } else if (jabatan === "wakil") {
-    text = "Wakil: Membantu ketua dalam tugas.";
-  } else if (jabatan === "sekretaris") {
-    text = "Sekretaris: Mengurus administrasi.";
+function showProfile(role) {
+  let nama = "";
+  let jabatan = "";
+  let deskripsi = "";
+
+  if (role === "ketua") {
+    nama = "Budi";
+    jabatan = "Ketua";
+    deskripsi = "Memimpin dan bertanggung jawab atas organisasi.";
+  } else if (role === "wakil") {
+    nama = "Siti";
+    jabatan = "Wakil Ketua";
+    deskripsi = "Membantu ketua dalam menjalankan tugas.";
+  } else if (role === "sekretaris") {
+    nama = "Andi";
+    jabatan = "Sekretaris";
+    deskripsi = "Mengelola administrasi dan dokumentasi.";
   }
-  document.getElementById("info").innerText = text;
+
+  document.getElementById("nama").innerText = nama;
+  document.getElementById("jabatan").innerText = jabatan;
+  document.getElementById("deskripsi").innerText = deskripsi;
+
+  document.getElementById("popup").style.display = "block";
+}
+
+function closePopup() {
+  document.getElementById("popup").style.display = "none";
 }
 </script>
 
