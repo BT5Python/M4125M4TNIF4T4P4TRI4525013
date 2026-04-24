@@ -2,115 +2,37 @@
 <html>
 <head>
 <style>
-body {
+.box {
+  width: 220px;
+  border: 1px solid black;
+  text-align: center;
+  padding: 10px;
+  cursor: pointer;
   font-family: Arial;
 }
 
-/* KOTAK */
-.box {
-  width: 240px;
-  border: 1px solid black;
-  text-align: center;
-  cursor: pointer;
-}
-
-/* BARIS */
-.row {
-  padding: 30px;
-}
-
-/* garis pemisah */
-.row:not(:last-child) {
-  border-bottom: 1px solid black;
-}
-
-/* styling */
-.judul {
+.title {
   background: #2da8d8;
   color: white;
-  font-weight: bold;
+  padding: 5px;
   font-size: 12px;
-}
-
-.nama {
   font-weight: bold;
 }
 
-.jabatan {
-  font-size: 12px;
-}
-
-/* POPUP */
-.popup {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.6);
-}
-
-.popup-content {
-  background: white;
-  width: 320px;
-  margin: 100px auto;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-}
-
-.popup-content img {
-  width: 120px;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 10px;
-  margin-bottom: 10px;
-}
-
-.close {
-  float: right;
-  cursor: pointer;
-  color: red;
-  font-weight: bold;
-}
 </style>
 </head>
 
 <body>
 
-<!-- KOTAK -->
-<div class="box" onclick="showProfile()">
-
-  <div class="row judul">DANPUSLAT</div>
-  <div class="row nama">Erwan Andrian, S.E., M.M></div>
-  <div class="row jabatan">Marsekal Pertama TNI</div>
-
-</div>
-
-<!-- POPUP -->
-<div id="popup" class="popup">
-  <div class="popup-content">
-
-    <span class="close" onclick="closePopup()">X</span>
-
-    <!-- FOTO -->
-    <img src="https://via.placeholder.com/120" id="foto">
-
-    <!-- INFO -->
-    <h3>Profil Komandan</h3>
-    <p><b>Nama:</b> Erwan Andrian, S.E., M.M</p>
-    <p><b>Jabatan:</b> Komandan Puslat</p>
-    <p>Memimpin seluruh kegiatan organisasi.</p>
-
-  </div>
+<div class="box" onclick="show()">
+  <div class="title">KOMANDAN</div>
+  <div><b>Erwan Andrian</b></div>
+  <div style="font-size:12px;">Marsekal Pertama</div>
 </div>
 
 <script>
-function showProfile() {
-  document.getElementById("popup").style.display = "block";
-}
-
-function closePopup() {
-  document.getElementById("popup").style.display = "none";
+function show(){
+  alert("Profil Komandan: Erwan Andrian");
 }
 </script>
 
