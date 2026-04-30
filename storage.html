@@ -23,6 +23,7 @@ h2 {
   margin: 0;
   line-height: 1.1;
   font-size: 40px;
+  animation: blinkText 1s infinite; /* ini yang bikin kedip */
 }  
 .top-buttons {
   text-align: right;
@@ -131,6 +132,10 @@ button:hover {
       window.location.href = 'login.html';
     }
   }
+    @keyframes blinkText {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
   </script>
   <script>
 // Fullscreen untuk Android WebView / PWA
